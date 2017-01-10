@@ -77,7 +77,6 @@ If the contribution you wish to make isn't documented in an existing issue, plea
 -   Enforce the [Reaction style guide](https://docs.reactioncommerce.com/reaction-docs/master/styleguide)
 -   Pass both [Acceptance tests and Unit testing](https://docs.reactioncommerce.com/reaction-docs/master/testing-reaction).
 
-
 ### Documentation
 
 Installation, configuration and development documentation is available on [docs.reactioncommerce.com](https://docs.reactioncommerce.com/)
@@ -94,7 +93,16 @@ We use [BrowserStack](https://www.browserstack.com) for automated acceptance tes
 
 ![BrowserStack Logo](https://d98b8t1nnulk5.cloudfront.net/production/images/layout/logo-header.png?1469004780)
 
+### Pre-test Installation
+
+From your project directory, run the following commands in this order:
+- `chmod u+x installs` - makes the bash script executable
+- `./installs` - one time installation of selenium-server-standalone-3 and chromedriver.
+- `./run-selenium` - starts selenium server
+_Note:_ Before installation, be sure to update your java to version 8.
+
 ### Deployment
+
 We require that all releases are deployable as [Docker](https://www.docker.com/) containers.  While we do not actively test or support other methods of deployment, the community has documented deployment strategies for [Heroku](https://github.com/reactioncommerce/reaction/issues/1363), AWS, [Digital Ocean](https://gist.github.com/jshimko/745ca66748846551692e24c267a56060) and Galaxy.
 
 ##### Docker
