@@ -13,6 +13,9 @@ const orderFilters = [{
 }, {
   name: "completed",
   label: "Completed"
+}, {
+  name: "canceled",
+  label: "Canceled"
 }];
 
 const OrderHelper =  {
@@ -61,7 +64,7 @@ const OrderHelper =  {
 
       case "canceled":
         query = {
-          "workflow.status": "canceled"
+          "workflow.status": "coreOrderWorkflow/canceled"
         };
         break;
 
@@ -191,7 +194,7 @@ Template.ordersListItem.events({
     event.preventDefault();
     const instance = Template.instance();
     const isActionViewOpen = Reaction.isActionViewOpen();
-    const { order } = instance.data;
+    const {order } = instance.data;
 
     if (order.workflow.status === "new") {
       Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "processing", order);
@@ -233,7 +236,6 @@ Template.orderListFilters.onCreated(function () {
 
       return filter;
     });
-
     this.state.set("filters", filters);
   });
 });
@@ -286,14 +288,34 @@ Template.orderStatusDetail.onCreated(function () {
     const filter = Reaction.Router.getQueryParam("filter");
     const query = OrderHelper.makeQuery(filter);
     const orders = Orders.find(query).fetch();
-
     this.state.set("orders", orders);
   });
 });
 
+Template.orderStatusDetail.events({
+  "click [data-event-action=orderCancellation]": function (event) {
+    event.preventDefault();
+    const instance = Template.instance().data;
+    const isActionViewOpen = Reaction.isActionViewOpen();
+    if (instance.workflow.status === "new" || instance.workflow.status === "coreOrderWorkflow/processing") {
+      Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "canceled", instance);
+    }
+  }
+});
+
+
 Template.orderStatusDetail.helpers({
   orderAge: function () {
     return moment(this.createdAt).fromNow();
+  },
+
+  orderCancel: function () {
+    let orderCancellation = true;
+    const orderState = Reaction.Router.getQueryParam("filter");
+    if (orderState === "completed" || orderState === "canceled") {
+      orderCancellation = false;
+    }
+    return orderCancellation;
   },
 
   shipmentTracking: function () {

@@ -32,6 +32,12 @@ Template.cartCompleted.helpers({
     }
     return this.workflow.status;
   },
+  orderCancel: function () {
+    if (this.workflow.status === "coreOrderWorkflow/canceled") {
+      return true;
+    }
+    return false;
+  },
   userOrders: function () {
     if (Meteor.user()) {
       return Orders.find({

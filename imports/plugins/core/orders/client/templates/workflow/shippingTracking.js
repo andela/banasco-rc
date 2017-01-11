@@ -109,6 +109,14 @@ Template.coreOrderShippingTracking.helpers({
     return completedItems;
   },
 
+  orderCancelled() {
+    const check = Template.instance().order;
+    if (check.workflow.status === "coreOrderWorkflow/canceled") {
+      return false;
+    }
+    return true;
+  },
+
   editTracking() {
     const template = Template.instance();
     if (!template.order.shipping[0].tracking || template.showTrackingEditForm.get()) {

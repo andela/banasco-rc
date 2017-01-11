@@ -1,5 +1,5 @@
  <template name="coreOrderShippingTracking">
-
+{{#if orderCancelled}}
    {{#if editTracking}}
    <form class="form-inline" name="addTrackingForm">
      <div class="form-group">
@@ -30,4 +30,5 @@
         data-event-action="shipmentPacked">All Items Packed, Ready to Ship</button>
     {{/if}}
   {{/if}}
+{{/if}}
 </template>
