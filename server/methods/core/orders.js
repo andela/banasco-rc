@@ -14,7 +14,6 @@ import { Logger, Reaction } from "/server/api";
  * Reaction Order Methods
  */
 Meteor.methods({
-
   /**
    * orders/shipmentTracking
    * @summary wraps addTracking and triggers workflow update
