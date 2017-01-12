@@ -32,15 +32,10 @@ Template.dashboardOrdersList.helpers({
   shopName() {
     const shop = Shops.findOne(this.shopId);
     return shop !== null ? shop.name : void 0;
-  }
-});
-
-Template.dashboardOrdersList.events({
-  "click [data-event-action=orderCancellation]": function () {
-    if (this.workflow.status === "new" || this.workflow.status === "coreOrderWorkflow/processing") {
-        console.log(this.shipping[0].shipmentMethod.tracking);
-      Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "canceled", this);
-      console.log(this.shipping[0].shipmentMethod.tracking);
+  },
+  orderCancel() {
+    if (this.workflow.status === "coreOrderWorkflow/canceled") {
+      return true;
     }
   }
 });

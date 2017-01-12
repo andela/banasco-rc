@@ -25,6 +25,11 @@
           <span>{{> React (numericInputProps variants.price)}}</span>
         </span>
       </div>
+       {{#if orderCancel}}
+        <div class="order-item-details">
+           <button class="btn btn-danger pull-right" data-event-action="orderCancellation">Cancel Order</button>
+       </div>
+       {{/if}}
     </div>
   </div>
 {{/each}}

@@ -22,7 +22,11 @@
           {{#if orderStatus}}
               <span data-i18n="order.completed">Completed</span>
           {{else}}
+              {{#if orderCancel}}
+              <span>Canceled</span>
+              {{else}}
               <span data-i18n="order.processing">Processing</span>
+              {{/if}}
           {{/if}}
         </div>
       </div>
@@ -93,10 +97,6 @@
           {{> ordersListItems order=.}}
         </div>
       </div>
-
-       <div class="row order-group-title">
-           <button class="btn btn-default pull-right" data-event-action="orderCancellation">Cancel Order</button>
-       </div>
     </div>
 
     <div class="panel-footer">

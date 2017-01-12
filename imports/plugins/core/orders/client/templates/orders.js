@@ -292,32 +292,10 @@ Template.orderStatusDetail.onCreated(function () {
   });
 });
 
-Template.orderStatusDetail.events({
-  "click [data-event-action=orderCancellation]": function (event) {
-    event.preventDefault();
-    const instance = Template.instance().data;
-    const isActionViewOpen = Reaction.isActionViewOpen();
-    if (instance.workflow.status === "new" || instance.workflow.status === "coreOrderWorkflow/processing") {
-      Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "canceled", instance);
-    }
-  }
-});
-
-
 Template.orderStatusDetail.helpers({
   orderAge: function () {
     return moment(this.createdAt).fromNow();
   },
-
-  orderCancel: function () {
-    let orderCancellation = true;
-    const orderState = Reaction.Router.getQueryParam("filter");
-    if (orderState === "completed" || orderState === "canceled") {
-      orderCancellation = false;
-    }
-    return orderCancellation;
-  },
-
   shipmentTracking: function () {
     if (this.shipping[0].tracking) {
       return this.shipping[0].tracking;

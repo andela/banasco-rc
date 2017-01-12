@@ -7,6 +7,14 @@ import { NumericInput } from "/imports/plugins/core/ui/client/components";
  *
  */
 Template.ordersListItems.helpers({
+  orderCancel: function () {
+    let orderCancellation = true;
+    const { order } = Template.instance().data;
+    if (order.workflow.status === "coreOrderWorkflow/canceled" || order.workflow.status === "coreOrderWorkflow/completed") {
+      orderCancellation = false;
+    }
+    return orderCancellation;
+  },
   media: function () {
     const variantImage = Media.findOne({
       "metadata.productId": this.productId,
@@ -68,5 +76,17 @@ Template.ordersListItems.helpers({
       format: currencyFormat,
       isEditing: false
     };
+  }
+});
+
+Template.ordersListItems.events({
+  "click [data-event-action=orderCancellation]": function (event) {
+    event.preventDefault();
+    const instance = Template.instance().data;
+    const order = instance.order;
+    if (order.workflow.status === "new" || order.workflow.status === "coreOrderWorkflow/processing") {
+      Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "canceled", order);
+      order.workflow.status = "coreOrderWorkflow/canceled";
+    }
   }
 });
