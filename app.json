@@ -3,7 +3,8 @@
   "scripts": {},
   "env": {
     "BUILDPACK_CLEAR_CACHE": {
-      "required": true
+      "required": true,
+      "value":"1"
     },
     "MONGODB_URI": {
       "required": true
