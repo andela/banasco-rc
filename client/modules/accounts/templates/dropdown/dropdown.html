@@ -34,6 +34,7 @@
 <template name="accountsDropdownApps">
   <ul class="user-accounts-dropdown-apps">
     {{> userAccountsDropdown}}
+    {{>tour}}
     <!--administrative shortcut icons -->
     {{#each reactionApps provides="shortcut" enabled=true}}
       <li class="dropdown-apps-icon">
@@ -47,6 +48,17 @@
     {{/each}}
   </ul>
 </template>
+
+<template name="tour">
+   <li class="dropdown-apps-icon">
+     <a onclick="reactionIntro()">
+       <i class="fa fa-plane fa-spin"></i>
+       <span class="icon-text">
+         Take-Tour
+       </span>
+     </a>
+   </li>
+ </template>
 
 <template name="userAccountsDropdown">
   <!--user account shortcut icons -->
