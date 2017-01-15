@@ -3,7 +3,7 @@ import {Products, Orders, Shops, Accounts, Cart, AnalyticsEvents, Assets, Discou
 
 // Global API configuration
 const Api = new Restivus({
-  useDefaultAuth: true,
+  useDefaultAuth: false,
   prettyJson: true
 });
 
