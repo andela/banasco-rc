@@ -194,7 +194,7 @@ Template.ordersListItem.events({
     event.preventDefault();
     const instance = Template.instance();
     const isActionViewOpen = Reaction.isActionViewOpen();
-    const {order } = instance.data;
+    const { order } = instance.data;
 
     if (order.workflow.status === "new") {
       Meteor.call("workflow/pushOrderWorkflow", "coreOrderWorkflow", "processing", order);
