@@ -1,7 +1,7 @@
 import express from "express";
 import GraphQLHTTP from "express-graphql";
 import schema from "./graphqlSchema";
-import {Products, Orders, Shops, Accounts, Cart, AnalyticsEvents, Assets, Discounts, Emails, Inventory, Packages, Revisions, Shipping, Tags, Templates, Themes, Translations} from "/lib/collections";
+import axios from "axios";
 // const schema = require("./graphqlSchema");
 const app = express();
 const PORT = 8000;
@@ -11,13 +11,23 @@ app.use("/graphql", GraphQLHTTP({
 })
 );
 app.get("/api/products", (request, response) => {
-  console.log(Products);
-  // Products.find({}, (error, data) => {
-    // response.send(data);
-  // });
-  response.send('Api is working');
-}
-);
+  axios.post(`http://localhost:${PORT}/graphql`,
+    {"query": "{ products {title }}"},
+    {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(function (res) {
+      console.log(res.data);
+      response.json(res.data);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
+});
+
+
 // app.use()
 app.listen(PORT, () => {
   console.log("Node/Express server for Flux/GraphQL app. listening on port", PORT);
