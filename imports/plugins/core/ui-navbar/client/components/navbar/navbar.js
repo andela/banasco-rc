@@ -27,11 +27,19 @@ Template.CoreNavigationBar.events({
 });
 
 Template.CoreNavigationBar.helpers({
+  getTour() {
+    const step1 = {
+      four: "Do a Quick Search",
+      five: "Choose Preferred Language",
+      seven: "See Your Cart Contents"
+    };
+    return step1;
+  },
   IconButtonComponent() {
     return {
       component: FlatButton,
       icon: "fa fa-search",
-      kind: "flat"
+      kind: "flat",
       // onClick() {
       //   Blaze.renderWithData(Template.searchModal, {
       //   }, $("body").get(0));

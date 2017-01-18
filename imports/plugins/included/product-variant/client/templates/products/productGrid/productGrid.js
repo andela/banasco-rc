@@ -96,6 +96,12 @@ Template.productGrid.events({
 });
 
 Template.productGrid.helpers({
+  getTour1() {
+    const steps = {
+      eight: "Click on product to add to cart and order"
+    };
+    return steps;
+  },
   loadMoreProducts() {
     return Template.instance().state.equals("canLoadMoreProducts", true);
   },
