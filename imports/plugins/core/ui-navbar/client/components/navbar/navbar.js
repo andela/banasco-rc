@@ -39,7 +39,7 @@ Template.CoreNavigationBar.helpers({
     return {
       component: FlatButton,
       icon: "fa fa-search",
-      kind: "flat",
+      kind: "flat"
       // onClick() {
       //   Blaze.renderWithData(Template.searchModal, {
       //   }, $("body").get(0));
