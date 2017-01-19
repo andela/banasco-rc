@@ -490,6 +490,7 @@
         "itemsFrom": "item(s) from",
         "yourOrderIsNow": "Your order is now",
         "summaryMessage": "Thank you for your order.",
+        "canceled": "canceled",
         "submitted": "submitted",
         "registerGuest": "Hello! Add an email and receive order updates.",
         "trackYourDelivery": "Order updates will be sent to",

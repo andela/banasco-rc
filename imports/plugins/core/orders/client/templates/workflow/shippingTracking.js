@@ -7,7 +7,6 @@ import { Orders } from "/lib/collections";
 Template.coreOrderShippingTracking.onCreated(() => {
   const template = Template.instance();
   const currentData = Template.currentData();
-
   template.orderDep = new Tracker.Dependency;
   template.showTrackingEditForm = ReactiveVar(false);
 
@@ -18,7 +17,6 @@ Template.coreOrderShippingTracking.onCreated(() => {
       "shipping._id": shipmentId
     });
   }
-
   Tracker.autorun(() => {
     template.order = getOrder(currentData.orderId, currentData.fulfillment._id);
   });
@@ -85,13 +83,10 @@ Template.coreOrderShippingTracking.helpers({
           return true;
         }
       });
-
       return _.includes(fullItem.workflow.workflow, "coreOrderItemWorkflow/shipped");
     });
-
     return shippedItems;
   },
-
   isCompleted() {
     const currentData = Template.currentData();
     const order = Template.instance().order;
@@ -108,7 +103,10 @@ Template.coreOrderShippingTracking.helpers({
 
     return completedItems;
   },
-
+  orderCancelled() {
+    const check = Template.instance().order;
+    return (check.workflow.status !== "coreOrderWorkflow/canceled");
+  },
   editTracking() {
     const template = Template.instance();
     if (!template.order.shipping[0].tracking || template.showTrackingEditForm.get()) {
@@ -125,7 +123,6 @@ Template.coreOrderShippingTracking.helpers({
   shipmentReady() {
     const order = Template.instance().order;
     const shipment = order.shipping[0];
-
     return shipment.packed && shipment.tracking;
   }
 });

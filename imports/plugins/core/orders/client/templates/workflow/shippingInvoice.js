@@ -263,6 +263,15 @@ Template.coreOrderShippingInvoice.helpers({
     return "";
   },
 
+
+  orderCancelled() {
+    const check = Template.instance().state.get("order");
+    if (check.workflow.status === "coreOrderWorkflow/canceled") {
+      return true;
+    }
+    return false;
+  },
+
   paymentPendingApproval() {
     const instance = Template.instance();
     const order = instance.state.get("order");
