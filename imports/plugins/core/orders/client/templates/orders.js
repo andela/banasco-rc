@@ -13,6 +13,9 @@ const orderFilters = [{
 }, {
   name: "completed",
   label: "Completed"
+}, {
+  name: "canceled",
+  label: "Canceled"
 }];
 
 const OrderHelper =  {
@@ -61,7 +64,7 @@ const OrderHelper =  {
 
       case "canceled":
         query = {
-          "workflow.status": "canceled"
+          "workflow.status": "coreOrderWorkflow/canceled"
         };
         break;
 
@@ -233,7 +236,6 @@ Template.orderListFilters.onCreated(function () {
 
       return filter;
     });
-
     this.state.set("filters", filters);
   });
 });
@@ -286,7 +288,6 @@ Template.orderStatusDetail.onCreated(function () {
     const filter = Reaction.Router.getQueryParam("filter");
     const query = OrderHelper.makeQuery(filter);
     const orders = Orders.find(query).fetch();
-
     this.state.set("orders", orders);
   });
 });
@@ -295,7 +296,6 @@ Template.orderStatusDetail.helpers({
   orderAge: function () {
     return moment(this.createdAt).fromNow();
   },
-
   shipmentTracking: function () {
     if (this.shipping[0].tracking) {
       return this.shipping[0].tracking;
