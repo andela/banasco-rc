@@ -42,7 +42,7 @@ Template.coreAdminLayout.helpers({
           "tooltip": shortcuts[item].label || "",
           "i18nKeyTooltip": shortcuts[item].i18nKeyLabel,
           "tooltipPosition": "left middle",
-          "data-step": item + 1,
+          "data-step": item + 2,
           "data-intro": introMessages[item]
         });
       }
