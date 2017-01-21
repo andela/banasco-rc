@@ -13,16 +13,131 @@ import {Products, Orders, Shops, Accounts, Cart, AnalyticsEvents, Assets, Discou
 
 const ProductsType = new GraphQLObjectType({
   name: "Products",
-  description: "Returns a filtered subset of Products",
+  description: "Returns select fields for all Products",
   fields: () => ({
     title: { type: GraphQLString },
-    ancestors: { type: GraphQLString },
-    optionTitle: { type: GraphQLString },
-    price: { type: GraphQLString },
-    inventoryManagement: { type: GraphQLBoolean },
-    inventoryPolicy: { type: GraphQLBoolean },
-    inventoryQuantity: { type: GraphQLInt},
-    isVisible: { type: GraphQLBoolean}
+    _id: {type: GraphQLString},
+    vendor: {type: GraphQLString},
+    price: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        console.log(typeof obj.price, obj.price);
+        if (typeof JSON.parse(obj.price) === "object") {
+          return obj.price[JSON.parse(range)];
+        }
+        return obj.price;
+      }
+    },
+    inventoryQuantity: { type: GraphQLInt}
+  })
+});
+
+const UsersType = new GraphQLObjectType({
+  name: "Users",
+  description: "Returns select fields for all Users",
+  fields: () => ({
+    id: { type: GraphQLString },
+    createdAt: {type: GraphQLString},
+    emails: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        if (!obj.emails[0]) {
+          return "No Email Specified";
+        }
+        return obj.emails[0].address;
+      }
+    },
+    verified: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        if (obj.emails[0]) {
+          return obj.emails[0].verified;
+        }
+        return null;
+      }
+    },
+    fullName: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        if (obj.profile.addressBook) {
+          return obj.profile.addressBook[0].fullName;
+        }
+        return "No Name Supplied";
+      }
+    },
+    userId: { type: GraphQLString},
+    shopId: { type: GraphQLString}
+  })
+});
+
+
+const ShopsType = new GraphQLObjectType({
+  name: "Shops",
+  description: "Returns Array of Shops",
+  fields: () => ({
+    name: {type: GraphQLString},
+    _id: {type: GraphQLID},
+    emails: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        return obj.emails[0].address;
+      }
+    },
+    lastUpdated: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        return obj.updatedAt;
+      }
+    }
+  })
+});
+
+const OrderItems = new GraphQLObjectType({
+  name: "OrderItems",
+  description: "Lists the Details of Products Ordered",
+  fields: () => ({
+    title: {type: GraphQLString},
+    quantity: {type: GraphQLString},
+    price: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        return obj.variants.price;
+      }
+    }
+  })
+});
+
+const OrdersType = new GraphQLObjectType({
+  name: "Orders",
+  description: "Returns Array of Specified Orders",
+  fields: () => ({
+    sessionId: {type: GraphQLString},
+    _id: {type: GraphQLID},
+    shopId: {type: GraphQLString},
+    workflowStatus: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        return obj.workflow.status;
+      }
+    },
+    items: {type: new GraphQLList(OrderItems) },
+    shipped: {
+      type: GraphQLString,
+      resolve: (obj) => {
+        return obj.shipping[0].shipped;
+      }
+    },
+    tracking: {type: GraphQLString,
+      resolve: (obj) => {
+        return obj.shipping[0].tracking;
+      }
+    },
+    email: {
+      type: GraphQLString,
+      args: {
+        emailID: {type: GraphQLString}
+      }
+    }
   })
 });
 
@@ -38,12 +153,28 @@ const query = new GraphQLObjectType({
         return Products.find().fetch();
       }
     },
-    test: {
-      type: new GraphQLNonNull(GraphQLString),
+    users: {
+      type: new GraphQLList(UsersType),
+      description: "Display Users",
       resolve: () => {
-        return "Hello World";
+        return Accounts.find().fetch();
+      }
+    },
+    shops: {
+      type: new GraphQLList(ShopsType),
+      description: "Display Shops",
+      resolve: () => {
+        return Shops.find().fetch();
+      }
+    },
+    orders: {
+      type: new GraphQLList(OrdersType),
+      description: "Display Orders",
+      resolve: () => {
+        return Orders.find().fetch();
       }
     }
+
   })
 });
 
