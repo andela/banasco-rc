@@ -1,0 +1,31 @@
+<template name="vendorDetails">
+  <div class="form-group form-group-vendorName {{hasError messages.errors.vendorName}}">
+    <label for="vendorName">Vendor name</label>
+    <input id="vendorName" class="form-control login-input-vendorName" type="text">
+    {{#if hasError messages.errors.vendorName}}
+      <span class="help-block">
+        {{i18n messages.errors.vendorName.i18nKeyReason messages.errors.vendorName.reason}}
+      </span>
+    {{/if}}
+  </div>
+
+  <div class="form-group form-group-vendorPhone {{hasError messages.errors.vendorPhone}}">
+    <label for="vendorPhone">Phone</label>
+    <input id="vendorPhone" class="form-control login-input-vendorPhone" type="text">
+    {{#if hasError messages.errors.vendorPhone}}
+      <span class="help-block">
+        {{i18n messages.errors.vendorPhone.i18nKeyReason messages.errors.vendorPhone.reason}}
+      </span>
+    {{/if}}
+  </div>
+
+  <div class="form-group form-group-vendorAddr {{hasError messages.errors.vendorAddr}}">
+    <label for="vendorAddr">Address</label>
+    <input id="vendorAddr" class="form-control login-input-vendorAddr" type="text">
+    {{#if hasError messages.errors.vendorAddr}}
+      <span class="help-block">
+        {{i18n messages.errors.vendorAddr.i18nKeyReason messages.errors.vendorAddr.reason}}
+      </span>
+    {{/if}}
+  </div>
+</template>

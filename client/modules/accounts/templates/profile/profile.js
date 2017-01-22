@@ -64,5 +64,9 @@ Template.accountProfile.helpers({
       return "addressBookGrid";
     }
     return "addressBookAdd";
+  },
+
+  isVendor() {
+    return Session.get('isVendor');
   }
 });

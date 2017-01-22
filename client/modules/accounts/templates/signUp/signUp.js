@@ -1,5 +1,6 @@
 import { LoginFormSharedHelpers } from "/client/modules/accounts/helpers";
 import { Template } from "meteor/templating";
+import { FlowRouter } from "meteor/kadira:flow-router-ssr";
 
 /**
  * onCreated: Login form sign up view
@@ -10,6 +11,7 @@ Template.loginFormSignUpView.onCreated(() => {
   template.uniqueId = Random.id();
   template.formMessages = new ReactiveVar({});
   template.type = "signUp";
+  Session.set("isVendor", false);
 });
 
 /**
@@ -27,23 +29,37 @@ Template.loginFormSignUpView.events({
    * @param  {Template} template - Blaze Template
    * @return {void}
    */
+  // "change .form-check-input": function (event, template) {
+  //   let isVendor = template.$(".form-check-input").prop("checked") ? true : false;
+  // },
   "submit form": function (event, template) {
     event.preventDefault();
 
-    // var usernameInput = template.$(".login-input--username");
+    const usernameInput = template.$(".login-input-username");
     const emailInput = template.$(".login-input-email");
     const passwordInput = template.$(".login-input-password");
 
+    let vendorName;
+    let vendorPhone;
+    let vendorAddr;
+
+    const username = usernameInput.val().trim();
     const email = emailInput.val().trim();
     const password = passwordInput.val().trim();
 
+    const validatedUsername = LoginFormValidation.username(username);
     const validatedEmail = LoginFormValidation.email(email);
     const validatedPassword = LoginFormValidation.password(password);
 
     const templateInstance = Template.instance();
     const errors = {};
+    let vendorProfile = {};
 
     templateInstance.formMessages.set({});
+
+    if (validatedUsername !== true) {
+      errors.username = validatedUsername;
+    }
 
     if (validatedEmail !== true) {
       errors.email = validatedEmail;
@@ -51,6 +67,24 @@ Template.loginFormSignUpView.events({
 
     if (validatedPassword !== true) {
       errors.password = validatedPassword;
+    }
+
+    if (LoginFormSharedHelpers.isVendor()) {
+      vendorName = template.$(".login-input-vendorName").val();
+      vendorPhone = template.$(".login-input-vendorPhone").val()
+      vendorAddr = template.$(".login-input-vendorAddr").val();
+
+      if (!vendorName || !/\w+/gi.test(vendorName)) {
+        errors.vendorName = { i18nKeyReason: "Invalid vendor name", reason: "Invalid vendor name" };
+      }
+
+      if (!vendorPhone || vendorPhone.length < 11 || /[^\d{11}]/.test(vendorPhone)) {
+        errors.vendorPhone = { i18nKeyReason: "Invalid phone number", reason: "Invalid phone number" };
+      }
+
+      if (!vendorAddr || !/[\w+\s\/,?]+(\.)?/.test(vendorAddr)) {
+        errors.vendorAddr = { i18nKeyReason: "Invalid address", reason: "Invalid address" };
+      }
     }
 
     if ($.isEmptyObject(errors) === false) {
@@ -62,10 +96,17 @@ Template.loginFormSignUpView.events({
     }
 
     const newUserData = {
-      // username: username,
+      username: username,
       email: email,
-      password: password
+      password: password,
+      profile: {
+        name: vendorName,
+        phone: vendorPhone,
+        addr: vendorAddr
+      }
     };
+
+    console.log(newUserData.profile);
 
     Accounts.createUser(newUserData, function (error) {
       if (error) {
@@ -75,7 +116,16 @@ Template.loginFormSignUpView.events({
         });
       } else {
         // Close dropdown or navigate to page
+        // if (Session.get("isVendor")) {
+        //   //FlowRouter.go("/reaction/account/profile");
+        // }
       }
     });
+  },
+
+  "change .form-check-input": function(event, template) {
+    const isVendor = template.$(".form-check-input").prop("checked") ? true : false;
+    console.log(isVendor);
+    Session.set("isVendor", isVendor);
   }
 });
