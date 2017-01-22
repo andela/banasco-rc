@@ -71,7 +71,7 @@ Template.loginFormSignUpView.events({
 
     if (LoginFormSharedHelpers.isVendor()) {
       vendorName = template.$(".login-input-vendorName").val();
-      vendorPhone = template.$(".login-input-vendorPhone").val()
+      vendorPhone = template.$(".login-input-vendorPhone").val();
       vendorAddr = template.$(".login-input-vendorAddr").val();
 
       if (!vendorName || !/\w+/gi.test(vendorName)) {
@@ -99,14 +99,14 @@ Template.loginFormSignUpView.events({
       username: username,
       email: email,
       password: password,
-      profile: {
-        name: vendorName,
-        phone: vendorPhone,
-        addr: vendorAddr
+      profile:
+      { vendorDetails: {
+        vendorName: vendorName,
+        vendorPhone: vendorPhone,
+        vendorAddr: vendorAddr
+      }
       }
     };
-
-    console.log(newUserData.profile);
 
     Accounts.createUser(newUserData, function (error) {
       if (error) {
@@ -123,9 +123,9 @@ Template.loginFormSignUpView.events({
     });
   },
 
-  "change .form-check-input": function(event, template) {
+  "change .form-check-input": function (event, template) {
     const isVendor = template.$(".form-check-input").prop("checked") ? true : false;
-    console.log(isVendor);
+
     Session.set("isVendor", isVendor);
   }
 });

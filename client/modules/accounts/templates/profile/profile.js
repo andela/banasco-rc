@@ -67,6 +67,6 @@ Template.accountProfile.helpers({
   },
 
   isVendor() {
-    return Session.get('isVendor');
+    return Session.get("isVendor");
   }
 });
