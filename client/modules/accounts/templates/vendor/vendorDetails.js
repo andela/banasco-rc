@@ -1,7 +1,4 @@
-import { LoginFormSharedHelpers } from "/client/modules/accounts/helpers";
-import { Session } from "meteor/session";
 import { Meteor } from "meteor/meteor";
-import { Countries } from "/client/collections";
 import * as Collections from "/lib/collections";
 import { Template } from "meteor/templating";
 

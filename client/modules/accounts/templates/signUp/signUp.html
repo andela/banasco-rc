@@ -52,14 +52,24 @@
     <!-- <div class="form-group"> -->
       <label class="control-label"></label>
       <div class="checkbox">
+<<<<<<< 8e8cef792ad3d8611358966844c67172b4597e49
           <div>Register me as a</div>
           <label class="radio-inline"><input class="form-radio-input" id="isBuyer" type="radio" name="optradio" value="buyer" checked="checked">Buyer</label>
           <label class="radio-inline"><input class="form-radio-input" id="isVendor" type="radio" name="optradio" value="vendor">Vendor</label>
+=======
+        <label for="isVendor-{{uniqueId}}">
+          <input type="checkbox" id="isVendor" class="form-check-input" name="isVendor" data-schema-key="isVendor"> Register me as a Seller!
+        </label>
+>>>>>>> create vendor signup
       </div>
     <!-- </div> -->
     <!-- end checkbox -->
 
     {{#if isVendor}}
+<<<<<<< 8e8cef792ad3d8611358966844c67172b4597e49
+=======
+      <!-- {{> vendorDetails}} -->
+>>>>>>> create vendor signup
       <div class="form-group form-group-vendorName {{hasError messages.errors.vendorName}}">
         <label for="vendorName">Vendor name</label>
         <input id="vendorName" class="form-control login-input-vendorName" type="text">
@@ -89,8 +99,11 @@
           </span>
         {{/if}}
       </div>
+<<<<<<< 8e8cef792ad3d8611358966844c67172b4597e49
     {{else}}
       <!--  -->
+=======
+>>>>>>> create vendor signup
     {{/if}}
 
     <div class="form-group">
