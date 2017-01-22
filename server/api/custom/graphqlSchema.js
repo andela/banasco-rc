@@ -92,6 +92,21 @@ const ShopsType = new GraphQLObjectType({
   })
 });
 
+const ShippingAddress = new GraphQLObjectType({
+  name: "ShippingAddress",
+  description: "Lists the Delivery Address",
+  fields: () => ({
+    fullName: {type: GraphQLString},
+    country: {type: GraphQLString},
+    address1: {type: GraphQLString},
+    address2: {type: GraphQLString},
+    postal: {type: GraphQLString},
+    city: {type: GraphQLString},
+    region: {type: GraphQLString},
+    phone: {type: GraphQLString},
+  })
+});
+
 const OrderItems = new GraphQLObjectType({
   name: "OrderItems",
   description: "Lists the Details of Products Ordered",
@@ -132,10 +147,17 @@ const OrdersType = new GraphQLObjectType({
         return obj.shipping[0].tracking;
       }
     },
-    email: {
+    email: {type: GraphQLString},
+    orderDate: {
       type: GraphQLString,
-      args: {
-        emailID: {type: GraphQLString}
+      resolve: (obj) => {
+        return obj.createdAt;
+      }
+    },
+    deliveryAddress: {
+      type: ShippingAddress,
+      resolve: (obj) => {
+        return obj.shipping[0].address;
       }
     }
   })
@@ -170,7 +192,13 @@ const query = new GraphQLObjectType({
     orders: {
       type: new GraphQLList(OrdersType),
       description: "Display Orders",
-      resolve: () => {
+      args: {
+        emailID: {type: GraphQLString}
+      },
+      resolve: (root, args) => {
+        if (args.emailID) {
+          return Orders.find({email: args.emailID}).fetch();
+        }
         return Orders.find().fetch();
       }
     }
