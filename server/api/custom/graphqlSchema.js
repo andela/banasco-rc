@@ -4,12 +4,9 @@ import {
  GraphQLInt,
  GraphQLString,
  GraphQLList,
- GraphQLNonNull,
- GraphQLID,
- GraphQLBoolean,
- GraphQLFloat
-} from 'graphql';
-import {Products, Orders, Shops, Accounts, Cart, AnalyticsEvents, Assets, Discounts, Emails, Inventory, Packages, Revisions, Shipping, Tags, Templates, Themes, Translations} from "/lib/collections";
+ GraphQLID
+} from "graphql";
+import {Products, Orders, Shops, Accounts} from "/lib/collections";
 
 const ProductsType = new GraphQLObjectType({
   name: "Products",
@@ -21,7 +18,6 @@ const ProductsType = new GraphQLObjectType({
     price: {
       type: GraphQLString,
       resolve: (obj) => {
-        console.log(typeof obj.price, obj.price);
         if (typeof JSON.parse(obj.price) === "object") {
           return obj.price[JSON.parse(range)];
         }
@@ -92,6 +88,21 @@ const ShopsType = new GraphQLObjectType({
   })
 });
 
+const ShippingAddress = new GraphQLObjectType({
+  name: "ShippingAddress",
+  description: "Lists the Delivery Address",
+  fields: () => ({
+    fullName: {type: GraphQLString},
+    country: {type: GraphQLString},
+    address1: {type: GraphQLString},
+    address2: {type: GraphQLString},
+    postal: {type: GraphQLString},
+    city: {type: GraphQLString},
+    region: {type: GraphQLString},
+    phone: {type: GraphQLString}
+  })
+});
+
 const OrderItems = new GraphQLObjectType({
   name: "OrderItems",
   description: "Lists the Details of Products Ordered",
@@ -132,10 +143,17 @@ const OrdersType = new GraphQLObjectType({
         return obj.shipping[0].tracking;
       }
     },
-    email: {
+    email: {type: GraphQLString},
+    orderDate: {
       type: GraphQLString,
-      args: {
-        emailID: {type: GraphQLString}
+      resolve: (obj) => {
+        return obj.createdAt;
+      }
+    },
+    deliveryAddress: {
+      type: ShippingAddress,
+      resolve: (obj) => {
+        return obj.shipping[0].address;
       }
     }
   })
@@ -170,8 +188,26 @@ const query = new GraphQLObjectType({
     orders: {
       type: new GraphQLList(OrdersType),
       description: "Display Orders",
-      resolve: () => {
-        return Orders.find().fetch();
+      args: {
+        emailID: {type: GraphQLString},
+        orderStatus: {type: GraphQLString}
+      },
+      resolve: (root, args) => {
+        if (args.emailID) {
+          if (args.emailID === "admin") {
+            if (args.orderStatus) {
+              return Orders.find({"workflow.status": args.orderStatus}).fetch();
+            }
+            return Orders.find().fetch();
+          }
+          if (args.orderStatus) {
+            return Orders.find(
+              {"email": args.emailID, "workflow.status": args.orderStatus})
+              .fetch();
+          }
+          return Orders.find({email: args.emailID }).fetch();
+        }
+        return "Hey there! You must pass in a Parameter for this to work";
       }
     }
 
