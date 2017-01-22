@@ -10,6 +10,7 @@
         <span>{{dateFormat createdAt format="MMM D h:mm"}}</span>
       </h3>
     </div>
+
     <div class="panel-body">
 
       <div class="row">
@@ -22,7 +23,11 @@
           {{#if orderStatus}}
               <span data-i18n="order.completed">Completed</span>
           {{else}}
+              {{#if orderCancel}}
+              <span>Canceled</span>
+              {{else}}
               <span data-i18n="order.processing">Processing</span>
+              {{/if}}
           {{/if}}
         </div>
       </div>
@@ -93,7 +98,6 @@
           {{> ordersListItems order=.}}
         </div>
       </div>
-
     </div>
 
     <div class="panel-footer">

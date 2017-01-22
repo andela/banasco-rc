@@ -94,6 +94,9 @@
     <hr>
 
     <div class="flex">
+      {{#if orderCancelled }}
+          <button class="btn btn-danger flex-item-fill" type="button">Cancelled Order</button>
+      {{else}}
 
       {{#if paymentPendingApproval}}
         <button class="btn btn-info btn-block" type="submit" data-event-action="approveInvoice" data-i18n="order.approveInvoice">Approve</button>
@@ -110,7 +113,7 @@
           <button class="btn btn-link flex-item-fill" type="button" data-event-action="makeAdjustments" data-i18n="order.makeAdjustments">Make Adjustments</button>
           <button class="btn btn-success flex-item-fill" type="button" data-event-action="capturePayment" data-i18n="order.capturePayment">Capture Payment</button>
       {{/if}}
-
+      {{/if}}
 
     </div>
 

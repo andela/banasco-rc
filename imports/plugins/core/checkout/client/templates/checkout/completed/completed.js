@@ -10,7 +10,7 @@ import { Template } from "meteor/templating";
  * if order status = new translate submitted message
  */
 Template.cartCompleted.helpers({
-  orderCompleted: function () {
+  orderCompleted() {
     const id =  Reaction.Router.getQueryParam("_id");
     if (id) {
       const ccoSub = Meteor.subscribe("CompletedCartOrder", Meteor.userId(), id);
@@ -20,19 +20,22 @@ Template.cartCompleted.helpers({
     }
     return false;
   },
-  order: function () {
+  order() {
     return Orders.findOne({
       userId: Meteor.userId(),
       cartId: Reaction.Router.getQueryParam("_id")
     });
   },
-  orderStatus: function () {
+  orderStatus() {
     if (this.workflow.status === "new") {
       return i18next.t("cartCompleted.submitted");
     }
+    if (this.workflow.status === "coreOrderWorkflow/canceled") {
+      return i18next.t("cartCompleted.canceled");
+    }
     return this.workflow.status;
   },
-  userOrders: function () {
+  userOrders() {
     if (Meteor.user()) {
       return Orders.find({
         userId: Meteor.userId(),
@@ -49,7 +52,7 @@ Template.cartCompleted.helpers({
  * adds email to order
  */
 Template.cartCompleted.events({
-  "click #update-order": function () {
+  "click #update-order"() {
     const templateInstance = Template.instance();
     const email = templateInstance.find("input[name=email]").value;
     check(email, String);
