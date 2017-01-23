@@ -1,7 +1,8 @@
 <template name="productGrid">
   <div class="container-main">
+    <span data-step="1" style="align:center" data-intro="Welcome to Reaction Commerce" data-position="center"></span>
     <div class="product-grid">
-      <ul class="product-grid-list list-unstyled" id="product-grid-list">
+      <ul class="product-grid-list list-unstyled" id="product-grid-list"  data-step="9" data-intro="{{getTour1.eight}}">
         {{#each products}}
           {{> productGridItems}}
         {{else}}

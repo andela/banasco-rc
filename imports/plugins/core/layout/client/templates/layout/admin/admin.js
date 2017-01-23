@@ -25,16 +25,25 @@ Template.coreAdminLayout.helpers({
 
     const items = [];
 
+    const introMessages = [
+      "You can visit your dashboard, via here, to see all functionality available for your use",
+      "This links you to the orders section; to see the status of your orders",
+      "This links to your accounts section where You can access your account information",
+      "You can add more products by clicking on this link"
+    ];
+
     if (_.isArray(shortcuts)) {
-      for (const shortcut of shortcuts) {
+      for (let item = 0; item < shortcuts.length; item++) {
         items.push({
-          type: "link",
-          href: Reaction.Router.pathFor(shortcut.name),
-          className: Reaction.Router.isActiveClassName(shortcut.name),
-          icon: shortcut.icon,
-          tooltip: shortcut.label || "",
-          i18nKeyTooltip: shortcut.i18nKeyLabel,
-          tooltipPosition: "left middle"
+          "type": "link",
+          "href": Reaction.Router.pathFor(shortcuts[item].name),
+          "className": Reaction.Router.isActiveClassName(shortcuts[item].name),
+          "icon": shortcuts[item].icon,
+          "tooltip": shortcuts[item].label || "",
+          "i18nKeyTooltip": shortcuts[item].i18nKeyLabel,
+          "tooltipPosition": "left middle",
+          "data-step": item + 2,
+          "data-intro": introMessages[item]
         });
       }
     }
@@ -44,10 +53,12 @@ Template.coreAdminLayout.helpers({
     });
 
     items.push({
-      icon: "plus",
-      tooltip: "Create Content",
-      i18nKeyTooltip: "app.createContent",
-      tooltipPosition: "left middle",
+      "icon": "plus",
+      "tooltip": "Create Content",
+      "data-step": 10,
+      "data-intro": introMessages[3],
+      "i18nKeyTooltip": "app.createContent",
+      "tooltipPosition": "left middle",
       onClick(event) {
         if (!instance.dropInstance) {
           instance.dropInstance = new Drop({

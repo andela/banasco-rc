@@ -5,6 +5,7 @@ import { Reaction } from "/client/api";
 import Logger from "/client/modules/logger";
 import { ReactionProduct } from "/lib/api";
 import Sortable from "sortablejs";
+import { Accounts } from "/lib/collections";
 
 /**
  * productGrid helpers
@@ -48,6 +49,13 @@ Template.productGrid.onRendered(function () {
       }
     });
   }
+  // Start Tour for New Users Automatically
+  const currentUser = Accounts.findOne(Meteor.userId());
+  const myIntro = introJs().setOption("showProgress", true).setOption("showStepNumbers", false);
+  if (Meteor.user().emails.length > 0 && !currentUser.takenTour) {
+    myIntro.start();
+    Accounts.update({_id: Meteor.userId()}, {$set: {takenTour: true}});
+  }
 });
 
 Template.productGrid.events({
@@ -87,6 +95,12 @@ Template.productGrid.events({
 });
 
 Template.productGrid.helpers({
+  getTour1() {
+    const steps = {
+      eight: "Click on product to add to cart and order"
+    };
+    return steps;
+  },
   loadMoreProducts() {
     return Template.instance().state.equals("canLoadMoreProducts", true);
   },
