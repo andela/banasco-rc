@@ -1,0 +1,4 @@
+#!/bin/sh
+# start selenium-server-standalone-3
+
+java -jar -Dwebdriver.gecko.driver=./chromedriver selenium-server-standalone-3.0.1.jar

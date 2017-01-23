@@ -4,6 +4,15 @@ import { Session } from "meteor/session";
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 
+Template.loginDropdown.helpers({
+  getTour2() {
+    const steps = {
+      six: "Access Quick Drop-down for Site Shortcuts and Profile"
+    };
+    return steps;
+  }
+});
+
 Template.loginDropdown.events({
 
   /**

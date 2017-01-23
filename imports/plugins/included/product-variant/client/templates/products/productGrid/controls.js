@@ -21,6 +21,13 @@ Template.gridControls.onRendered(function () {
 });
 
 Template.gridControls.helpers({
+  getTour3() {
+    const steps = {
+      eight: "Make your product visible by clicking here",
+      nine: "You can edit your product by clicking here"
+    };
+    return steps;
+  },
   EditButton() {
     const instance = Template.instance();
     const isSelected = instance.state.equals("isSelected", true);

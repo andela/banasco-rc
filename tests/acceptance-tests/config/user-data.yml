@@ -1,8 +1,8 @@
-admin_user: Administrator
-admin_email: testing@reactioncommerce.com
+admin_user: Admin
+admin_email: q5yqoz23@localhost
 admin_pw: password123
 
-guest_email: "guest@reactioncommerce.com"
+guest_email: "buyer1@gmail.com"
 guest_pw: password123
 
 # shop address

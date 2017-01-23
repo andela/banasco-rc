@@ -27,6 +27,14 @@ Template.CoreNavigationBar.events({
 });
 
 Template.CoreNavigationBar.helpers({
+  getTour() {
+    const step1 = {
+      four: "Do a Quick Search",
+      five: "Choose Preferred Language",
+      seven: "See Your Cart Contents"
+    };
+    return step1;
+  },
   IconButtonComponent() {
     return {
       component: FlatButton,
