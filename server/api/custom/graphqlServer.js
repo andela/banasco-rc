@@ -82,54 +82,7 @@ app.get("/api/shops", (request, response) => {
     });
 });
 
-<<<<<<< HEAD
-app.get("/api/ordered_products", (request, response) => {
-  axios.post(`http://${request.headers.host}/graphql`,
-    {query: `
-      {
-        orders {
-          sessionId
-          _id
-          shopId
-          email
-          workflowStatus
-          items {
-            title
-            quantity
-            price
-          }
-          shipped
-          tracking
-          deliveryAddress {
-            fullName
-            country
-            address1
-            address2
-            postal
-            city
-            region
-            phone
-          }
-        }
-      }`
-    },
-    {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-    .then(function (res) {
-      response.json(res.data);
-    })
-    .catch(function (error) {
-      response.send(error);
-    });
-});
-
-app.get("/api/processed_orders/:emailID", (request, response) => {
-=======
 app.get("/api/ordered_products/:emailID", (request, response) => {
->>>>>>> a05138d... feature: create user endpoints
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
@@ -147,7 +100,6 @@ app.get("/api/ordered_products/:emailID", (request, response) => {
           }
           shipped
           tracking
-<<<<<<< HEAD
           deliveryAddress {
             fullName
             country
@@ -158,8 +110,6 @@ app.get("/api/ordered_products/:emailID", (request, response) => {
             region
             phone
           }
-=======
->>>>>>> a05138d... feature: create user endpoints
         }
       }`
     },
@@ -176,13 +126,6 @@ app.get("/api/ordered_products/:emailID", (request, response) => {
     });
 });
 
-<<<<<<< HEAD
-app.get("/api/ordered_products/:emailID", (request, response) => {
-  axios.post(`http://${request.headers.host}/graphql`,
-    {query: `
-      {
-        orders (emailID: ${request.params.emailID}) {
-=======
 app.get("/api/processed_orders/:emailID", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
@@ -192,7 +135,6 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
           orderStatus: "coreOrderWorkflow/completed"
         )
         {
->>>>>>> a05138d... feature: create user endpoints
           orderDate
           sessionId
           _id
@@ -206,8 +148,6 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
           }
           shipped
           tracking
-<<<<<<< HEAD
-=======
           deliveryAddress {
             fullName
             country
@@ -218,7 +158,6 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
             region
             phone
           }
->>>>>>> a05138d... feature: create user endpoints
         }
       }`
     },
@@ -239,14 +178,10 @@ app.get("/api/cancelled_orders/:emailID", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
-<<<<<<< HEAD
-        orders (emailID: ${request.params.emailID}) {
-=======
         orders (emailID: ${request.params.emailID},
         orderStatus: "coreOrderWorkflow/cancelled"
         )
         {
->>>>>>> a05138d... feature: create user endpoints
           orderDate
           sessionId
           _id

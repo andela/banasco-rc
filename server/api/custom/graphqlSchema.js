@@ -99,11 +99,7 @@ const ShippingAddress = new GraphQLObjectType({
     postal: {type: GraphQLString},
     city: {type: GraphQLString},
     region: {type: GraphQLString},
-<<<<<<< HEAD
-    phone: {type: GraphQLString},
-=======
     phone: {type: GraphQLString}
->>>>>>> a05138d... feature: create user endpoints
   })
 });
 
@@ -193,15 +189,6 @@ const query = new GraphQLObjectType({
       type: new GraphQLList(OrdersType),
       description: "Display Orders",
       args: {
-<<<<<<< HEAD
-        emailID: {type: GraphQLString}
-      },
-      resolve: (root, args) => {
-        if (args.emailID) {
-          return Orders.find({email: args.emailID}).fetch();
-        }
-        return Orders.find().fetch();
-=======
         emailID: {type: GraphQLString},
         orderStatus: {type: GraphQLString}
       },
@@ -221,7 +208,6 @@ const query = new GraphQLObjectType({
           return Orders.find({email: args.emailID }).fetch();
         }
         return "Hey there! You must pass in a Parameter for this to work";
->>>>>>> a05138d... feature: create user endpoints
       }
     }
 
