@@ -4,12 +4,9 @@ import {
  GraphQLInt,
  GraphQLString,
  GraphQLList,
- GraphQLNonNull,
- GraphQLID,
- GraphQLBoolean,
- GraphQLFloat
-} from 'graphql';
-import {Products, Orders, Shops, Accounts, Cart, AnalyticsEvents, Assets, Discounts, Emails, Inventory, Packages, Revisions, Shipping, Tags, Templates, Themes, Translations} from "/lib/collections";
+ GraphQLID
+} from "graphql";
+import {Products, Orders, Shops, Accounts} from "/lib/collections";
 
 const ProductsType = new GraphQLObjectType({
   name: "Products",
@@ -21,7 +18,6 @@ const ProductsType = new GraphQLObjectType({
     price: {
       type: GraphQLString,
       resolve: (obj) => {
-        console.log(typeof obj.price, obj.price);
         if (typeof JSON.parse(obj.price) === "object") {
           return obj.price[JSON.parse(range)];
         }
@@ -103,7 +99,11 @@ const ShippingAddress = new GraphQLObjectType({
     postal: {type: GraphQLString},
     city: {type: GraphQLString},
     region: {type: GraphQLString},
+<<<<<<< HEAD
     phone: {type: GraphQLString},
+=======
+    phone: {type: GraphQLString}
+>>>>>>> a05138d... feature: create user endpoints
   })
 });
 
@@ -193,6 +193,7 @@ const query = new GraphQLObjectType({
       type: new GraphQLList(OrdersType),
       description: "Display Orders",
       args: {
+<<<<<<< HEAD
         emailID: {type: GraphQLString}
       },
       resolve: (root, args) => {
@@ -200,6 +201,27 @@ const query = new GraphQLObjectType({
           return Orders.find({email: args.emailID}).fetch();
         }
         return Orders.find().fetch();
+=======
+        emailID: {type: GraphQLString},
+        orderStatus: {type: GraphQLString}
+      },
+      resolve: (root, args) => {
+        if (args.emailID) {
+          if (args.emailID === "admin") {
+            if (args.orderStatus) {
+              return Orders.find({"workflow.status": args.orderStatus}).fetch();
+            }
+            return Orders.find().fetch();
+          }
+          if (args.orderStatus) {
+            return Orders.find(
+              {"email": args.emailID, "workflow.status": args.orderStatus})
+              .fetch();
+          }
+          return Orders.find({email: args.emailID }).fetch();
+        }
+        return "Hey there! You must pass in a Parameter for this to work";
+>>>>>>> a05138d... feature: create user endpoints
       }
     }
 

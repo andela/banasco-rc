@@ -8,9 +8,7 @@ import { Orders, Shops } from "/lib/collections";
  */
 Template.dashboardOrdersList.helpers({
   orderStatus() {
-    if (this.workflow.status === "coreOrderCompleted") {
-      return true;
-    }
+    return (this.workflow.status === "coreOrderCompleted");
   },
   orders(data) {
     if (data.hash.data) {
@@ -32,5 +30,8 @@ Template.dashboardOrdersList.helpers({
   shopName() {
     const shop = Shops.findOne(this.shopId);
     return shop !== null ? shop.name : void 0;
+  },
+  orderCancel() {
+    return (this.workflow.status === "coreOrderWorkflow/canceled");
   }
 });

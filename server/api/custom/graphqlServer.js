@@ -2,7 +2,6 @@ import express from "express";
 import GraphQLHTTP from "express-graphql";
 import schema from "./graphqlSchema";
 import axios from "axios";
-var NpmModuleBcrypt = Package['npm-bcrypt'].NpmModuleBcrypt;
 // const schema = require("./graphqlSchema");
 const app = express();
 const PORT = 8000;
@@ -83,6 +82,7 @@ app.get("/api/shops", (request, response) => {
     });
 });
 
+<<<<<<< HEAD
 app.get("/api/ordered_products", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
@@ -127,6 +127,9 @@ app.get("/api/ordered_products", (request, response) => {
 });
 
 app.get("/api/processed_orders/:emailID", (request, response) => {
+=======
+app.get("/api/ordered_products/:emailID", (request, response) => {
+>>>>>>> a05138d... feature: create user endpoints
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
@@ -144,6 +147,7 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
           }
           shipped
           tracking
+<<<<<<< HEAD
           deliveryAddress {
             fullName
             country
@@ -154,6 +158,8 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
             region
             phone
           }
+=======
+>>>>>>> a05138d... feature: create user endpoints
         }
       }`
     },
@@ -170,11 +176,23 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
     });
 });
 
+<<<<<<< HEAD
 app.get("/api/ordered_products/:emailID", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
         orders (emailID: ${request.params.emailID}) {
+=======
+app.get("/api/processed_orders/:emailID", (request, response) => {
+  axios.post(`http://${request.headers.host}/graphql`,
+    {query: `
+      {
+        orders (
+          emailID: ${request.params.emailID},
+          orderStatus: "coreOrderWorkflow/completed"
+        )
+        {
+>>>>>>> a05138d... feature: create user endpoints
           orderDate
           sessionId
           _id
@@ -188,6 +206,19 @@ app.get("/api/ordered_products/:emailID", (request, response) => {
           }
           shipped
           tracking
+<<<<<<< HEAD
+=======
+          deliveryAddress {
+            fullName
+            country
+            address1
+            address2
+            postal
+            city
+            region
+            phone
+          }
+>>>>>>> a05138d... feature: create user endpoints
         }
       }`
     },
@@ -208,7 +239,14 @@ app.get("/api/cancelled_orders/:emailID", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
+<<<<<<< HEAD
         orders (emailID: ${request.params.emailID}) {
+=======
+        orders (emailID: ${request.params.emailID},
+        orderStatus: "coreOrderWorkflow/cancelled"
+        )
+        {
+>>>>>>> a05138d... feature: create user endpoints
           orderDate
           sessionId
           _id
@@ -249,6 +287,5 @@ app.get("/api/cancelled_orders/:emailID", (request, response) => {
 });
 // app.use()
 app.listen(PORT, () => {
-  console.log("Node/Express server for Flux/GraphQL app. listening on port", PORT);
+  console.log("Node/Express server for GraphQL app. listening on port", PORT);
 });
-
