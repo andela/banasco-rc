@@ -5,7 +5,7 @@ base_url: http://localhost:3000
 browser: chrome
 
 # browserstack additional capabilities
-browser_version: "52.0"
-os: Windows
+browser_version: "55.0.2883.95"
+os: macOS
 os_version: "10"
-resolution: "1920x1080"
+resolution: "1280x800"
