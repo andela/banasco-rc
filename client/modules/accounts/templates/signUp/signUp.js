@@ -1,6 +1,5 @@
 import { LoginFormSharedHelpers } from "/client/modules/accounts/helpers";
 import { Template } from "meteor/templating";
-import { FlowRouter } from "meteor/kadira:flow-router-ssr";
 
 /**
  * onCreated: Login form sign up view
@@ -90,7 +89,8 @@ Template.loginFormSignUpView.events({
         vendorDetails = {
           vendorName: vendorName,
           vendorPhone: vendorPhone,
-          vendorAddr: vendorAddr
+          vendorAddr: vendorAddr,
+          userType: Session.get("isVendor") || Session.get("isBuyer") || "buyer"
         };
       } else {
         vendorDetails = null;
@@ -116,20 +116,22 @@ Template.loginFormSignUpView.events({
     };
 
     Accounts.createUser(newUserData, function (error) {
+      if (Session.get("isVendor")) {
+        Meteor.call("accounts/updateVendorDetails", vendorDetails);
+      }
       if (error) {
         // Show some error message
         templateInstance.formMessages.set({
           alerts: [error]
         });
       } else {
-        // Close dropdown or navigate to page
+         // Close dropdown or navigate to page
       }
     });
   },
 
   "change .form-radio-input": function (event) {
-    // const isVendor = template.$(".form-check-input").prop("checked") ? "vendor" : "buyer";
-    let userType = event.target.value.toString().toLowerCase();
+    const userType = event.target.value.toString().toLowerCase();
 
     if (userType === "vendor") {
       Session.set("isVendor", userType);

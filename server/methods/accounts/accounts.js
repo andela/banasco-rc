@@ -442,5 +442,33 @@ Meteor.methods({
       Logger.error(error);
       return error;
     }
+  },
+
+  /**
+   * accounts/addVendorShop
+   * @param {Object} - shopInfo
+   * @return {Object} with keys `numberAffected` and `insertedId` if doc was
+   * inserted
+   */
+  "accounts/addVendorShop": function (shopInfo) {
+    check(shopInfo, Schemas.Vendor);
+    console.log("Vendor Info to update" + shopInfo);
+    console.log("Check Data with schema" +  check(shopInfo, Schemas.Vendor));
+    userDetails = Meteor.users.findOne({_id: Meteor.userId()});
+    rolesKey = Object.keys(userDetails.roles);
+    userDetails.roles[rolesKey[0]].push(
+        "dashboard",
+        "createProduct",
+        "reaction-dashboard",
+        "reaction-orders",
+        "orders",
+        "dashboard/orders"
+    );
+    Meteor.users.update({_id: Meteor.userId()}, {$set: {roles: userDetails.roles}});
+    return Collections.Shops.insert({
+      name: shopInfo.vendorName,
+      vendorID: Meteor.userId(),
+      shopDetails: shopInfo
+    });
   }
 });

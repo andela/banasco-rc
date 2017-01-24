@@ -36,15 +36,15 @@
       </div>
     </div>
 
-    {{if getUserType}}
+    {{#if equals getUserType 'vendor'}}
     <div class="flex-item">
       <div class="panel panel-default panel-address-book">
         <div class="panel-heading">
           <h2 class="panel-title" data-i18n="accountsUI.shopDetailsForm">Vendor Details</h2>
         </div>
-      <div class="panel-content">
-         {{> vendorDetails}}
-      </div>
+        <div class="panel-content">
+          {{> vendorDetails}}
+        </div>
       </div>
     </div>
     {{/if}}

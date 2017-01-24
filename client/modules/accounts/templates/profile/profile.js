@@ -66,16 +66,12 @@ Template.accountProfile.helpers({
     return "addressBookAdd";
   },
   getUserType() {
-    const userType = Collections.Accounts.findOne({
+    let user = Collections.Accounts.findOne({
       userId: Meteor.userId()
     });
-    console.log(userType);
-    return {
-      userType
-    }
+    return user.userType;
   }
 });
-
-// Template.accountProfile.registerHelper("userType", (a, b) => {
-//   return a === b;
-// });
+Template.registerHelper('equals', function (key, value) {
+  return key === value;
+});
