@@ -1,3 +1,4 @@
+import { LoginFormSharedHelpers } from "/client/modules/accounts/helpers";
 import { Session } from "meteor/session";
 import { Meteor } from "meteor/meteor";
 import { Countries } from "/client/collections";
@@ -13,5 +14,5 @@ Template.vendorDetails.helpers({
     return {
       vendorDetails: findVendor.profile.vendorDetails
     };
-  }
+  },
 });

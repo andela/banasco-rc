@@ -65,8 +65,17 @@ Template.accountProfile.helpers({
     }
     return "addressBookAdd";
   },
-
-  isVendor() {
-    return Session.get("isVendor");
+  getUserType() {
+    const userType = Collections.Accounts.findOne({
+      userId: Meteor.userId()
+    });
+    console.log(userType);
+    return {
+      userType
+    }
   }
 });
+
+// Template.accountProfile.registerHelper("userType", (a, b) => {
+//   return a === b;
+// });

@@ -36,6 +36,7 @@
       </div>
     </div>
 
+    {{if getUserType}}
     <div class="flex-item">
       <div class="panel panel-default panel-address-book">
         <div class="panel-heading">
@@ -46,6 +47,8 @@
       </div>
       </div>
     </div>
+    {{/if}}
+
     <div class="flex-item">
       {{> addressBookPanel}}
     </div>

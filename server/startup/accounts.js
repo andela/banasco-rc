@@ -80,6 +80,7 @@ export default function () {
   Accounts.onCreateUser((options, user) => {
     console.log("The user object returnd: ", user, "\n");
     console.log("Here are the options: ", options);
+    // console.log(Session.get('isVendor'));
     const shop = Reaction.getCurrentShop();
     const shopId = shop._id;
     const defaultVisitorRole =  ["anonymous", "guest", "product", "tag", "index", "cart/checkout", "cart/completed"];
@@ -108,7 +109,7 @@ export default function () {
       if (!user.services) {
         roles[shopId] = shop.defaultVisitorRole || defaultVisitorRole;
       } else {
-        roles[shopId] = shop.defaultRoles.concat(vendorRoles) || defaultRoles;
+        roles[shopId] = shop.defaultRoles || defaultRoles;
         // also add services with email defined to user.emails[]
         for (const service in user.services) {
           if (user.services[service].email) {
@@ -146,6 +147,14 @@ export default function () {
       // (default admins already get a verification email)
       if (!(Meteor.users.find().count() === 0)) {
         Meteor.call("accounts/sendWelcomeEmail", shopId, user._id);
+      }
+
+      // assign vendor roles
+      if (options.profile && options.userType === "vendor") {
+        user.userType = options.userType || "vendor";
+        roles[shopId] = defaultRoles.concat(vendorRoles);
+      } else {
+        user.userType = options.userType || "buyer";
       }
 
       // assign default user roles

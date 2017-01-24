@@ -52,9 +52,9 @@
     <!-- <div class="form-group"> -->
       <label class="control-label"></label>
       <div class="checkbox">
-        <label for="isVendor-{{uniqueId}}">
-          <input type="checkbox" id="isVendor" class="form-check-input" name="isVendor" data-schema-key="isVendor"> Register me as a Seller!
-        </label>
+          <div>Register me as a</div>
+          <label class="radio-inline"><input class="form-radio-input" id="isBuyer" type="radio" name="optradio" value="buyer" checked="checked">Buyer</label>
+          <label class="radio-inline"><input class="form-radio-input" id="isVendor" type="radio" name="optradio" value="vendor">Vendor</label>
       </div>
     <!-- </div> -->
     <!-- end checkbox -->
@@ -89,6 +89,8 @@
           </span>
         {{/if}}
       </div>
+    {{else}}
+      <!--  -->
     {{/if}}
 
     <div class="form-group">
