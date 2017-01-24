@@ -5,7 +5,7 @@ import { Blaze } from "meteor/blaze";
 import { AutoForm } from "meteor/aldeed:autoform";
 import { Reaction, i18next } from "/client/api";
 import { Packages, Shipping } from "/lib/collections";
-
+import { Logger } from "/client/api";
 /*
  * Template shipping Helpers
  */
@@ -50,7 +50,7 @@ Template.shippingProviderTable.onCreated(function () {
     this.subscribe("Shipping");
   });
 });
-
+Logger.info("Shipping Configuration Started");
 Template.shippingProviderTable.helpers({
   shipping() {
     const instance = Template.instance();
