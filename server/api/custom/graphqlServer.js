@@ -2,7 +2,7 @@ import express from "express";
 import GraphQLHTTP from "express-graphql";
 import schema from "./graphqlSchema";
 import axios from "axios";
-// const schema = require("./graphqlSchema");
+
 const app = express();
 const PORT = 8000;
 app.use("/graphql", GraphQLHTTP({
@@ -12,7 +12,7 @@ app.use("/graphql", GraphQLHTTP({
 })
 );
 
-app.get("/api/products", Meteor.bindEnvironment((request, response) => {
+app.get("/api/products", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
     {query: "{ products {title _id vendor price inventoryQuantity}}"},
     {
@@ -26,7 +26,7 @@ app.get("/api/products", Meteor.bindEnvironment((request, response) => {
     .catch(function (error) {
       response.send(error);
     });
-}));
+});
 
 app.get("/api/users", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
@@ -40,7 +40,6 @@ app.get("/api/users", (request, response) => {
           verified
           createdAt
         }
-
       }`
     },
     {
@@ -66,7 +65,6 @@ app.get("/api/shops", (request, response) => {
           emails
           lastUpdated
         }
-
       }`
     },
     {
