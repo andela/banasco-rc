@@ -18,9 +18,10 @@ Meteor.publish("Orders", function () {
       shopId: shopId
     });
   }
+
   return Orders.find({
     shopId: shopId,
-    userId: this.userId
+    items: {$elemMatch: {vendorId: this.userId}}
   });
 });
 
