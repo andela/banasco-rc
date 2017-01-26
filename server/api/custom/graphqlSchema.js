@@ -1,20 +1,20 @@
 import {
- GraphQLSchema,
- GraphQLObjectType,
- GraphQLInt,
- GraphQLString,
- GraphQLList,
- GraphQLID
+  GraphQLSchema,
+  GraphQLObjectType,
+  GraphQLInt,
+  GraphQLString,
+  GraphQLList,
+  GraphQLID
 } from "graphql";
-import {Products, Orders, Shops, Accounts} from "/lib/collections";
+import { Products, Orders, Shops, Accounts } from "/lib/collections";
 
 const ProductsType = new GraphQLObjectType({
   name: "Products",
   description: "Returns select fields for all Products",
   fields: () => ({
-    title: {type: GraphQLString},
-    _id: {type: GraphQLString},
-    vendor: {type: GraphQLString},
+    title: { type: GraphQLString },
+    _id: { type: GraphQLString },
+    vendor: { type: GraphQLString },
     price: {
       type: GraphQLString,
       resolve: (obj) => {
@@ -24,7 +24,7 @@ const ProductsType = new GraphQLObjectType({
         return obj.price;
       }
     },
-    inventoryQuantity: {type: GraphQLInt}
+    inventoryQuantity: { type: GraphQLInt }
   })
 });
 
@@ -32,8 +32,8 @@ const UsersType = new GraphQLObjectType({
   name: "Users",
   description: "Returns select fields for all Users",
   fields: () => ({
-    id: {type: GraphQLString},
-    createdAt: {type: GraphQLString},
+    id: { type: GraphQLString },
+    createdAt: { type: GraphQLString },
     emails: {
       type: GraphQLString,
       resolve: (obj) => {
@@ -61,8 +61,8 @@ const UsersType = new GraphQLObjectType({
         return "No Name Supplied";
       }
     },
-    userId: {type: GraphQLString},
-    shopId: {type: GraphQLString}
+    userId: { type: GraphQLString },
+    shopId: { type: GraphQLString }
   })
 });
 
@@ -71,8 +71,8 @@ const ShopsType = new GraphQLObjectType({
   name: "Shops",
   description: "Returns Array of Shops",
   fields: () => ({
-    name: {type: GraphQLString},
-    _id: {type: GraphQLID},
+    name: { type: GraphQLString },
+    _id: { type: GraphQLID },
     emails: {
       type: GraphQLString,
       resolve: (obj) => {
@@ -92,14 +92,14 @@ const ShippingAddress = new GraphQLObjectType({
   name: "ShippingAddress",
   description: "Lists the Delivery Address",
   fields: () => ({
-    fullName: {type: GraphQLString},
-    country: {type: GraphQLString},
-    address1: {type: GraphQLString},
-    address2: {type: GraphQLString},
-    postal: {type: GraphQLString},
-    city: {type: GraphQLString},
-    region: {type: GraphQLString},
-    phone: {type: GraphQLString}
+    fullName: { type: GraphQLString },
+    country: { type: GraphQLString },
+    address1: { type: GraphQLString },
+    address2: { type: GraphQLString },
+    postal: { type: GraphQLString },
+    city: { type: GraphQLString },
+    region: { type: GraphQLString },
+    phone: { type: GraphQLString }
   })
 });
 
@@ -107,8 +107,8 @@ const OrderItems = new GraphQLObjectType({
   name: "OrderItems",
   description: "Lists the Details of Products Ordered",
   fields: () => ({
-    title: {type: GraphQLString},
-    quantity: {type: GraphQLString},
+    title: { type: GraphQLString },
+    quantity: { type: GraphQLString },
     price: {
       type: GraphQLString,
       resolve: (obj) => {
@@ -122,28 +122,29 @@ const OrdersType = new GraphQLObjectType({
   name: "Orders",
   description: "Returns Array of Specified Orders",
   fields: () => ({
-    sessionId: {type: GraphQLString},
-    _id: {type: GraphQLID},
-    shopId: {type: GraphQLString},
+    sessionId: { type: GraphQLString },
+    _id: { type: GraphQLID },
+    shopId: { type: GraphQLString },
     workflowStatus: {
       type: GraphQLString,
       resolve: (obj) => {
         return obj.workflow.status;
       }
     },
-    items: {type: new GraphQLList(OrderItems)},
+    items: { type: new GraphQLList(OrderItems) },
     shipped: {
       type: GraphQLString,
       resolve: (obj) => {
         return obj.shipping[0].shipped;
       }
     },
-    tracking: {type: GraphQLString,
+    tracking: {
+      type: GraphQLString,
       resolve: (obj) => {
         return obj.shipping[0].tracking;
       }
     },
-    email: {type: GraphQLString},
+    email: { type: GraphQLString },
     orderDate: {
       type: GraphQLString,
       resolve: (obj) => {
@@ -158,7 +159,6 @@ const OrdersType = new GraphQLObjectType({
     }
   })
 });
-
 
 const query = new GraphQLObjectType({
   name: "Query",
@@ -189,22 +189,22 @@ const query = new GraphQLObjectType({
       type: new GraphQLList(OrdersType),
       description: "Display Orders",
       args: {
-        emailID: {type: GraphQLString},
-        orderStatus: {type: GraphQLString}
+        emailID: { type: GraphQLString },
+        orderStatus: { type: GraphQLString }
       },
       resolve: (root, args) => {
         if (!args.emailID) {
           return "Hey there! You must pass in a Parameter for this to work";
         } else if (args.emailID === "admin" && args.orderStatus) {
-          return Orders.find({"workflow.status": args.orderStatus}).fetch();
+          return Orders.find({ "workflow.status": args.orderStatus }).fetch();
         } else if (args.emailID === "admin") {
           return Orders.find().fetch();
         } else if (args.orderStatus) {
           return Orders.find(
-            {"email": args.emailID, "workflow.status": args.orderStatus})
-              .fetch();
+            { "email": args.emailID, "workflow.status": args.orderStatus })
+            .fetch();
         }
-        return Orders.find({email: args.emailID}).fetch();
+        return Orders.find({ email: args.emailID }).fetch();
       }
     }
   })

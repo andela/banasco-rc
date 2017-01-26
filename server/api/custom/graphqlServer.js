@@ -9,22 +9,21 @@ app.use("/graphql", GraphQLHTTP({
   schema,
   graphiql: true,
   pretty: true
-})
-);
+}));
 
 app.get("/api/products", (request, response) => {
   axios.post(`http://${request.headers.host}/graphql`,
-    {query: "{ products {title _id vendor price inventoryQuantity}}"},
+    {query: "{products {title _id vendor price inventoryQuantity}}"},
     {
       headers: {
         "Content-Type": "application/json"
       }
     })
     .then((res) => {
-      response.json(res.data);
+      response.status(200).json(res.data);
     })
     .catch((error) => {
-      response.send(error);
+      response.status(400).send(error);
     });
 });
 
@@ -48,10 +47,10 @@ app.get("/api/users", (request, response) => {
       }
     })
     .then((res) => {
-      response.json(res.data);
+      response.status(200).json(res.data);
     })
     .catch((error) => {
-      response.send(error);
+      response.status(400).send(error);
     });
 });
 
@@ -73,10 +72,10 @@ app.get("/api/shops", (request, response) => {
       }
     })
     .then((res) => {
-      response.json(res.data);
+      response.status(200).json(res.data);
     })
     .catch((error) => {
-      response.send(error);
+      response.status(400).send(error);
     });
 });
 
@@ -119,12 +118,12 @@ app.get("/api/ordered_products/:emailID", (request, response) => {
     })
     .then((res) => {
       if (res.data.data.orders.length) {
-        response.json(res.data);
+        response.status(200).json(res.data);
       }
       response.status(404).send("No Data Found for Orders");
     })
     .catch((error) => {
-      response.send(error);
+      response.status(400).send(error);
     });
 });
 
@@ -171,12 +170,12 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
     })
     .then((res) => {
       if (res.data.data.orders.length) {
-        response.json(res.data);
+        response.status(200).json(res.data);
       }
       response.status(404).send("No Data Found for Orders");
     })
     .catch((error) => {
-      response.send(error);
+      response.status(400).send(error);
     });
 });
 
@@ -222,12 +221,12 @@ app.get("/api/cancelled_orders/:emailID", (request, response) => {
     })
     .then((res) => {
       if (res.data.data.orders.length) {
-        response.json(res.data);
+        response.status(200).json(res.data);
       }
       response.status(404).send("No Data Found for Orders");
     })
     .catch((error) => {
-      response.send(error);
+      response.status(400).send(error);
     });
 });
 // app.use()
