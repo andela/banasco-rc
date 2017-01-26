@@ -35,7 +35,6 @@ Template.coreOrderWorkflow.helpers({
    */
   order() {
     const id = Reaction.Router.getQueryParam("_id");
-    console.log("id check:" + id);
     if (id) {
       return Orders.findOne(id);
     }

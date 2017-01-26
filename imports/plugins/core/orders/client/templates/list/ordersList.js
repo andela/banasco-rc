@@ -11,7 +11,6 @@ Template.dashboardOrdersList.helpers({
     return (this.workflow.status === "coreOrderCompleted");
   },
   orders(data) {
-    console.log("Orders Data", data);
     if (data.hash.data) {
       return data.hash.data;
     }

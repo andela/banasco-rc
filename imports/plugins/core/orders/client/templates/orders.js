@@ -102,7 +102,7 @@ Template.orders.onCreated(function () {
   // Watch for updates to shop collection
   this.autorun(() => {
     const shop = Shops.findOne({});
-    console.log('Shop ID', shop._id);
+
     // Update currency information, this is passed to child components containing
     // Numeric inputs
     this.state.set("currency", shop.currencies[shop.currency]);

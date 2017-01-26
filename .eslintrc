@@ -227,8 +227,5 @@
     "space-infix-ops": 2, // http://eslint.org/docs/rules/space-infix-ops
     "space-in-parens": [2, "never"], // http://eslint.org/docs/rules/space-in-parens
     "spaced-comment": [2, "always"] // http://eslint.org/docs/rules/spaced-comment
-  },
-    "globals": {
-        "Meteor": true
   }
 }

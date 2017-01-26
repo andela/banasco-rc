@@ -1,17 +1,18 @@
 <template name="vendorDetails">
     <div class="form-group form-group-vendorName">
       <label for="vendorName">Vendor name</label>
-      <input class="form-control" id="disabledInput" type="text" disabled
+      <input class="form-control vendor-name" id="disabledInput" type="text" disabled
       value={{getVendorDetails.vendorDetails.vendorName}}>
     </div>
     <div class="form-group form-group-vendorPhone">
       <label for="vendorPhone">Phone</label>
-      <input class="form-control" id="focusedInput" type="text"
-      value={{getVendorDetails.vendorDetails.vendorPhone}}>
+      <input id="focusedInput" class="form-control vendor-phone" type="text" value={{getVendorDetails.vendorDetails.vendorPhone}}>
     </div>
     <div class="form-group form-group-vendorAddr">
-      <label for="vendorPhone">Address</label>
-      <input class="form-control" id="focusedInput" type="text"
-      value={{getVendorDetails.vendorDetails.vendorAddr}}>
+      <label for="vendorAddr">Address</label>
+      <input id="focusedInput" class="form-control vendor-addr" type="text" value={{getVendorDetails.vendorDetails.vendorAddr}}>
+    </div>
+    <div class="row text-right">
+      <button type="submit" class="btn btn-primary" data-i18n="app.saveAndContinue" data-event-action="updateVendorDetails">Save and continue</button>
     </div>
 </template>
