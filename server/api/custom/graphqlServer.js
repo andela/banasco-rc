@@ -81,10 +81,11 @@ app.get("/api/shops", (request, response) => {
 });
 
 app.get("/api/ordered_products/:emailID", (request, response) => {
+  const emailID = request.params.emailID.replace(/"/g, "");
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
-        orders (emailID: ${request.params.emailID}) {
+        orders (emailID: "${emailID}") {
           orderDate
           sessionId
           _id
@@ -117,7 +118,10 @@ app.get("/api/ordered_products/:emailID", (request, response) => {
       }
     })
     .then((res) => {
-      response.json(res.data);
+      if (res.data.data.orders.length) {
+        response.json(res.data);
+      }
+      response.status(404).send("No Data Found for Orders");
     })
     .catch((error) => {
       response.send(error);
@@ -125,11 +129,12 @@ app.get("/api/ordered_products/:emailID", (request, response) => {
 });
 
 app.get("/api/processed_orders/:emailID", (request, response) => {
+  const emailID = request.params.emailID.replace(/"/g, "");
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
         orders (
-          emailID: ${request.params.emailID},
+          emailID: "${emailID}",
           orderStatus: "coreOrderWorkflow/completed"
         )
         {
@@ -165,7 +170,10 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
       }
     })
     .then((res) => {
-      response.json(res.data);
+      if (res.data.data.orders.length) {
+        response.json(res.data);
+      }
+      response.status(404).send("No Data Found for Orders");
     })
     .catch((error) => {
       response.send(error);
@@ -173,11 +181,12 @@ app.get("/api/processed_orders/:emailID", (request, response) => {
 });
 
 app.get("/api/cancelled_orders/:emailID", (request, response) => {
+  const emailID = request.params.emailID.replace(/"/g, "");
   axios.post(`http://${request.headers.host}/graphql`,
     {query: `
       {
-        orders (emailID: ${request.params.emailID},
-        orderStatus: "coreOrderWorkflow/cancelled"
+        orders (emailID: "${emailID}",
+        orderStatus: "coreOrderWorkflow/canceled"
         )
         {
           orderDate
@@ -212,7 +221,10 @@ app.get("/api/cancelled_orders/:emailID", (request, response) => {
       }
     })
     .then((res) => {
-      response.json(res.data);
+      if (res.data.data.orders.length) {
+        response.json(res.data);
+      }
+      response.status(404).send("No Data Found for Orders");
     })
     .catch((error) => {
       response.send(error);
