@@ -197,7 +197,7 @@ Meteor.methods({
    * users
    * @return {Number|Object} The number of removed documents or error object
    */
-  "accounts/addressBookRemove": function (addressId, accountUserId) {
+  "accounts/addressBookRemove": function (addressId, accountUserId)  {
     check(addressId, String);
     check(accountUserId, Match.Optional(String));
     // security, check for admin access. We don't need to check every user call
@@ -333,7 +333,7 @@ Meteor.methods({
    * @param {String} userId - new userId to welcome
    * @returns {Boolean} returns boolean
    */
-  "accounts/sendWelcomeEmail": function (shopId, userId) {
+  "accounts/sendWelcomeEmail": function (shopId, userId)  {
     check(shopId, String);
     check(userId, String);
 
@@ -404,7 +404,7 @@ Meteor.methods({
   /*
    * accounts/removeUserPermissions
    */
-  "accounts/removeUserPermissions": function (userId, permissions, group) {
+  "accounts/removeUserPermissions": (userId, permissions, group) => {
     if (!Reaction.hasPermission("reaction-accounts", Meteor.userId(), group)) {
       throw new Meteor.Error(403, "Access denied");
     }
@@ -428,7 +428,7 @@ Meteor.methods({
    * @param {String} group - group
    * @returns {Boolean} returns Roles.setUserRoles result
    */
-  "accounts/setUserPermissions": function (userId, permissions, group) {
+  "accounts/setUserPermissions": (userId, permissions, group) => {
     if (!Reaction.hasPermission("reaction-accounts", Meteor.userId(), group)) {
       throw new Meteor.Error(403, "Access denied");
     }
@@ -445,16 +445,16 @@ Meteor.methods({
   },
 
   /**
-   * accounts/addVendorShop
-   * @param {Object} - shopInfo
+   * accounts/updateVendorDetails
+   * @param {String} vendorDetails - vendor details
    * @return {Object} with keys `numberAffected` and `insertedId` if doc was
    * inserted
    */
-  "accounts/addVendorShop": function (shopInfo) {
-    check(shopInfo, Schemas.Vendor);
-    console.log("Vendor Info to update" + shopInfo);
-    console.log("Check Data with schema" +  check(shopInfo, Schemas.Vendor));
-    userDetails = Meteor.users.findOne({_id: Meteor.userId()});
+  "accounts/updateVendorDetails": function (vendorDetails) {
+    check(vendorDetails, Schemas.Vendor);
+
+    const userId = Meteor.userId();
+    userDetails = Meteor.users.findOne({_id: userId});
     rolesKey = Object.keys(userDetails.roles);
     userDetails.roles[rolesKey[0]].push(
         "dashboard",
@@ -462,13 +462,29 @@ Meteor.methods({
         "reaction-dashboard",
         "reaction-orders",
         "orders",
-        "dashboard/orders"
+        "dashboard/orders",
     );
-    Meteor.users.update({_id: Meteor.userId()}, {$set: {roles: userDetails.roles}});
+
+    Meteor.users.update({_id: userId}, {$set: {roles: userDetails.roles}});
+
+    Collections.Accounts.update(
+      { _id: userId },
+      { $set: {
+        profile: {
+          vendorDetails: {
+            vendorName: vendorDetails.vendorName,
+            vendorPhone: vendorDetails.vendorPhone,
+            vendorAddr: vendorDetails.vendorAddr
+          }
+        }
+      }
+      }
+    );
+
     return Collections.Shops.insert({
-      name: shopInfo.vendorName,
-      vendorID: Meteor.userId(),
-      shopDetails: shopInfo
+      name: vendorDetails.vendorName,
+      vendorId: userId,
+      shopDetails: vendorDetails
     });
   }
 });

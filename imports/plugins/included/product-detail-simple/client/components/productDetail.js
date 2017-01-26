@@ -134,7 +134,6 @@ class ProductDetail extends Component {
                 </div>
               </div>
 
-
               <div className="vendor">
                 <ProductField
                   editable={this.editable}
@@ -148,6 +147,7 @@ class ProductDetail extends Component {
                   }}
                 />
               </div>
+
 
               <div className="pdp product-info">
                 <ProductField

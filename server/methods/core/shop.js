@@ -686,5 +686,18 @@ Meteor.methods({
     return Collections.Shops.update(shopId, {
       $set: {layout: shop.layout}
     });
+  },
+
+  /*
+  * shop/getVendorId
+  * @return {String} vendorId - the vendor's ID
+  */
+  "shop/getVendorId": function () {
+    const vendorCheck = Collections.Accounts.findOne({"_id": Meteor.userId(), "profile.vendorDetails.userType": "vendor"});
+   // if (vendorCheck) {
+      return true;
+   /* } else {
+      return false;
+    }*/
   }
 });

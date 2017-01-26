@@ -2,6 +2,7 @@ import React, { Children, Component, PropTypes } from "react";
 import { Reaction } from "/client/api";
 import { EditButton, VisibilityButton, Translation } from "/imports/plugins/core/ui/client/components";
 import { composeWithTracker } from "react-komposer";
+import * as Collections from "/lib/collections";
 
 class EditContainer extends Component {
 
@@ -147,6 +148,7 @@ class EditContainer extends Component {
 EditContainer.propTypes = {
   autoHideEditButton: PropTypes.bool,
   children: PropTypes.node,
+  product: PropTypes.object,
   data: PropTypes.object,
   field: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   hasPermission: PropTypes.bool,
@@ -156,13 +158,18 @@ EditContainer.propTypes = {
 };
 
 function composer(props, onData) {
+  const productId = Reaction.Router.getParam("handle");
   let hasPermission;
   const viewAs = Reaction.Router.getQueryParam("as");
-
   if (props.disabled === true || viewAs === "customer") {
     hasPermission = false;
   } else {
-    hasPermission = Reaction.hasPermission(props.premissions);
+    const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
+    if (check) {
+      hasPermission = true;
+    } else {
+      hasPermission = Reaction.hasPermission(props.premissions);
+    }
   }
 
   onData(null, {

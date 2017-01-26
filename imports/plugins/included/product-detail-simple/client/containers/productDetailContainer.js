@@ -9,6 +9,8 @@ import { ProductDetail } from "../components";
 import { SocialContainer, VariantListContainer } from "./";
 import { MediaGalleryContainer } from "/imports/plugins/core/ui/client/containers";
 import { DragDropProvider, TranslationProvider } from "/imports/plugins/core/ui/client/providers";
+import * as Collections from "/lib/collections";
+
 
 class ProductDetailContainer extends Component {
   constructor(props) {
@@ -155,7 +157,7 @@ class ProductDetailContainer extends Component {
             onCartQuantityChange={this.handleCartQuantityChange}
             onViewContextChange={this.handleViewContextChange}
             socialComponent={<SocialContainer />}
-            topVariantComponent={<VariantListContainer />}
+            topVariantComponent={<VariantListContainer product={this.props.product} />}
             onDeleteProduct={this.handleDeleteProduct}
             onProductFieldChange={this.handleProductFieldChange}
             {...this.props}
@@ -177,6 +179,7 @@ function composer(props, onData) {
   const variantId = Reaction.Router.getParam("variantId");
   const revisionType = Reaction.Router.getQueryParam("revision");
   const viewProductAs = Reaction.Router.getQueryParam("as");
+
 
   let productSub;
 
@@ -241,8 +244,15 @@ function composer(props, onData) {
       if (viewProductAs === "customer") {
         editable = false;
       } else {
-        editable = Reaction.hasPermission(["createProduct"]);
+        const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
+        if (check) {
+          editable = true;
+        } else {
+          editable = false;
+        //editable = Reaction.hasPermission(["createProduct"]);
+        }
       }
+
 
       onData(null, {
         product: productRevision || product,
@@ -251,7 +261,7 @@ function composer(props, onData) {
         media: mediaArray,
         editable,
         viewAs: viewProductAs,
-        hasAdminPermission: Reaction.hasPermission(["createProduct"])
+        hasAdminPermission: true
       });
     }
   }
