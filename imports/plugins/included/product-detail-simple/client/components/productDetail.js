@@ -18,6 +18,7 @@ import { AlertContainer } from "/imports/plugins/core/ui/client/containers";
 import { PublishContainer } from "/imports/plugins/core/revisions";
 
 class ProductDetail extends Component {
+
   get tags() {
     return this.props.tags || [];
   }
@@ -42,6 +43,15 @@ class ProductDetail extends Component {
     }
   }
 
+  renderVendorEdit() {
+    if (this.props.vendorName !== "Unauthorised Vendor") {
+      return (
+            this.props.vendorName
+      );
+    }
+  }
+
+
   renderToolbar() {
     if (this.props.hasAdminPermission) {
       return (
@@ -55,8 +65,8 @@ class ProductDetail extends Component {
               onChange={this.props.onViewContextChange}
               value={this.props.viewAs}
             >
-              <MenuItem label="Administrator" value="administrator" />
-              <MenuItem label="Customer" value="customer" />
+            <MenuItem label="Administrator" value="administrator" />
+            <MenuItem label="Customer" value="customer" />
             </DropDownMenu>
           </ToolbarGroup>
           <ToolbarGroup lastChild={true}>
@@ -134,20 +144,9 @@ class ProductDetail extends Component {
                 </div>
               </div>
 
-              <div className="vendor">
-                <ProductField
-                  editable={this.editable}
-                  fieldName="vendor"
-                  fieldTitle="Vendor"
-                  onProductFieldChange={this.props.onProductFieldChange}
-                  product={this.product}
-                  textFieldProps={{
-                    i18nKeyPlaceholder: "productDetailEdit.vendor",
-                    placeholder: "Vendor"
-                  }}
-                />
-              </div>
-
+            <div className="vendor">
+                {this.renderVendorEdit()}
+           </div>
 
               <div className="pdp product-info">
                 <ProductField
@@ -192,6 +191,7 @@ ProductDetail.propTypes = {
   onAddToCart: PropTypes.func,
   onCartQuantityChange: PropTypes.func,
   onDeleteProduct: PropTypes.func,
+  vendorName: PropTypes.string,
   onProductFieldChange: PropTypes.func,
   onViewContextChange: PropTypes.func,
   priceRange: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),

@@ -692,12 +692,12 @@ Meteor.methods({
   * shop/getVendorId
   * @return {String} vendorId - the vendor's ID
   */
-  "shop/getVendorId": function () {
-    const vendorCheck = Collections.Accounts.findOne({"_id": Meteor.userId(), "profile.vendorDetails.userType": "vendor"});
-   // if (vendorCheck) {
-      return true;
-   /* } else {
-      return false;
-    }*/
+  "shop/getVendorName": function () {
+    const vendorCheck = Collections.Accounts.findOne(Meteor.userId());
+    const productsCheck = Collections.Products.find({vendorId: Meteor.userId()});
+    console.log("vendorCheck", productsCheck);
+    const vendorName= vendorCheck.profile.vendorDetails.vendorName;
+    console.log("Vendorname", vendorName);
+    return vendorName;
   }
 });

@@ -6,7 +6,8 @@ import { Reaction, i18next, Logger } from "/client/api";
 import { Tags, Media } from "/lib/collections";
 import { Loading } from "/imports/plugins/core/ui/client/components";
 import { ProductDetail } from "../components";
-import { SocialContainer, VariantListContainer } from "./";
+import { SocialContainer, VariantListContainer} from "./";
+import  ProductField from "./";
 import { MediaGalleryContainer } from "/imports/plugins/core/ui/client/containers";
 import { DragDropProvider, TranslationProvider } from "/imports/plugins/core/ui/client/providers";
 import * as Collections from "/lib/collections";
@@ -17,9 +18,15 @@ class ProductDetailContainer extends Component {
     super(props);
 
     this.state = {
-      cartQuantity: 1
+      cartQuantity: 1,
+      vendorName: ""
     };
   }
+
+  componentWillMount() {
+    this.renderVendorDetails();
+  }
+
 
   handleCartQuantityChange = (event, quantity) => {
     this.setState({
@@ -146,12 +153,27 @@ class ProductDetailContainer extends Component {
     ReactionProduct.maybeDeleteProduct(this.props.product);
   }
 
+  renderVendorDetails() {
+    const productId = Reaction.Router.getParam("handle");
+    const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
+    if (check) {
+      Meteor.call("shop/getVendorName", (err, res) => {
+        if (res) {
+          this.setState({vendorName: res});
+        }
+      });
+    } else {
+      return this.setState({vendorName: "Unauthorised Vendor"});
+    }
+  }
+
   render() {
     return (
       <TranslationProvider>
         <DragDropProvider>
           <ProductDetail
             cartQuantity={this.state.cartQuantity}
+            vendorName = {this.state.vendorName}
             mediaGalleryComponent={<MediaGalleryContainer media={this.props.media} />}
             onAddToCart={this.handleAddToCart}
             onCartQuantityChange={this.handleCartQuantityChange}
@@ -249,10 +271,8 @@ function composer(props, onData) {
           editable = true;
         } else {
           editable = false;
-        //editable = Reaction.hasPermission(["createProduct"]);
         }
       }
-
 
       onData(null, {
         product: productRevision || product,
