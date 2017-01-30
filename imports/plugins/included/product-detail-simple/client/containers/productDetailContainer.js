@@ -157,16 +157,18 @@ class ProductDetailContainer extends Component {
 //Todo: autoupdates of vendor names for admin view, search entire product collections.
   renderVendorDetails = () => {
     const productId = Reaction.Router.getParam("handle");
-    fieldName = "vendor";
-    const check = Collections.Products.findOne({_id: productId});
+    const fieldName = "vendor";
     const vendorCheck = Collections.Accounts.findOne({_id: Meteor.userId()});
     const vendorName = vendorCheck.profile.vendorDetails.vendorName;
+    const dbVendorName = Collections.Products.findOne({_id: productId});
 
     if (vendorName) {
       Meteor.call("products/updateProductField", productId, fieldName, vendorName);
-      this.setState({vendorName: vendorName});
+    }
+    if (dbVendorName) {
+      this.setState({vendorName: dbVendorName.vendor});
     } else {
-      this.setState({vendorName: "admin"});
+      this.setState({vendorName: "Reaction"});
     }
   }
 
@@ -271,6 +273,7 @@ function composer(props, onData) {
       } else {
         editable = true;
         const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
+        console.log(check,"vendor")
         if (check) {
           editable = true;
         } else {

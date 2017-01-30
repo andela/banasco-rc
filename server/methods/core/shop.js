@@ -686,16 +686,6 @@ Meteor.methods({
     return Collections.Shops.update(shopId, {
       $set: {layout: shop.layout}
     });
-  },
-
-  /*
-  * shop/getVendorId
-  * @return {String} vendorId - the vendor's ID
-  */
-
-  "shop/getVendorName": function (productId) {
-    const vendorCheck = Collections.Products.findOne({_id: productId});
-    const vendorName = vendorCheck.profile.vendorDetails.vendorName;
-    return vendorName;
   }
+
 });
