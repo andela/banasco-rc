@@ -230,6 +230,7 @@ app.get("/api/cancelled_orders/:emailID", (request, response) => {
     });
 });
 // app.use()
+/* eslint no-console: 0 */
 app.listen(PORT, () => {
   console.log("Node/Express server for GraphQL app. listening on port", PORT);
 });
