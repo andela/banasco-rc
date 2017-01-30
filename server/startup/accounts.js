@@ -78,9 +78,6 @@ export default function () {
    * @see: http://docs.meteor.com/#/full/accounts_oncreateuser
    */
   Accounts.onCreateUser((options, user) => {
-    console.log("The user object returnd: ", user, "\n");
-    console.log("Here are the options: ", options);
-    // console.log(Session.get('isVendor'));
     const shop = Reaction.getCurrentShop();
     const shopId = shop._id;
     const defaultVisitorRole =  ["anonymous", "guest", "product", "tag", "index", "cart/checkout", "cart/completed"];
@@ -149,6 +146,7 @@ export default function () {
         Meteor.call("accounts/sendWelcomeEmail", shopId, user._id);
       }
 
+<<<<<<< 1cc36906ebe4f75f5b3192516b84e387de738cee
 <<<<<<< 0b0742a85e7bfac3f70c00f1db8893c1c5383630
 =======
       // assign vendor roles
@@ -160,6 +158,8 @@ export default function () {
       }
 
 >>>>>>> rollback changes
+=======
+>>>>>>> feature(multivendor): Filter view per vendor
       // assign default user roles
       user.roles = roles;
 

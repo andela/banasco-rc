@@ -669,7 +669,8 @@ Meteor.methods({
     }
 
     return Products.insert({
-      type: "simple" // needed for multi-schema
+      type: "simple", // needed for multi-schema
+      vendorId: Meteor.userId()
     }, {
       validate: false
     }, (error, result) => {
@@ -678,6 +679,7 @@ Meteor.methods({
         Products.insert({
           ancestors: [result],
           price: 0.00,
+          vendorId: Meteor.userId(),
           title: "",
           type: "variant" // needed for multi-schema
         });

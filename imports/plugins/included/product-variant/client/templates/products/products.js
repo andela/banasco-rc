@@ -71,16 +71,28 @@ Template.products.onCreated(function () {
     this.state.set("slug", slug);
 
     const queryParams = Object.assign({}, tags, Reaction.Router.current().queryParams);
-    this.subscribe("Products", scrollLimit, queryParams);
+    this.subscribe("Products", scrollLimit, queryParams, {});
+
 
     // we are caching `currentTag` or if we are not inside tag route, we will
     // use shop name as `base` name for `positions` object
     const currentTag = ReactionProduct.getTag();
-    const productCursor = Products.find({
-      ancestors: []
-      // keep this, as an example
-      // type: { $in: ["simple"] }
-    }, {
+    const userDetails = Products.find({vendorId: Meteor.userId()}).fetch();
+
+    let query;
+
+    if (userDetails.length === 0) {
+      query =  {
+        ancestors: []
+      };
+    } else {
+      query =  {
+        ancestors: [],
+        vendorId: Meteor.userId()
+      };
+    }
+
+    const productCursor = Products.find(query, {
       sort: {
         [`positions.${currentTag}.position`]: 1,
         [`positions.${currentTag}.createdAt`]: 1,

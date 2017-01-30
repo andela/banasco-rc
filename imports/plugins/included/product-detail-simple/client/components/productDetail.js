@@ -43,16 +43,13 @@ class ProductDetail extends Component {
     }
   }
 
-  renderVendorEdit() {
-    if (this.props.vendorName !== "Unauthorised Vendor") {
-      return (
+  renderVendorEdit = () => {
+    return (
             this.props.vendorName
-      );
-    }
+    );
   }
 
-
-  renderToolbar() {
+  renderToolbar = () => {
     if (this.props.hasAdminPermission) {
       return (
         <Toolbar>
@@ -84,7 +81,7 @@ class ProductDetail extends Component {
     return null;
   }
 
-  render() {
+  render = () => {
     return (
       <div className="" style={{position: "relative"}}>
         {this.renderToolbar()}
@@ -145,10 +142,10 @@ class ProductDetail extends Component {
               </div>
 
             <div className="vendor">
-                {this.renderVendorEdit()}
-           </div>
+               {this.renderVendorEdit()}
+            </div>
 
-              <div className="pdp product-info">
+            <div className="pdp product-info">
                 <ProductField
                   editable={this.editable}
                   fieldName="description"

@@ -195,11 +195,10 @@ function composer(props, onData) {
   } else {
     const productId = Reaction.Router.getParam("handle");
     const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
-    if (check) {
+    if (check || Reaction.hasPermission(["createProduct"]))  {
       editable = true;
     } else {
       editable = false;
-        //editable = Reaction.hasPermission(["createProduct"]);
     }
   }
 

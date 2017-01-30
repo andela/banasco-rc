@@ -692,12 +692,10 @@ Meteor.methods({
   * shop/getVendorId
   * @return {String} vendorId - the vendor's ID
   */
-  "shop/getVendorName": function () {
-    const vendorCheck = Collections.Accounts.findOne(Meteor.userId());
-    const productsCheck = Collections.Products.find({vendorId: Meteor.userId()});
-    console.log("vendorCheck", productsCheck);
-    const vendorName= vendorCheck.profile.vendorDetails.vendorName;
-    console.log("Vendorname", vendorName);
+
+  "shop/getVendorName": function (productId) {
+    const vendorCheck = Collections.Products.findOne({_id: productId});
+    const vendorName = vendorCheck.profile.vendorDetails.vendorName;
     return vendorName;
   }
 });

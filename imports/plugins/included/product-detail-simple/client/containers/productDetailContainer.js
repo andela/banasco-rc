@@ -153,17 +153,20 @@ class ProductDetailContainer extends Component {
     ReactionProduct.maybeDeleteProduct(this.props.product);
   }
 
-  renderVendorDetails() {
+//Works well for specific vendorId
+//Todo: autoupdates of vendor names for admin view, search entire product collections.
+  renderVendorDetails = () => {
     const productId = Reaction.Router.getParam("handle");
-    const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
-    if (check) {
-      Meteor.call("shop/getVendorName", (err, res) => {
-        if (res) {
-          this.setState({vendorName: res});
-        }
-      });
+    fieldName = "vendor";
+    const check = Collections.Products.findOne({_id: productId});
+    const vendorCheck = Collections.Accounts.findOne({_id: Meteor.userId()});
+    const vendorName = vendorCheck.profile.vendorDetails.vendorName;
+
+    if (vendorName) {
+      Meteor.call("products/updateProductField", productId, fieldName, vendorName);
+      this.setState({vendorName: vendorName});
     } else {
-      return this.setState({vendorName: "Unauthorised Vendor"});
+      this.setState({vendorName: "admin"});
     }
   }
 
@@ -266,6 +269,7 @@ function composer(props, onData) {
       if (viewProductAs === "customer") {
         editable = false;
       } else {
+        editable = true;
         const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
         if (check) {
           editable = true;
@@ -281,7 +285,7 @@ function composer(props, onData) {
         media: mediaArray,
         editable,
         viewAs: viewProductAs,
-        hasAdminPermission: true
+        hasAdminPermission: Reaction.hasPermission(["createProduct"])
       });
     }
   }

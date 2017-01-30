@@ -6,7 +6,7 @@ import * as Collections from "/lib/collections";
 import { Template } from "meteor/templating";
 
 let currentDetails = {};
-const errors = {}
+const errors = {};
 
 Template.vendorDetails.helpers({
   getVendorDetails() {
@@ -43,6 +43,5 @@ Template.vendorDetails.events({
       && currentDetails.vendorAddr === vendorDetails.vendorAddr) {
       return 0;
     }
-    return Meteor.call("accounts/updateVendorDetails", vendorDetails);
   }
 });
