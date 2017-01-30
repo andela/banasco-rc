@@ -5,6 +5,10 @@ import { Template } from "meteor/templating";
 let currentDetails = {};
 const errors = {};
 
+Template.vendorDetails.onCreated(() => {
+  $(".save-btn").addClass("btn-disabled");
+});
+
 Template.vendorDetails.helpers({
   getVendorDetails() {
     const findVendor = Collections.Accounts.findOne({
@@ -18,6 +22,10 @@ Template.vendorDetails.helpers({
 });
 
 Template.vendorDetails.events({
+  "change .form-control": function (event, template) {
+    template.$(".save-btn").removeClass("btn-disabled");
+  },
+
   "click [data-event-action=updateVendorDetails]": function (event, template) {
     const vendorName = template.$(".vendor-name").val();
     const vendorPhone = template.$(".vendor-phone").val();
@@ -38,7 +46,15 @@ Template.vendorDetails.events({
 
     if (currentDetails.vendorPhone === vendorDetails.vendorPhone
       && currentDetails.vendorAddr === vendorDetails.vendorAddr) {
-      return 0;
+      return Alerts.toast("Already up to date. Nothing has changed");
     }
+    Meteor.call("accounts/updateShopDetails", vendorDetails, (error, result) => {
+      if (error) {
+        return Alerts.toast("Unable to update details", "error");
+      }
+      if (result) {
+        Alerts.toast("Shop details successfully updated");
+      }
+    });
   }
 });

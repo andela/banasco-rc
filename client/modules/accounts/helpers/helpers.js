@@ -1,3 +1,5 @@
+/* global Session:true */
+
 import _ from "lodash";
 import { ServiceConfigHelper } from "./util";
 import { Template } from "meteor/templating";
@@ -45,7 +47,11 @@ export const LoginFormSharedHelpers = {
     return !!Package["accounts-password"];
   },
 
-  isVendor() {
-    return Session.get("isVendor");
+  userType() {
+    return Session.get("userType");
+  },
+
+  equals(key, value) {
+    return key === value;
   }
 };

@@ -1,6 +1,7 @@
 import * as Collections from "/lib/collections";
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
+import { LoginFormSharedHelpers } from "/client/modules/accounts/helpers";
 
 /**
  * onCreated: Account Profile View
@@ -65,13 +66,15 @@ Template.accountProfile.helpers({
     }
     return "addressBookAdd";
   },
+
   getUserType() {
-    let user = Collections.Accounts.findOne({
+    const user = Collections.Accounts.findOne({
       userId: Meteor.userId()
     });
     return user.userType;
   }
 });
-Template.registerHelper('equals', function (key, value) {
+
+Template.registerHelper("equals", function (key, value) {
   return key === value;
 });

@@ -7,7 +7,6 @@ import { Tags, Media } from "/lib/collections";
 import { Loading } from "/imports/plugins/core/ui/client/components";
 import { ProductDetail } from "../components";
 import { SocialContainer, VariantListContainer} from "./";
-import  ProductField from "./";
 import { MediaGalleryContainer } from "/imports/plugins/core/ui/client/containers";
 import { DragDropProvider, TranslationProvider } from "/imports/plugins/core/ui/client/providers";
 import * as Collections from "/lib/collections";
@@ -153,8 +152,8 @@ class ProductDetailContainer extends Component {
     ReactionProduct.maybeDeleteProduct(this.props.product);
   }
 
-//Works well for specific vendorId
-//Todo: autoupdates of vendor names for admin view, search entire product collections.
+// Works well for specific vendorId
+// Todo: autoupdates of vendor names for admin view, search entire product collections.
   renderVendorDetails = () => {
     const productId = Reaction.Router.getParam("handle");
     const fieldName = "vendor";
@@ -271,13 +270,11 @@ function composer(props, onData) {
       if (viewProductAs === "customer") {
         editable = false;
       } else {
-        editable = true;
         const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
-        console.log(check,"vendor")
         if (check) {
           editable = true;
         } else {
-          editable = false;
+          editable = Reaction.hasPermission(["createProduct"]);
         }
       }
 

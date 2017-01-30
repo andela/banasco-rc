@@ -1,7 +1,9 @@
+/* global Meteor:true */
+/* global check:true */
+
 import * as Collections from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
 import { Logger, Reaction } from "/server/api";
-
 
 /**
  * Reaction Account Methods
@@ -454,15 +456,15 @@ Meteor.methods({
     check(vendorDetails, Schemas.Vendor);
 
     const userId = Meteor.userId();
-    userDetails = Meteor.users.findOne({_id: userId});
-    rolesKey = Object.keys(userDetails.roles);
+    const userDetails = Meteor.users.findOne({_id: userId});
+    const rolesKey = Object.keys(userDetails.roles);
     userDetails.roles[rolesKey[0]].push(
         "dashboard",
         "createProduct",
         "reaction-dashboard",
         "reaction-orders",
         "orders",
-        "dashboard/orders",
+        "dashboard/orders"
     );
 
     Meteor.users.update({_id: userId}, {$set: {roles: userDetails.roles}});
@@ -486,5 +488,31 @@ Meteor.methods({
       vendorId: userId,
       shopDetails: vendorDetails
     });
+  },
+
+  /**
+   * accounts/updateShopDetails
+   * @param {String} vendorDetails - vendor details
+   * @return {Null}
+   */
+  "accounts/updateShopDetails": function (vendorDetails) {
+    check(vendorDetails, Schemas.Vendor);
+    this.unblock();
+
+    const userId = Meteor.userId();
+
+    return Collections.Accounts.update(
+      { _id: userId },
+      { $set: {
+        profile: {
+          vendorDetails: {
+            vendorName: vendorDetails.vendorName,
+            vendorPhone: vendorDetails.vendorPhone,
+            vendorAddr: vendorDetails.vendorAddr
+          }
+        }
+      }
+      }
+    );
   }
 });

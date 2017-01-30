@@ -1,3 +1,5 @@
+/* global Meteor:true */
+
 import React, { Component, PropTypes } from "react";
 import { composeWithTracker } from "react-komposer";
 import { ReactionProduct } from "/lib/api";

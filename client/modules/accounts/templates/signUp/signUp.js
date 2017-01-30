@@ -1,6 +1,9 @@
+/* global Session:true */
+/* global Meteor:true */
+/* global LoginFormValidation:true */
+
 import { LoginFormSharedHelpers } from "/client/modules/accounts/helpers";
 import { Template } from "meteor/templating";
-import { FlowRouter } from "meteor/kadira:flow-router-ssr";
 
 /**
  * onCreated: Login form sign up view
@@ -11,7 +14,7 @@ Template.loginFormSignUpView.onCreated(() => {
   template.uniqueId = Random.id();
   template.formMessages = new ReactiveVar({});
   template.type = "signUp";
-  Session.set("isVendor", false);
+  Session.set("userType", $(".form-radio-input").val());
 });
 
 /**
@@ -29,9 +32,6 @@ Template.loginFormSignUpView.events({
    * @param  {Template} template - Blaze Template
    * @return {void}
    */
-  // "change .form-check-input": function (event, template) {
-  //   let isVendor = template.$(".form-check-input").prop("checked") ? true : false;
-  // },
   "submit form": function (event, template) {
     event.preventDefault();
 
@@ -69,7 +69,7 @@ Template.loginFormSignUpView.events({
       errors.password = validatedPassword;
     }
 
-    if (LoginFormSharedHelpers.isVendor()) {
+    if (Session.get("userType") == "vendor") {
       vendorName = template.$(".login-input-vendorName").val();
       vendorPhone = template.$(".login-input-vendorPhone").val();
       vendorAddr = template.$(".login-input-vendorAddr").val();
@@ -90,8 +90,7 @@ Template.loginFormSignUpView.events({
         vendorDetails = {
           vendorName: vendorName,
           vendorPhone: vendorPhone,
-          vendorAddr: vendorAddr,
-          userType: Session.get("isVendor") || Session.get("isBuyer") || "buyer"
+          vendorAddr: vendorAddr
         };
       } else {
         vendorDetails = null;
@@ -113,11 +112,11 @@ Template.loginFormSignUpView.events({
       profile: {
         vendorDetails: vendorDetails
       },
-      userType: Session.get("isVendor") || Session.get("isBuyer") || "buyer"
+      userType: Session.get("userType") || "buyer"
     };
 
     Accounts.createUser(newUserData, function (error) {
-      if (Session.get("isVendor")) {
+      if (Session.get("userType") === "vendor") {
         Meteor.call("accounts/updateVendorDetails", vendorDetails);
       }
       if (error) {
@@ -133,13 +132,6 @@ Template.loginFormSignUpView.events({
 
   "change .form-radio-input": function (event) {
     const userType = event.target.value.toString().toLowerCase();
-
-    if (userType === "vendor") {
-      Session.set("isVendor", userType);
-      Session.set("isBuyer", null);
-    } else {
-      Session.set("isBuyer", userType);
-      Session.set("isVendor", null);
-    }
+    Session.set("userType", userType);
   }
 });

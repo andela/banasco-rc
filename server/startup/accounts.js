@@ -78,13 +78,10 @@ export default function () {
    * @see: http://docs.meteor.com/#/full/accounts_oncreateuser
    */
   Accounts.onCreateUser((options, user) => {
-    console.log("The user object returnd: ", user, "\n");
-    console.log("Here are the options: ", options);
     const shop = Reaction.getCurrentShop();
     const shopId = shop._id;
     const defaultVisitorRole =  ["anonymous", "guest", "product", "tag", "index", "cart/checkout", "cart/completed"];
     const defaultRoles =  ["guest", "account/profile", "product", "tag", "index", "cart/checkout", "cart/completed"];
-    const vendorRoles = ["createProduct", "orders", "shipping", "reaction-dashboard", "dashboard", "reaction-orders", "dashboard/orders"];
     const roles = {};
     const additionals = {
       profile: Object.assign({}, options && options.profile)
@@ -108,7 +105,7 @@ export default function () {
       if (!user.services) {
         roles[shopId] = shop.defaultVisitorRole || defaultVisitorRole;
       } else {
-        roles[shopId] = shop.defaultRoles.concat(vendorRoles) || defaultRoles;
+        roles[shopId] = shop.defaultRoles || defaultRoles;
         // also add services with email defined to user.emails[]
         for (const service in user.services) {
           if (user.services[service].email) {
@@ -123,7 +120,6 @@ export default function () {
             user.username = user.services[service].name;
             additionals.profile.name = user.services[service].name;
           }
-
           // TODO: For now we have here instagram, twitter and google avatar cases
           // need to make complete list
           if (user.services[service].picture) {
@@ -139,6 +135,7 @@ export default function () {
       // clone before adding roles
       const account = Object.assign({}, user, additionals);
       account.userId = user._id;
+      account.userType = options.userType;
       Collections.Accounts.insert(account);
 
       // send a welcome email to new users,
@@ -148,20 +145,6 @@ export default function () {
         Meteor.call("accounts/sendWelcomeEmail", shopId, user._id);
       }
 
-<<<<<<< 1cc36906ebe4f75f5b3192516b84e387de738cee
-<<<<<<< 0b0742a85e7bfac3f70c00f1db8893c1c5383630
-=======
-      // assign vendor roles
-      if (options.profile && options.userType === "vendor") {
-        user.userType = options.userType || "vendor";
-        roles[shopId] = defaultRoles.concat(vendorRoles);
-      } else {
-        user.userType = options.userType || "buyer";
-      }
-
->>>>>>> rollback changes
-=======
->>>>>>> feature(multivendor): Filter view per vendor
       // assign default user roles
       user.roles = roles;
 

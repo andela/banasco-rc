@@ -3,7 +3,7 @@ import { EJSON } from "meteor/ejson";
 import { check } from "meteor/check";
 import { Meteor } from "meteor/meteor";
 import { Catalog } from "/lib/api";
-import { Media, Products, Revisions, Tags } from "/lib/collections";
+import { Media, Products, Revisions, Tags, Accounts } from "/lib/collections";
 import { Logger, Reaction } from "/server/api";
 
 /**
@@ -663,28 +663,49 @@ Meteor.methods({
       throw new Meteor.Error(403, "Access Denied");
     }
 
-    // if a product object was provided
-    if (product) {
-      return Products.insert(product);
-    }
-
-    return Products.insert({
-      type: "simple", // needed for multi-schema
-      vendorId: Meteor.userId()
-    }, {
-      validate: false
-    }, (error, result) => {
-      // additionally, we want to create a variant to a new product
-      if (result) {
-        Products.insert({
-          ancestors: [result],
-          price: 0.00,
-          vendorId: Meteor.userId(),
-          title: "",
-          type: "variant" // needed for multi-schema
-        });
+    if (Reaction.hasPermission("dashboard/accounts")) {
+      if (product) {
+        return Products.insert(product);
       }
-    });
+    // if a product object was provided
+      return Products.insert({
+        type: "simple" // needed for multi-schema
+      }, {
+        validate: false
+      }, (error, result) => {
+      // additionally, we want to create a variant to a new product
+        if (result) {
+          Products.insert({
+            ancestors: [result],
+            price: 0.00,
+            title: "",
+            type: "variant" // needed for multi-schema
+          });
+        }
+      });
+    } else {
+      if (product) {
+        return Products.insert(product);
+      }
+
+      return Products.insert({
+        type: "simple", // needed for multi-schema
+        vendorId: Meteor.userId()
+      }, {
+        validate: false
+      }, (error, result) => {
+      // additionally, we want to create a variant to a new product
+        if (result) {
+          Products.insert({
+            ancestors: [result],
+            price: 0.00,
+            vendorId: Meteor.userId(),
+            title: "",
+            type: "variant" // needed for multi-schema
+          });
+        }
+      });
+    }
   },
 
   /**

@@ -45,7 +45,7 @@ class ProductDetail extends Component {
 
   renderVendorEdit = () => {
     return (
-            this.props.vendorName
+        this.props.vendorName
     );
   }
 
