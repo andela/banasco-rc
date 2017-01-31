@@ -7,6 +7,8 @@
     <div class="rui search-modal-header">
 
       {{> searchInput }}
+      
+      {{> searchFilter productSearchResults=productSearchResults}}
 
       {{> searchTypeToggle }}
 
@@ -15,7 +17,7 @@
     </div>
 
     {{> searchResults productSearchResults=productSearchResults orderSearchResults=orderSearchResults accountSearchResults=accountSearchResults orderTable=orderTable accountTable=accountTable }}
-
+  
   </div>
 
 </template>

@@ -1,0 +1,48 @@
+<template name="searchFilter">
+    <div class="hidden" id="searchFilter">
+    <div class="container customContainer">
+      <div class="row">
+          
+        <div class="col-md-4">
+          <label class="transform">Price</label>
+          <div class="rui select">
+            <select id="price-filter">
+              <option value="null">Filter by price</option>
+              <option value="all">All prices</option>
+              <option value="0-10">below - $10</option>
+              <option value="10-55">$10 - $55</option>
+              <option value="55-100">$55 - $100</option>
+              <option value="100-500">$100 - $500</option>
+              <option value="500-1000">$500 - $1000</option>
+              <option value="1000-above">$1000 - above</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-4">
+          <label class="transform">Brand</label>
+          <div class="rui select">
+            <select id="brand-filter">
+              <option value="null">Filter by brand</option>
+              <option value="all">All brands</option>
+               {{#each brand in getBrands productSearchResults }}
+              <option value="{{brand}}">{{brand}}</option>
+              {{/each}}
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-4" style="margin-bottom:10px;">
+          <label class="transform">Sort products</label>
+          <div class="rui select">
+            <select id="sort-value">
+              <option value="null">Sort by price</option>
+              <option value="ASC">Lowest price</option>
+              <option value="DESC">Highest price</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</template>
