@@ -212,6 +212,13 @@
       "format": "%s%v",
       "symbol": "kr"
     },
+
+
+    "NGN": {
+      "format": "%s%v",
+      "symbol": "₦"
+    },
+
     "USD": {
       "format": "%s%v",
       "symbol": "$"
@@ -332,10 +339,6 @@
     "MYR": {
       "format": "%s%v",
       "symbol": "RM"
-    },
-    "NGN": {
-      "format": "%s%v",
-      "symbol": "₦"
     },
     "NZD": {
       "format": "%s%v",
@@ -2085,7 +2088,7 @@
         "phone": "234",
         "continent": "AF",
         "capital": "Abuja",
-        "currency": "NGN",
+        "currency": "USD",
         "languages": "en"
       },
       "NI": {
