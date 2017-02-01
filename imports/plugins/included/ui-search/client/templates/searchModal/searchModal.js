@@ -235,6 +235,7 @@ Template.searchModal.events({
   "click [data-event-action=filterClick]": function () {
     // alert("conclude");
     $("#searchFilter").toggleClass("hidden");
+    $("#toggleTags").toggleClass("hidden");
   },
   "click [data-event-action=clearSearch]": function (event, templateInstance) {
     $("#search-input").val("");
