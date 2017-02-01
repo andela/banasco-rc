@@ -8,8 +8,12 @@
         {{else}}
           <div class="row">
             <div class="text-center">
-              <h3>
-                <span data-i18n="app.noProductsFound">Seems like your shop is new, Would you like to add a new product?</span>
+               <h3>
+                {{#if isVendor}}
+                <span data-i18n="search.noProductsFound">No products found.</span>
+                {{else}}
+                 <h3> Seems like your shop is new, Would you like to add a new product?</h3>
+                {{/if}}
               </h3>
             </div>
           </div>

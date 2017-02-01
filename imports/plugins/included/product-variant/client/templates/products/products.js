@@ -1,7 +1,7 @@
 import { Reaction } from "/client/api";
 import { ReactionProduct } from "/lib/api";
 import { applyProductRevision } from "/lib/api/products";
-import { Products, Tags } from "/lib/collections";
+import { Products, Tags, Accounts } from "/lib/collections";
 import { Session } from "meteor/session";
 import { Template } from "meteor/templating";
 import { ITEMS_INCREMENT } from "/client/config/defaults";
@@ -78,10 +78,14 @@ Template.products.onCreated(function () {
     // use shop name as `base` name for `positions` object
     const currentTag = ReactionProduct.getTag();
     const userDetails = Products.find({vendorId: Meteor.userId()}).fetch();
+    const currUser = Accounts.findOne({
+      userId: Meteor.userId()
+    });
+    const userType = currUser.userType;
 
     let query;
 
-    if (userDetails.length === 0) {
+    if (userDetails.length === 0 && userType !== "vendor") {
       query =  {
         ancestors: []
       };

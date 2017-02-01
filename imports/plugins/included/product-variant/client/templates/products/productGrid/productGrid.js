@@ -106,5 +106,8 @@ Template.productGrid.helpers({
   },
   products() {
     return Template.currentData().products;
+  },
+  isVendor() {
+    return (Session.get("userType") !== "vendor");
   }
 });
