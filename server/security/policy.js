@@ -28,6 +28,13 @@ BrowserPolicy.content.allowOriginForAll("*.facebook.com");
 BrowserPolicy.content.allowOriginForAll("*.fbcdn.net");
 BrowserPolicy.content.allowOriginForAll("connect.facebook.net");
 BrowserPolicy.content.allowOriginForAll("*.googleusercontent.com");
+BrowserPolicy.content.allowOriginForAll("*.disqus.com");
+BrowserPolicy.content.allowOriginForAll("disqus.com");
+BrowserPolicy.content.allowOriginForAll("*.disquscdn.com");
+BrowserPolicy.content.allowOriginForAll("disquscdn.com");
+BrowserPolicy.content.allowOriginForAll("twitter.com");
+BrowserPolicy.content.allowOriginForAll("*.twitter.com");
+BrowserPolicy.content.allowOriginForAll("*.twimg.com");
 
 BrowserPolicy.content.allowImageOrigin("fbcdn-profile-a.akamaihd.net");
 BrowserPolicy.content.allowImageOrigin("secure.gravatar.com");
