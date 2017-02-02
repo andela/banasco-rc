@@ -86,8 +86,9 @@ Template.products.onCreated(function () {
     const userType = currUser.userType;
 
     let query;
+    const switchedProductsView = Session.get("switchProducts");
 
-    if (userDetails.length === 0 && userType !== "vendor") {
+    if (switchedProductsView === "all" || userDetails.length === 0 && userType !== "vendor") {
       query =  {
         ancestors: []
       };

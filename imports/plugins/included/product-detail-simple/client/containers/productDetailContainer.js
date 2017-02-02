@@ -266,8 +266,9 @@ function composer(props, onData) {
       }
 
       let editable;
+      const switchedProductsView = Session.get("switchProducts");
 
-      if (viewProductAs === "customer") {
+      if (viewProductAs === "customer" || switchedProductsView === "all") {
         editable = false;
       } else {
         const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});

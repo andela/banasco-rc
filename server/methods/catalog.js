@@ -663,13 +663,18 @@ Meteor.methods({
       throw new Meteor.Error(403, "Access Denied");
     }
 
+    const shopTagId = Tags.findOne({
+      name: "Shop"
+    });
+
     if (Reaction.hasPermission("dashboard/accounts")) {
       if (product) {
         return Products.insert(product);
       }
     // if a product object was provided
       return Products.insert({
-        type: "simple" // needed for multi-schema
+        type: "simple", // needed for multi-schema
+        hashtags: [shopTagId._id]
       }, {
         validate: false
       }, (error, result) => {
@@ -677,6 +682,7 @@ Meteor.methods({
         if (result) {
           Products.insert({
             ancestors: [result],
+            hashtags: [shopTagId._id],
             price: 0.00,
             title: "",
             type: "variant" // needed for multi-schema
@@ -690,7 +696,8 @@ Meteor.methods({
 
       return Products.insert({
         type: "simple", // needed for multi-schema
-        vendorId: Meteor.userId()
+        vendorId: Meteor.userId(),
+        hashtags: [shopTagId._id]
       }, {
         validate: false
       }, (error, result) => {
@@ -699,6 +706,7 @@ Meteor.methods({
           Products.insert({
             ancestors: [result],
             price: 0.00,
+            hashtags: shopTagId._id,
             vendorId: Meteor.userId(),
             title: "",
             type: "variant" // needed for multi-schema

@@ -59,6 +59,16 @@ Template.productGrid.onRendered(function () {
 });
 
 Template.productGrid.events({
+  "click [data-event-action=switchProduct]": () => {
+    const value = document.getElementById("switchButton").value;
+    if (value === "vendor") {
+      Session.set("switchProducts", "all");
+      document.getElementById("switchButton").value = "all";
+    } else if (value === "all") {
+      Session.set("switchProducts", "vendor");
+      document.getElementById("switchButton").value = "vendor";
+    }
+  },
   "click [data-event-action=loadMoreProducts]": (event) => {
     event.preventDefault();
     loadMoreProducts();
@@ -109,5 +119,12 @@ Template.productGrid.helpers({
   },
   isVendor() {
     return (Session.get("userType") !== "vendor");
+  },
+  showViewToggle() {
+    const currUser = Accounts.findOne({
+      userId: Meteor.userId()
+    });
+    const userType = currUser.userType;
+    return (userType === "vendor");
   }
 });

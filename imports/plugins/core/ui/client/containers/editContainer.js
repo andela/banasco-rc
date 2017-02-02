@@ -163,7 +163,9 @@ function composer(props, onData) {
   const productId = Reaction.Router.getParam("handle");
   let hasPermission;
   const viewAs = Reaction.Router.getQueryParam("as");
-  if (props.disabled === true || viewAs === "customer") {
+  const switchedProductsView = Session.get("switchProducts");
+
+  if (props.disabled === true || viewAs === "customer" || switchedProductsView === "all") {
     hasPermission = false;
   } else {
     const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});

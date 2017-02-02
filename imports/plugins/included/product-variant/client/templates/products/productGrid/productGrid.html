@@ -1,7 +1,26 @@
 <template name="productGrid">
   <div class="container-main">
+  {{#if showViewToggle}}
+    <div class="row pull-right">
+    <h5> View your Products or all Products:
+    {{> button
+    id="switchButton"
+    className="btn btn-default"
+    tooltip="Publish"
+    value="vendor"
+    tooltipPosition="left middle"
+    toggle=true
+    toggleOn=product.isVisible
+    icon="eye-slash"
+    onIcon="eye"
+    data-event-action="switchProduct"
+   }}
+   </h5>
+    </div>
+ {{/if}}
+  </div>
     <span data-step="1" style="align:center" data-intro="Welcome to Reaction Commerce" data-position="center"></span>
-    <div class="product-grid">
+    <div class="product-grid" style="margin-left: 30px">
       <ul class="product-grid-list list-unstyled" id="product-grid-list"  data-step="9" data-intro="{{getTour1.eight}}">
         {{#each products}}
           {{> productGridItems}}
@@ -10,7 +29,7 @@
             <div class="text-center">
                <h3>
                 {{#if isVendor}}
-                <span data-i18n="search.noProductsFound">No products found.</span>
+                  <h3> <span data-i18n="search.noProductsFound">No products found.</span></h3>
                 {{else}}
                  <h3> Seems like your shop is new, Would you like to add a new product?</h3>
                 {{/if}}
@@ -20,5 +39,5 @@
         {{/each}}
       </ul>
     </div>
-  </div>
+
 </template>
