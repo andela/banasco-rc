@@ -1,3 +1,5 @@
+/* global Meteor:true */
+
 import { Reaction } from "/client/api";
 import { ReactionProduct } from "/lib/api";
 import { applyProductRevision } from "/lib/api/products";

@@ -69,7 +69,7 @@ Template.loginFormSignUpView.events({
       errors.password = validatedPassword;
     }
 
-    if (Session.get("userType") == "vendor") {
+    if (Session.get("userType") === "vendor") {
       vendorName = template.$(".login-input-vendorName").val();
       vendorPhone = template.$(".login-input-vendorPhone").val();
       vendorAddr = template.$(".login-input-vendorAddr").val();

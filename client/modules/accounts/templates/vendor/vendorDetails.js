@@ -1,3 +1,6 @@
+/* global $:true */
+/* global Alerts:true */
+
 import { Meteor } from "meteor/meteor";
 import * as Collections from "/lib/collections";
 import { Template } from "meteor/templating";
