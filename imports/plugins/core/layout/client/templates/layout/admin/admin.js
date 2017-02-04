@@ -4,7 +4,7 @@ import { Blaze } from "meteor/blaze";
 import { Template } from "meteor/templating";
 import { Reaction, i18next } from "/client/api";
 import { Packages } from "/lib/collections";
-
+import { Tags } from "/lib/collections";
 
 Template.coreAdminLayout.onRendered(function () {
   $("body").addClass("admin");
@@ -16,7 +16,7 @@ Template.coreAdminLayout.onDestroyed(() => {
 
 Template.coreAdminLayout.helpers({
   shortcutButtons() {
-    const instance = Template.instance();
+    // const instance = Template.instance();
     const shortcuts = Reaction.Apps({
       provides: "shortcut",
       enabled: true,
@@ -54,25 +54,46 @@ Template.coreAdminLayout.helpers({
 
     items.push({
       "icon": "plus",
-      "tooltip": "Create Content",
+      "tooltip": "Add Product",
       "data-step": 10,
       "data-intro": introMessages[3],
-      "i18nKeyTooltip": "app.createContent",
+      "i18nKeyTooltip": "admin.addProductLabel",
       "tooltipPosition": "left middle",
-      onClick(event) {
-        if (!instance.dropInstance) {
-          instance.dropInstance = new Drop({
-            target: event.currentTarget,
-            content: "",
-            constrainToWindow: true,
-            classes: "drop-theme-arrows",
-            position: "right center"
-          });
+      onClick() {
+        Meteor.call("products/createProduct", (error, productId) => {
+          if (Meteor.isClient) {
+            let currentTag;
+            let currentTagId;
 
-          Blaze.renderWithData(Template.createContentMenu, {}, instance.dropInstance.content);
-        }
+            if (error) {
+              throw new Meteor.Error("createProduct error", error);
+            } else if (productId) {
+              currentTagId = Session.get("currentTag");
+              currentTag = Tags.findOne(currentTagId);
+              if (currentTag) {
+                Meteor.call("products/updateProductTags", productId, currentTag.name, currentTagId);
+              }
+              // go to new product
+              Reaction.Router.go("product", {
+                handle: productId
+              });
+            }
+          }
+        });
 
-        instance.dropInstance.open();
+        // if (!instance.dropInstance) {
+        //   instance.dropInstance = new Drop({
+        //     target: event.currentTarget,
+        //     content: "",
+        //     constrainToWindow: true,
+        //     classes: "drop-theme-arrows",
+        //     position: "right center"
+        //   });
+        //
+        //   Blaze.renderWithData(Template.createContentMenu, {}, instance.dropInstance.content);
+        // }
+        //
+        // instance.dropInstance.open();
       }
     });
 
