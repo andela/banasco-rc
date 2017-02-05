@@ -13,7 +13,6 @@ import { Accounts } from "/lib/collections";
 
 Template.productGrid.onCreated(function () {
   Session.set("productGrid/selectedProducts", []);
-  Session.set("switchProducts", "vendor");
 });
 
 Template.productGrid.onRendered(function () {
@@ -64,10 +63,8 @@ Template.productGrid.events({
     const value = document.getElementById("switchProductView").value;
     if (value === "vendor") {
       Session.set("switchProducts", "vendor");
-      document.getElementById("switchProductView").value = "vendor";
     } else if (value === "all") {
       Session.set("switchProducts", "all");
-      document.getElementById("switchProductView").value = "all";
     }
   },
   "click [data-event-action=loadMoreProducts]": (event) => {
