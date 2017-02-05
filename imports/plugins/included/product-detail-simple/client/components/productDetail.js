@@ -142,7 +142,7 @@ class ProductDetail extends Component {
               </div>
 
             <div className="vendor">
-               {this.renderVendorEdit()}
+               { this.renderVendorEdit() }
             </div>
 
             <div className="pdp product-info">
@@ -166,11 +166,14 @@ class ProductDetail extends Component {
               <hr />
               <div>
                 <AlertContainer placement="productDetail" />
-                <AddToCartButton
-                  cartQuantity={this.props.cartQuantity}
-                  onCartQuantityChange={this.props.onCartQuantityChange}
-                  onClick={this.props.onAddToCart}
-                />
+                {
+                  !this.props.editable ?
+                  <AddToCartButton
+                    cartQuantity={this.props.cartQuantity}
+                    onCartQuantityChange={this.props.onCartQuantityChange}
+                    onClick={this.props.onAddToCart}
+                  /> : null
+                }
               </div>
             </div>
           </div>
