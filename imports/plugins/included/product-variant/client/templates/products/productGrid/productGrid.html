@@ -1,20 +1,17 @@
 <template name="productGrid">
   <div class="container-main">
   {{#if showViewToggle}}
-    <div class="row pull-right">
-    <h5> View your Products or all Products:
-    {{> button
-    id="switchButton"
-    className="btn btn-default"
-    tooltip="Publish"
-    value="vendor"
-    tooltipPosition="left middle"
-    toggle=true
-    toggleOn=product.isVisible
-    icon="eye-slash"
-    onIcon="eye"
-    data-event-action="switchProduct"
-   }}
+    <div class="row">
+    <h5> Products view
+      <select
+        id="switchProductView"
+        toggle=true
+        value="vendor"
+        toggleOn=product.isVisible
+        data-event-action="switchProductsView">
+        <option value="all">All products</option>
+        <option value="vendor" selected="selected">My Products</option>
+      </select>
    </h5>
     </div>
  {{/if}}
