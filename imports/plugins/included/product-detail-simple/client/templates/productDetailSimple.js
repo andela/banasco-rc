@@ -1,3 +1,4 @@
+/* eslint-disable max-len*/
 import { ProductDetailContainer } from "../containers";
 import { isRevisionControlEnabled } from "/imports/plugins/core/revisions/lib/api";
 import { Template } from "meteor/templating";
@@ -29,10 +30,24 @@ Template.embedSocial.onCreated(function () {
 });
 
 Template.embedSocial.helpers({
+  testDisplay() {
+    const config = Template.instance().state.get("feed");
+    const checkFacebook = config.facebook.enabled;
+    const checkTwitter = config.twitter.enabled;
+    if (checkFacebook && checkTwitter) {
+      return {disqus: "col-sm-4", facebook: "col-sm-4", twitter: "col-sm-4"};
+    } else if (checkFacebook && !checkTwitter) {
+      return {disqus: "col-sm-8", facebook: "col-sm-4", twitter: ""};
+    } else if (!checkFacebook && checkTwitter) {
+      return {disqus: "col-sm-8", facebook: "", twitter: "col-sm-4"};
+    }
+    return {disqus: "col-sm-12", facebook: "", twitter: ""};
+  },
+
   addDisqusThread() {
     const threads = document.createElement("script");
     threads.src = "//banasko-rc.disqus.com/embed.js";
-    threads.setAttribute("data-timestamp", +new Date());
+    threads.setAttribute("data-timestamp", + new Date());
     (document.head || document.body).appendChild(threads);
   },
   twitter() {
@@ -44,8 +59,16 @@ Template.embedSocial.helpers({
   },
   facebook() {
     const facebookConfig = Template.instance().state.get("feed").facebook;
-    if (facebookConfig.enabled && facebookConfig.appId && facebookConfig.profilePage) {
-      return `https://www.facebook.com/plugins/page.php?href=${facebookConfig.profilePage}&tabs=timeline&width=400&height=400&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=false&appId=${facebookConfig.appId}`;
+    if (facebookConfig.enabled && facebookConfig.appId &&
+    facebookConfig.profilePage) {
+      const baseUrl = "https://www.facebook.com/plugins/page.php?";
+      const href = `href=${facebookConfig.profilePage}`;
+      const dimensions = "&tabs=timeline&width=400&height=400&";
+      const sHeader = "small_header=false&adapt_container_width=true";
+      const remainder = "&hide_cover=false&show_facepile=false&";
+      const appID = `appId=${facebookConfig.appId}`;
+      url = `${baseUrl}${href}${dimensions}${sHeader}${remainder}${appID}`;
+      return url;
     }
     return false;
   }
