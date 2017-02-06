@@ -1,4 +1,6 @@
 /* eslint camelcase: 0 */
+/* eslint consistent-return: 0 */
+/* eslint no-unused-vars: 0 */
 import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 import { Reaction } from "/client/api";
@@ -38,7 +40,6 @@ const generateTransactionID = () => {
   return Random.id(16);
 };
 
-
 const handlePayment = (transactionId, paymentType) => {
   const paystackConfig = getPaystackSettings();
   HTTP.call("GET", `https://api.paystack.co/transaction/verify/${transactionId}`, {
@@ -77,14 +78,11 @@ const handlePayment = (transactionId, paymentType) => {
   });
 };
 
-
-
 const payWithPaystack = (email, price, transactionId) => {
   const payStackDetails = getPaystackSettings();
   const handler = PaystackPop.setup({
     key: payStackDetails.settings.publicKey,
     email: email,
-    // Multiply by 100 because Paystack divides by 100
     amount: price * 100,
     ref: transactionId,
     callback: function (response) {
