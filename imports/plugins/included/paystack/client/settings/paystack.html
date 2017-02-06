@@ -5,11 +5,9 @@
     </div>
     <div class="panel-body">
       {{#autoForm collection=Collections.Packages schema=PaystackPackageConfig doc=packageData type="update" id="example-update-form"}}
-        {{>afQuickField name='settings.publicKey'}}
-        {{>afQuickField name='settings.secretKey'}}
-        
-        <button type="submit" class="btn btn-primary pull-right">Update</button>
-      {{/autoForm}}
+      {{>afQuickField name='settings.publicKey'}} {{>afQuickField name='settings.secretKey'}}
+
+      <button type="submit" class="btn btn-primary pull-right">Update</button> {{/autoForm}}
     </div>
   </div>
 
