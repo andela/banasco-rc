@@ -99,9 +99,11 @@ Template.searchModal.onCreated(function () {
         if (!["null", "all"].includes(priceQuery) && priceQuery) {
           const range = priceQuery.split("-");
           productResults =  priceFilter(productResults, range);
-        } if (!["null", "all"].includes(brandQuery) && brandQuery) {
+        }
+        if (!["null", "all"].includes(brandQuery) && brandQuery) {
           productResults = brandFilter(productResults, brandQuery);
-        } if (sortQuery !== "null" && sortQuery) {
+        }
+        if (sortQuery !== "null" && sortQuery) {
           productResults = sort(productResults, sortQuery);
         }
         const productResultsCount = productResults.length;
