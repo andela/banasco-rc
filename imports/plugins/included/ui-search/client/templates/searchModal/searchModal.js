@@ -55,18 +55,18 @@ Template.searchModal.onCreated(function () {
         if (productMinPrice >= queryMinPrice && productMaxPrice <= queryMaxPrice) {
           return product;
         }
+        return false;
       }
     });
   };
   // Sorts product by price
   const sort = (products, type) => {
     return products.sort((a, b) => {
-      const A = parseFloat(a.price.min);
-      const B = parseFloat(b.price.min);
+      const A = a.price === null ? -1 : a.price.min; // ? parseFloat(a.price.min) : parseFloat(a.price);
+      const B = b.price === null ? -1 : b.price.min; // ? parseFloat(b.price.min) : parseFloat(b.price);
       if (A < B) {
         return type === "DESC" ? 1 : -1;
-      }
-      if (A > B) {
+      } else if (A > B) {
         return type === "ASC" ? 1 : -1;
       }
       return 0;
