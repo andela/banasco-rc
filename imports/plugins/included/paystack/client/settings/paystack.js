@@ -5,7 +5,6 @@ import { PaystackPackageConfig } from "../../lib/collections/schemas";
 
 import "./paystack.html";
 
-
 Template.paystackSettings.helpers({
   PaystackPackageConfig() {
     return PaystackPackageConfig;
