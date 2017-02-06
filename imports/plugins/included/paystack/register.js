@@ -23,7 +23,7 @@ Reaction.registerPackage({
 
     // Settings panel
     {
-      label: "Paystack Payment Settings", // this key (minus spaces) is used for translations
+      label: "Paystack Payment Settings",
       route: "/dashboard/paystack",
       provides: "settings",
       container: "dashboard",
