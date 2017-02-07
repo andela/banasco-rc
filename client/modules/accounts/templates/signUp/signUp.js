@@ -78,7 +78,7 @@ Template.loginFormSignUpView.events({
         errors.vendorName = { i18nKeyReason: "Invalid vendor name", reason: "Invalid vendor name" };
       }
 
-      if (!vendorPhone || vendorPhone.length < 11 || /[^\d{11}]/.test(vendorPhone)) {
+      if (!(/^['+']?[0-9]{6,14}$/).test(vendorPhone)) {
         errors.vendorPhone = { i18nKeyReason: "Invalid phone number", reason: "Invalid phone number" };
       }
 
@@ -134,4 +134,5 @@ Template.loginFormSignUpView.events({
     const userType = event.target.value.toString().toLowerCase();
     Session.set("userType", userType);
   }
+
 });
