@@ -2,6 +2,7 @@ import { Session } from "meteor/session";
 import { Template } from "meteor/templating";
 import { ReactiveDict } from "meteor/reactive-dict";
 import { IconButton } from "/imports/plugins/core/ui/client/components";
+import * as Collections from "/lib/collections";
 
 Template.gridControls.onCreated(function () {
   this.state = new ReactiveDict();
@@ -64,7 +65,23 @@ Template.gridControls.helpers({
     };
   },
 
-  checked: function () {
+  checked() {
     return Template.instance().state.equals("isSelected", true);
+  },
+
+  isVendorProduct() {
+    const instance = Template.instance();
+    const productId = instance.data.product._id;
+    const vendorId = Meteor.userId();
+    let isVendorProduct = false;
+
+    const product = Collections.Products.findOne({
+      _id: productId,
+      vendorId: {
+        $eq: vendorId
+      }
+    });
+    if (product) isVendorProduct = true;
+    return isVendorProduct;
   }
 });

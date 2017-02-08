@@ -1,6 +1,8 @@
+/* global Meteor:true */
+
 import { Template } from "meteor/templating";
 import Alert from "sweetalert2";
-import { Media } from "/lib/collections";
+import { Media, Accounts } from "/lib/collections";
 import { NumericInput } from "/imports/plugins/core/ui/client/components";
 
 /**
@@ -37,6 +39,8 @@ Template.ordersListItems.helpers({
   items() {
     const { order } = Template.instance().data;
     const combinedItems = [];
+    let returnItems = [];
+
     if (order) {
       // Lopp through all items in the order. The items are split into indivital items
       for (const orderItem of order.items) {
@@ -56,7 +60,22 @@ Template.ordersListItems.helpers({
           combinedItems.push(orderItem);
         }
       }
-      return combinedItems;
+
+      const currUser = Accounts.findOne({
+        userId: Meteor.userId()
+      });
+
+      const userType = currUser.userType;
+      if (userType === "vendor") {
+        for (const vendorProduct of combinedItems) {
+          if (vendorProduct.vendorId === Meteor.userId()) {
+            returnItems.push(vendorProduct);
+          }
+        }
+      } else {
+        returnItems = combinedItems;
+      }
+      return returnItems;
     }
     return false;
   },

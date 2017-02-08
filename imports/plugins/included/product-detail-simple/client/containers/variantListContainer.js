@@ -1,3 +1,5 @@
+/* global Meteor:true */
+
 import React, { Component, PropTypes } from "react";
 import { composeWithTracker } from "react-komposer";
 import { ReactionProduct } from "/lib/api";
@@ -8,6 +10,7 @@ import { Products, Media } from "/lib/collections";
 import update from "react/lib/update";
 import { getVariantIds } from "/lib/selectors/variants";
 import { DragDropProvider } from "/imports/plugins/core/ui/client/providers";
+import * as Collections from "/lib/collections";
 
 function variantIsSelected(variantId) {
   const current = ReactionProduct.selectedVariant();
@@ -160,6 +163,7 @@ class VariantListContainer extends Component {
         <VariantList
           onEditVariant={this.handleEditVariant}
           onMoveVariant={this.handleMoveVariant}
+          product={this.props.product}
           onVariantClick={this.handleVariantClick}
           onVariantVisibiltyToggle={this.handleVariantVisibilityToggle}
           {...this.props}
@@ -191,7 +195,13 @@ function composer(props, onData) {
   if (Reaction.Router.getQueryParam("as") === "customer") {
     editable = false;
   } else {
-    editable = Reaction.hasPermission(["createProduct"]);
+    const productId = Reaction.Router.getParam("handle");
+    const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
+    if (check || Reaction.hasPermission(["createProduct"]))  {
+      editable = true;
+    } else {
+      editable = false;
+    }
   }
 
   onData(null, {
@@ -207,6 +217,7 @@ function composer(props, onData) {
 }
 
 VariantListContainer.propTypes = {
+  product: PropTypes.object,
   variants: PropTypes.arrayOf(PropTypes.object)
 };
 

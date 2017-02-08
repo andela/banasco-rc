@@ -6,17 +6,24 @@ import { Reaction, i18next, Logger } from "/client/api";
 import { Tags, Media } from "/lib/collections";
 import { Loading } from "/imports/plugins/core/ui/client/components";
 import { ProductDetail } from "../components";
-import { SocialContainer, VariantListContainer } from "./";
+import { SocialContainer, VariantListContainer} from "./";
 import { MediaGalleryContainer } from "/imports/plugins/core/ui/client/containers";
 import { DragDropProvider, TranslationProvider } from "/imports/plugins/core/ui/client/providers";
+import * as Collections from "/lib/collections";
+
 
 class ProductDetailContainer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      cartQuantity: 1
+      cartQuantity: 1,
+      vendorName: ""
     };
+  }
+
+  componentWillMount() {
+    this.renderVendorDetails();
   }
 
   handleCartQuantityChange = (event, quantity) => {
@@ -144,18 +151,38 @@ class ProductDetailContainer extends Component {
     ReactionProduct.maybeDeleteProduct(this.props.product);
   }
 
+// Works well for specific vendorId
+// Todo: autoupdates of vendor names for admin view, search entire product collections.
+  renderVendorDetails = () => {
+    const productId = Reaction.Router.getParam("handle");
+    const fieldName = "vendor";
+    const vendorCheck = Collections.Accounts.findOne({_id: Meteor.userId()});
+    const vendorName = vendorCheck.profile.vendorDetails.vendorName;
+    const dbVendorName = Collections.Products.findOne({_id: productId});
+
+    if (vendorName) {
+      Meteor.call("products/updateProductField", productId, fieldName, vendorName);
+    }
+    if (dbVendorName) {
+      this.setState({vendorName: dbVendorName.vendor});
+    } else {
+      this.setState({vendorName: "Reaction"});
+    }
+  }
+
   render() {
     return (
       <TranslationProvider>
         <DragDropProvider>
           <ProductDetail
             cartQuantity={this.state.cartQuantity}
+            vendorName = {this.state.vendorName}
             mediaGalleryComponent={<MediaGalleryContainer media={this.props.media} />}
             onAddToCart={this.handleAddToCart}
             onCartQuantityChange={this.handleCartQuantityChange}
             onViewContextChange={this.handleViewContextChange}
             socialComponent={<SocialContainer />}
-            topVariantComponent={<VariantListContainer />}
+            topVariantComponent={<VariantListContainer product={this.props.product} />}
             onDeleteProduct={this.handleDeleteProduct}
             onProductFieldChange={this.handleProductFieldChange}
             {...this.props}
@@ -177,6 +204,7 @@ function composer(props, onData) {
   const variantId = Reaction.Router.getParam("variantId");
   const revisionType = Reaction.Router.getQueryParam("revision");
   const viewProductAs = Reaction.Router.getQueryParam("as");
+
 
   let productSub;
 
@@ -237,11 +265,17 @@ function composer(props, onData) {
       }
 
       let editable;
+      const switchedProductsView = Session.get("switchProducts");
 
-      if (viewProductAs === "customer") {
+      if (viewProductAs === "customer" || switchedProductsView === "all") {
         editable = false;
       } else {
-        editable = Reaction.hasPermission(["createProduct"]);
+        const check = Collections.Products.findOne({vendorId: Meteor.userId(), _id: productId});
+        if (check) {
+          editable = true;
+        } else {
+          editable = Reaction.hasPermission(["createProduct"]);
+        }
       }
 
       onData(null, {
