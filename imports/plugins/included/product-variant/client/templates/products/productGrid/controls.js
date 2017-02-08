@@ -81,10 +81,6 @@ Template.gridControls.helpers({
         $eq: vendorId
       }
     });
-    // console.log(instance.data.product);
-    // console.log(this.data);
-    // console.log(Meteor.userId());
-    // console.log(product);
     if (product) isVendorProduct = true;
     return isVendorProduct;
   }

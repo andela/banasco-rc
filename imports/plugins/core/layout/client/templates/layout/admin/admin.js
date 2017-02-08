@@ -80,20 +80,6 @@ Template.coreAdminLayout.helpers({
             }
           }
         });
-
-        // if (!instance.dropInstance) {
-        //   instance.dropInstance = new Drop({
-        //     target: event.currentTarget,
-        //     content: "",
-        //     constrainToWindow: true,
-        //     classes: "drop-theme-arrows",
-        //     position: "right center"
-        //   });
-        //
-        //   Blaze.renderWithData(Template.createContentMenu, {}, instance.dropInstance.content);
-        // }
-        //
-        // instance.dropInstance.open();
       }
     });
 
@@ -175,37 +161,3 @@ Template.coreAdminLayout.helpers({
     return reactionApp;
   }
 });
-
-// Template.coreAdminLayout.events({
-//   /**
-//    * Submit sign up form
-//    * @param  {Event} event - jQuery Event
-//    * @param  {Template} template - Blaze Template
-//    * @return {void}
-//    */
-//   "click .admin-controls-quicklinks a, click .admin-controls-quicklinks button"(event) {
-//     if (this.name === "createProduct") {
-//       event.preventDefault();
-//       event.stopPropagation();
-//
-//       if (!this.dropInstance) {
-//         this.dropInstance = new Drop({
-//           target: event.target,
-//           content: "",
-//           constrainToWindow: true,
-//           classes: "drop-theme-arrows",
-//           position: "right center"
-//         });
-//
-//         Blaze.renderWithData(Template.createContentMenu, {}, this.dropInstance.content);
-//       }
-//
-//       this.dropInstance.open();
-//     } else if (this.route) {
-//       event.preventDefault();
-//       event.stopPropagation();
-//
-//       Reaction.Router.go(this.name);
-//     }
-//   }
-// });

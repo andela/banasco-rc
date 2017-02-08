@@ -579,7 +579,6 @@ Template.productDetailDashboardControls.events({
     const self = instance.state.get("product") || {};
 
     if (isRevisionControlEnabled()) {
-      console.log("Controlled revisions", isRevisionControlEnabled());
       Meteor.call("products/updateProductField", self._id, "isVisible", !self.isVisible);
     } else {
       let errorMsg = "";

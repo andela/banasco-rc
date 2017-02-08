@@ -199,7 +199,7 @@ Meteor.methods({
    * users
    * @return {Number|Object} The number of removed documents or error object
    */
-  "accounts/addressBookRemove": function (addressId, accountUserId)  {
+  "accounts/addressBookRemove": function (addressId, accountUserId) {
     check(addressId, String);
     check(accountUserId, Match.Optional(String));
     // security, check for admin access. We don't need to check every user call
@@ -335,7 +335,7 @@ Meteor.methods({
    * @param {String} userId - new userId to welcome
    * @returns {Boolean} returns boolean
    */
-  "accounts/sendWelcomeEmail": function (shopId, userId)  {
+  "accounts/sendWelcomeEmail": function (shopId, userId) {
     check(shopId, String);
     check(userId, String);
 

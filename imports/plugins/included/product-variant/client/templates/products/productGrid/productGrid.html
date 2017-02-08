@@ -1,7 +1,7 @@
 <template name="productGrid">
   <div class="container-main">
   {{#if showViewToggle}}
-    <div class="row" style="text-align: right;">
+    <div class="row align-product">
     <h5> Products view
       <select
         id="switchProductView"
@@ -17,7 +17,7 @@
   </div>
     <span data-step="1" data-intro="Welcome to Reaction Commerce" data-position="center"></span>
     <div class="product-grid">
-      <ul class="product-grid-list list-unstyled" id="product-grid-list"  data-step="9" data-intro="{{getTour1.eight}}" style=" text-align: center;">
+      <ul class="product-grid-list list-unstyled" id="product-grid-list"  data-step="9" data-intro="{{getTour1.eight}}">
         {{#each products}}
           {{> productGridItems}}
         {{else}}
