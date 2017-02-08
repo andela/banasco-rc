@@ -35,7 +35,7 @@ Template.vendorDetails.events({
     const vendorAddr = template.$(".vendor-addr").val();
     const vendorDetails = {};
 
-    if (!vendorPhone || vendorPhone.length < 11 || /[^\d{11}]/.test(vendorPhone)) {
+    if (!(/[^['+']?[0-9]{6,14}]$/).test(vendorPhone)) {
       errors.vendorPhone = { i18nKeyReason: "Invalid phone number", reason: "Invalid phone number" };
     }
 

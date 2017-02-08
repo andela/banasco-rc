@@ -26,7 +26,6 @@ class ProductDetailContainer extends Component {
     this.renderVendorDetails();
   }
 
-
   handleCartQuantityChange = (event, quantity) => {
     this.setState({
       cartQuantity: Math.max(quantity, 1)

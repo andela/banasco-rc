@@ -667,53 +667,41 @@ Meteor.methods({
       name: "Shop"
     });
 
+    let query = {};
+    const dbResult = {
+      hashtags: [shopTagId._id],
+      price: 0.00,
+      title: "",
+      type: "variant" // needed for multi-schema
+    };
+
     if (Reaction.hasPermission("dashboard/accounts")) {
-      if (product) {
-        return Products.insert(product);
-      }
-    // if a product object was provided
-      return Products.insert({
+      query = {
         type: "simple", // needed for multi-schema
         hashtags: [shopTagId._id]
-      }, {
-        validate: false
-      }, (error, result) => {
-      // additionally, we want to create a variant to a new product
-        if (result) {
-          Products.insert({
-            ancestors: [result],
-            hashtags: [shopTagId._id],
-            price: 0.00,
-            title: "",
-            type: "variant" // needed for multi-schema
-          });
-        }
-      });
+      };
     } else {
-      if (product) {
-        return Products.insert(product);
-      }
-
-      return Products.insert({
+      query = {
         type: "simple", // needed for multi-schema
         vendorId: Meteor.userId(),
         hashtags: [shopTagId._id]
-      }, {
-        validate: false
-      }, (error, result) => {
-      // additionally, we want to create a variant to a new product
-        if (result) {
-          Products.insert({
-            ancestors: [result],
-            price: 0.00,
-            hashtags: shopTagId._id,
-            vendorId: Meteor.userId(),
-            title: "",
-            type: "variant" // needed for multi-schema
-          });
-        }
-      });
+      };
+      dbResult.vendorId = Meteor.userId();
     }
+
+    if (product) {
+      return Products.insert(product);
+    }
+    // if a product object was provided
+    return Products.insert(query, {
+      validate: false
+    }, (error, result) => {
+      // additionally, we want to create a variant to a new product
+      if (result) {
+        dbResult.ancestors = [result];
+        Products.insert(dbResult);
+      }
+    });
   },
 
   /**

@@ -49,7 +49,7 @@ class ProductDetail extends Component {
     );
   }
 
-  renderToolbar = () => {
+  renderToolbar() {
     if (this.props.hasAdminPermission) {
       return (
         <Toolbar>
@@ -81,7 +81,7 @@ class ProductDetail extends Component {
     return null;
   }
 
-  render = () => {
+  render() {
     return (
       <div className="" style={{position: "relative"}}>
         {this.renderToolbar()}
