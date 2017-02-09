@@ -100,6 +100,7 @@ class VariantList extends Component {
             editView="variantForm"
             i18nKeyLabel="productDetailEdit.editVariant"
             key={index}
+            product={this.props.product}
             label="Edit Variant"
             onEditButtonClick={this.handleChildVariantEditClick}
             onVisibilityButtonClick={this.handleVariantVisibilityClick}
@@ -147,6 +148,7 @@ VariantList.propTypes = {
   childVariants: PropTypes.arrayOf(PropTypes.object),
   displayPrice: PropTypes.func,
   editable: PropTypes.bool,
+  product: PropTypes.object,
   isSoldOut: PropTypes.func,
   onEditVariant: PropTypes.func,
   onMoveVariant: PropTypes.func,

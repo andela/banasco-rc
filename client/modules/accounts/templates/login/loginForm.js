@@ -101,6 +101,7 @@ Template.loginForm.events({
     event.stopPropagation();
 
     template.credentials = {
+      username: template.$(".login-input-username").val(),
       email: template.$(".login-input-email").val(),
       password: template.$(".login-input-password").val()
     };

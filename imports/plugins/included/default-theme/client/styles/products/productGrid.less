@@ -1,17 +1,39 @@
 .product-grid {
   *, *:before, *:after {box-sizing:  border-box !important;}
   .img-responsive {width:100%;}
+  margin-left: 30px;
   a:hover, a:visited, a:link, a:active {
     text-decoration: none;
   }
 }
 
+span + div.product-grid {
+  text-align: center;
+}
+
+.align-product {
+  text-align: right;
+}
 
 .product-grid-list {
+  text-align: center;
   .display(flex);
   .flex-wrap(wrap);
   .flex-direction(row);
   .justify-content(flex-start);
+}
+
+.no-product-info {
+  margin: 0 auto;
+}
+
+a.create-product-link {
+  color: #336dcc;
+  text-decoration: none;
+}
+
+a.create-product-link:hover {
+  text-decoration: underline;
 }
 
 

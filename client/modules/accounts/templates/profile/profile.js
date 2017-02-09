@@ -64,5 +64,16 @@ Template.accountProfile.helpers({
       return "addressBookGrid";
     }
     return "addressBookAdd";
+  },
+
+  getUserType() {
+    const user = Collections.Accounts.findOne({
+      userId: Meteor.userId()
+    });
+    return user.userType;
   }
+});
+
+Template.registerHelper("equals", function (key, value) {
+  return key === value;
 });

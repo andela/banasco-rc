@@ -1,7 +1,9 @@
+/* global Meteor:true */
+
 import { Reaction } from "/client/api";
 import { ReactionProduct } from "/lib/api";
 import { applyProductRevision } from "/lib/api/products";
-import { Products, Tags } from "/lib/collections";
+import { Products, Tags, Accounts } from "/lib/collections";
 import { Session } from "meteor/session";
 import { Template } from "meteor/templating";
 import { ITEMS_INCREMENT } from "/client/config/defaults";
@@ -71,16 +73,33 @@ Template.products.onCreated(function () {
     this.state.set("slug", slug);
 
     const queryParams = Object.assign({}, tags, Reaction.Router.current().queryParams);
-    this.subscribe("Products", scrollLimit, queryParams);
+    this.subscribe("Products", scrollLimit, queryParams, {});
+
 
     // we are caching `currentTag` or if we are not inside tag route, we will
     // use shop name as `base` name for `positions` object
     const currentTag = ReactionProduct.getTag();
-    const productCursor = Products.find({
-      ancestors: []
-      // keep this, as an example
-      // type: { $in: ["simple"] }
-    }, {
+    const userDetails = Products.find({vendorId: Meteor.userId()}).fetch();
+    const currUser = Accounts.findOne({
+      userId: Meteor.userId()
+    });
+    const userType = currUser.userType;
+
+    let query;
+    const switchedProductsView = Session.get("switchProducts");
+
+    if (switchedProductsView === "all" || userDetails.length === 0 && userType !== "vendor") {
+      query =  {
+        ancestors: []
+      };
+    } else {
+      query =  {
+        ancestors: [],
+        vendorId: Meteor.userId()
+      };
+    }
+
+    const productCursor = Products.find(query, {
       sort: {
         [`positions.${currentTag}.position`]: 1,
         [`positions.${currentTag}.createdAt`]: 1,

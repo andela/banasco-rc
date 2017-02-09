@@ -20,7 +20,7 @@ Meteor.publish("Orders", function () {
   }
   return Orders.find({
     shopId: shopId,
-    userId: this.userId
+    items: {$elemMatch: {vendorId: this.userId}}
   });
 });
 

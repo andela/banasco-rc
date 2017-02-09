@@ -1,4 +1,5 @@
 import _ from "lodash";
+import { Meteor } from "meteor/meteor";
 import { Session } from "meteor/session";
 import { Template } from "meteor/templating";
 import { Reaction } from "/client/api";
@@ -6,6 +7,7 @@ import Logger from "/client/modules/logger";
 import { ReactionProduct } from "/lib/api";
 import Sortable from "sortablejs";
 import { Accounts } from "/lib/collections";
+import { Tags } from "/lib/collections";
 
 /**
  * productGrid helpers
@@ -59,6 +61,14 @@ Template.productGrid.onRendered(function () {
 });
 
 Template.productGrid.events({
+  "change [data-event-action=switchProductsView]": () => {
+    const value = document.getElementById("switchProductView").value;
+    if (value === "vendor") {
+      Session.set("switchProducts", "vendor");
+    } else if (value === "all") {
+      Session.set("switchProducts", "all");
+    }
+  },
   "click [data-event-action=loadMoreProducts]": (event) => {
     event.preventDefault();
     loadMoreProducts();
@@ -106,5 +116,40 @@ Template.productGrid.helpers({
   },
   products() {
     return Template.currentData().products;
+  },
+  isVendor() {
+    return (Session.get("userType") !== "vendor");
+  },
+  showViewToggle() {
+    const currUser = Accounts.findOne({
+      userId: Meteor.userId()
+    });
+    const userType = currUser.userType;
+    return (userType === "vendor");
+  }
+});
+
+Template.productGrid.events({
+  "click [data-event-action=createProduct]": () => {
+    Meteor.call("products/createProduct", (error, productId) => {
+      if (Meteor.isClient) {
+        let currentTag;
+        let currentTagId;
+
+        if (error) {
+          throw new Meteor.Error("createProduct error", error);
+        } else if (productId) {
+          currentTagId = Session.get("currentTag");
+          currentTag = Tags.findOne(currentTagId);
+          if (currentTag) {
+            Meteor.call("products/updateProductTags", productId, currentTag.name, currentTagId);
+          }
+          // go to new product
+          Reaction.Router.go("product", {
+            handle: productId
+          });
+        }
+      }
+    });
   }
 });

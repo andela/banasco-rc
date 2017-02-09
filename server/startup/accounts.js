@@ -135,6 +135,7 @@ export default function () {
       // clone before adding roles
       const account = Object.assign({}, user, additionals);
       account.userId = user._id;
+      account.userType = options.userType;
       Collections.Accounts.insert(account);
 
       // send a welcome email to new users,

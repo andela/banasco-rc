@@ -4,7 +4,7 @@ import { Blaze } from "meteor/blaze";
 import { Template } from "meteor/templating";
 import { Reaction, i18next } from "/client/api";
 import { Packages } from "/lib/collections";
-
+import { Tags } from "/lib/collections";
 
 Template.coreAdminLayout.onRendered(function () {
   $("body").addClass("admin");
@@ -16,7 +16,7 @@ Template.coreAdminLayout.onDestroyed(() => {
 
 Template.coreAdminLayout.helpers({
   shortcutButtons() {
-    const instance = Template.instance();
+    // const instance = Template.instance();
     const shortcuts = Reaction.Apps({
       provides: "shortcut",
       enabled: true,
@@ -54,25 +54,32 @@ Template.coreAdminLayout.helpers({
 
     items.push({
       "icon": "plus",
-      "tooltip": "Create Content",
+      "tooltip": "Add Product",
       "data-step": 10,
       "data-intro": introMessages[3],
-      "i18nKeyTooltip": "app.createContent",
+      "i18nKeyTooltip": "admin.addProductLabel",
       "tooltipPosition": "left middle",
-      onClick(event) {
-        if (!instance.dropInstance) {
-          instance.dropInstance = new Drop({
-            target: event.currentTarget,
-            content: "",
-            constrainToWindow: true,
-            classes: "drop-theme-arrows",
-            position: "right center"
-          });
+      onClick() {
+        Meteor.call("products/createProduct", (error, productId) => {
+          if (Meteor.isClient) {
+            let currentTag;
+            let currentTagId;
 
-          Blaze.renderWithData(Template.createContentMenu, {}, instance.dropInstance.content);
-        }
-
-        instance.dropInstance.open();
+            if (error) {
+              throw new Meteor.Error("createProduct error", error);
+            } else if (productId) {
+              currentTagId = Session.get("currentTag");
+              currentTag = Tags.findOne(currentTagId);
+              if (currentTag) {
+                Meteor.call("products/updateProductTags", productId, currentTag.name, currentTagId);
+              }
+              // go to new product
+              Reaction.Router.go("product", {
+                handle: productId
+              });
+            }
+          }
+        });
       }
     });
 
@@ -154,37 +161,3 @@ Template.coreAdminLayout.helpers({
     return reactionApp;
   }
 });
-
-// Template.coreAdminLayout.events({
-//   /**
-//    * Submit sign up form
-//    * @param  {Event} event - jQuery Event
-//    * @param  {Template} template - Blaze Template
-//    * @return {void}
-//    */
-//   "click .admin-controls-quicklinks a, click .admin-controls-quicklinks button"(event) {
-//     if (this.name === "createProduct") {
-//       event.preventDefault();
-//       event.stopPropagation();
-//
-//       if (!this.dropInstance) {
-//         this.dropInstance = new Drop({
-//           target: event.target,
-//           content: "",
-//           constrainToWindow: true,
-//           classes: "drop-theme-arrows",
-//           position: "right center"
-//         });
-//
-//         Blaze.renderWithData(Template.createContentMenu, {}, this.dropInstance.content);
-//       }
-//
-//       this.dropInstance.open();
-//     } else if (this.route) {
-//       event.preventDefault();
-//       event.stopPropagation();
-//
-//       Reaction.Router.go(this.name);
-//     }
-//   }
-// });
