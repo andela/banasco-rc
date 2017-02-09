@@ -12,10 +12,13 @@ Template.searchFilter.events({
   "change #price-filter": function (event) {
     Session.set("priceFilter", event.target.value);
   },
-  "change #sort-value": function (event) {
-    Session.set("sortValue", event.target.value);
-  },
   "change #brand-filter": function (event) {
     Session.set("brandFilter", event.target.value);
+  }
+});
+
+Template.sortRelevance.events({
+  "change #sort-value": function (event) {
+    Session.set("sortValue", event.target.value);
   }
 });

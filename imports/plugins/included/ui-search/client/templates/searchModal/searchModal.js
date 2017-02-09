@@ -197,6 +197,11 @@ Template.searchModal.helpers({
   },
   showSearchResults() {
     return false;
+  },
+  hasResults() {
+    const instance = Template.instance();
+    const sortResults = instance.state.get("productSearchResults").length;
+    return sortResults > 0;
   }
 });
 

@@ -1,12 +1,12 @@
 <template name="searchFilter">
-    <div class="hidden" id="searchFilter">
-    <div class="container customContainer">
-      <div class="row">
-          
-        <div class="col-md-4">
-          <label class="transform">Price</label>
-          <div class="rui select">
-            <select id="price-filter">
+	<div class="hidden" id="searchFilter">
+		<div class="container customContainer">
+			<div class="row">
+
+				<div class="col-md-6">
+					<label class="transform">Price</label>
+					<div class="rui select">
+						<select id="price-filter">
               <option value="null" selected disabled>Filter by price</option>
               <option value="all">All prices</option>
               <option value="0-10">below - $10</option>
@@ -16,33 +16,48 @@
               <option value="500-1000">$500 - $1000</option>
               <option value="1000-above">$1000 - above</option>
             </select>
-          </div>
-        </div>
+					</div>
+				</div>
 
-        <div class="col-md-4">
-          <label class="transform">Brand</label>
-          <div class="rui select">
-            <select id="brand-filter">
+				<div class="col-md-6">
+					<label class="transform">Brand</label>
+					<div class="rui select">
+						<select id="brand-filter">
               <option value="null" selected disabled>Filter by brand</option>
               <option value="all">All brands</option>
                {{#each brand in getBrands productSearchResults }}
               <option value="{{brand}}">{{brand}}</option>
               {{/each}}
             </select>
-          </div>
-        </div>
+					</div>
+				</div>
 
-        <div class="col-md-4" style="margin-bottom:10px;">
-          <label class="transform">Sort products</label>
-          <div class="rui select">
-            <select id="sort-value">
+				<!--<div class="col-md-4" style="margin-bottom:10px;">
+					<label class="transform">Sort products</label>
+					<div class="rui select">
+						<select id="sort-value">
               <option value="null">All price</option>
               <option value="ASC">Lowest price</option>
               <option value="DESC">Highest price</option>
             </select>
-          </div>
-        </div>
-      </div>
-    </div>
-    </div>
+					</div>
+				</div>-->
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="sortRelevance">
+  <div class="hiddend" id="sortRelevance">
+	<div class="col-md-4" >
+		<div class="select">
+      <strong>Sort by:&nbsp;</strong>
+			<select id="sort-value">
+              <option value="null"><strong>Relevance</strong></option>
+              <option value="ASC"><strong>Lowest price</strong></option>
+              <option value="DESC"><strong>Highest price</strong></option>
+      </select>
+		</div>
+	</div>
+  </div>
 </template>
