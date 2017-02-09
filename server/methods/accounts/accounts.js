@@ -1,7 +1,9 @@
+/* global Meteor:true */
+/* global check:true */
+
 import * as Collections from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
 import { Logger, Reaction } from "/server/api";
-
 
 /**
  * Reaction Account Methods
@@ -404,7 +406,7 @@ Meteor.methods({
   /*
    * accounts/removeUserPermissions
    */
-  "accounts/removeUserPermissions": function (userId, permissions, group) {
+  "accounts/removeUserPermissions": (userId, permissions, group) => {
     if (!Reaction.hasPermission("reaction-accounts", Meteor.userId(), group)) {
       throw new Meteor.Error(403, "Access denied");
     }
@@ -428,7 +430,7 @@ Meteor.methods({
    * @param {String} group - group
    * @returns {Boolean} returns Roles.setUserRoles result
    */
-  "accounts/setUserPermissions": function (userId, permissions, group) {
+  "accounts/setUserPermissions": (userId, permissions, group) => {
     if (!Reaction.hasPermission("reaction-accounts", Meteor.userId(), group)) {
       throw new Meteor.Error(403, "Access denied");
     }
@@ -442,5 +444,75 @@ Meteor.methods({
       Logger.error(error);
       return error;
     }
+  },
+
+  /**
+   * accounts/updateVendorDetails
+   * @param {String} vendorDetails - vendor details
+   * @return {Object} with keys `numberAffected` and `insertedId` if doc was
+   * inserted
+   */
+  "accounts/updateVendorDetails": function (vendorDetails) {
+    check(vendorDetails, Schemas.Vendor);
+
+    const userId = Meteor.userId();
+    const userDetails = Meteor.users.findOne({_id: userId});
+    const rolesKey = Object.keys(userDetails.roles);
+    userDetails.roles[rolesKey[0]].push(
+        "dashboard",
+        "createProduct",
+        "reaction-dashboard",
+        "reaction-orders",
+        "orders",
+        "dashboard/orders"
+    );
+
+    Meteor.users.update({_id: userId}, {$set: {roles: userDetails.roles}});
+
+    Collections.Accounts.update(
+      { _id: userId },
+      { $set: {
+        profile: {
+          vendorDetails: {
+            vendorName: vendorDetails.vendorName,
+            vendorPhone: vendorDetails.vendorPhone,
+            vendorAddr: vendorDetails.vendorAddr
+          }
+        }
+      }
+      }
+    );
+
+    return Collections.Shops.insert({
+      name: vendorDetails.vendorName,
+      vendorId: userId,
+      shopDetails: vendorDetails
+    });
+  },
+
+  /**
+   * accounts/updateShopDetails
+   * @param {String} vendorDetails - vendor details
+   * @return {Null}
+   */
+  "accounts/updateShopDetails": function (vendorDetails) {
+    check(vendorDetails, Schemas.Vendor);
+    this.unblock();
+
+    const userId = Meteor.userId();
+
+    return Collections.Accounts.update(
+      { _id: userId },
+      { $set: {
+        profile: {
+          vendorDetails: {
+            vendorName: vendorDetails.vendorName,
+            vendorPhone: vendorDetails.vendorPhone,
+            vendorAddr: vendorDetails.vendorAddr
+          }
+        }
+      }
+      }
+    );
   }
 });

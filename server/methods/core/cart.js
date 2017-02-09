@@ -294,7 +294,9 @@ Meteor.methods({
     check(variantId, String);
     check(itemQty, Match.Optional(Number));
 
+    const productFind = Collections.Products.findOne({ _id: { $in: [productId]}});
     const cart = Collections.Cart.findOne({ userId: this.userId });
+
     if (!cart) {
       Logger.error(`Cart not found for user: ${ this.userId }`);
       throw new Meteor.Error(404, "Cart not found",
@@ -343,6 +345,9 @@ Meteor.methods({
       }, {
         $inc: {
           "items.$.quantity": quantity
+        },
+        $set: {
+          vendorId: productFind.vendorId
         }
       }, function (error, result) {
         if (error) {
@@ -374,6 +379,7 @@ Meteor.methods({
           _id: Random.id(),
           shopId: product.shopId,
           productId: productId,
+          vendorId: productFind.vendorId,
           quantity: quantity,
           variants: variant,
           title: product.title,
@@ -496,6 +502,7 @@ Meteor.methods({
   "cart/copyCartToOrder": function (cartId) {
     check(cartId, String);
     const cart = Collections.Cart.findOne(cartId);
+
     // security check
     if (cart.userId !== this.userId) {
       throw new Meteor.Error(403, "Access Denied");
@@ -504,8 +511,9 @@ Meteor.methods({
     const sessionId = cart.sessionId;
 
     Logger.info("cart/copyCartToOrder", cartId);
-    // reassign the id, we'll get a new orderId
+
     order.cartId = cart._id;
+
 
     // a helper for guest login, we let guest add email afterwords
     // for ease, we'll also add automatically for logged in users
@@ -577,6 +585,7 @@ Meteor.methods({
           order.shipping[0].items.push({
             _id: itemClone._id,
             productId: itemClone.productId,
+         //   vendorId: vendorId,
             shopId: itemClone.shopId,
             variantId: itemClone.variants._id
           });

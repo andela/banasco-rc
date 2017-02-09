@@ -1,20 +1,41 @@
 <template name="productGrid">
   <div class="container-main">
-    <span data-step="1" style="align:center" data-intro="Welcome to Reaction Commerce" data-position="center"></span>
+  {{#if showViewToggle}}
+    <div class="row align-product">
+    <h5> Products view
+      <select
+        id="switchProductView"
+        toggle=true
+        toggleOn=product.isVisible
+        data-event-action="switchProductsView">
+        <option value="all">All products</option>
+        <option value="vendor" selected="selected">My Products</option>
+      </select>
+   </h5>
+    </div>
+ {{/if}}
+  </div>
+    <span data-step="1" data-intro="Welcome to Reaction Commerce" data-position="center"></span>
     <div class="product-grid">
       <ul class="product-grid-list list-unstyled" id="product-grid-list"  data-step="9" data-intro="{{getTour1.eight}}">
         {{#each products}}
           {{> productGridItems}}
         {{else}}
-          <div class="row">
+          <div class="row no-product-info">
             <div class="text-center">
-              <h3>
-                <span data-i18n="app.noProductsFound">No Products Found</span>
+               <h3>
+                {{#if isVendor}}
+                  <h3><span data-i18n="search.noProductsFound">No products found.</span></h3>
+                {{else}}
+                 <h3> Seems like your shop is new! Create a new product
+                   <a class="create-product-link" data-event-action="createProduct">here</a>
+                 </h3>
+                {{/if}}
               </h3>
             </div>
           </div>
         {{/each}}
       </ul>
     </div>
-  </div>
+
 </template>

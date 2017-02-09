@@ -687,4 +687,5 @@ Meteor.methods({
       $set: {layout: shop.layout}
     });
   }
+
 });
