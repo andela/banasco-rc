@@ -44,7 +44,7 @@ Template.searchModal.onCreated(function () {
     }
   });
 
-    // Filters product by price
+    // Filter products by price
   const priceFilter = (products, query) =>  {
     return _.filter(products, (product) => {
       if (product.price) {
@@ -59,11 +59,11 @@ Template.searchModal.onCreated(function () {
       }
     });
   };
-  // Sorts product by price
+  // Sort products by price
   const sort = (products, type) => {
     return products.sort((a, b) => {
-      const A = a.price === null ? -1 : a.price.min; // ? parseFloat(a.price.min) : parseFloat(a.price);
-      const B = b.price === null ? -1 : b.price.min; // ? parseFloat(b.price.min) : parseFloat(b.price);
+      const A = a.price === null ? -1 : a.price.min;
+      const B = b.price === null ? -1 : b.price.min;
       if (A < B) {
         return type === "DESC" ? 1 : -1;
       } else if (A > B) {
@@ -74,7 +74,7 @@ Template.searchModal.onCreated(function () {
   };
 
 
-  // Filters product by brand
+  // Filter products by brand
   function brandFilter(products, query) {
     return _.filter(products, (product) => {
       return product.vendor === query;

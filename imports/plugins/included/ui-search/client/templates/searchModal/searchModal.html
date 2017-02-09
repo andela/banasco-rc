@@ -6,7 +6,7 @@
 
 		<div class="rui search-modal-header">
 
-			{{> searchInput }} {{> searchFilter productSearchResults=productSearchResults}} {{> searchTypeToggle }}
+			{{> searchInput }}  {{> searchFilter productSearchResults=productSearchResults}} {{> searchTypeToggle }}
 
 			<div id="toggleTags" class="rui tag-visible">
 
@@ -15,8 +15,7 @@
 			</div>
 
 		</div>
-		{{#if hasResults }} 
-		{{> sortRelevance}} 
+		{{#if hasResults }}  
 		{{> searchResults productSearchResults=productSearchResults orderSearchResults=orderSearchResults
 		accountSearchResults=accountSearchResults orderTable=orderTable accountTable=accountTable }} 
 		{{/if}}

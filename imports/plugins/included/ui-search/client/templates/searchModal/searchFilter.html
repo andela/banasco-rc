@@ -20,11 +20,11 @@
 				</div>
 
 				<div class="col-md-6">
-					<label class="transform">Brand</label>
+					<label class="transform">Vendor</label>
 					<div class="rui select">
 						<select id="brand-filter">
-              <option value="null" selected disabled>Filter by brand</option>
-              <option value="all">All brands</option>
+              <option value="null" selected disabled>Filter by vendor</option>
+              <option value="all">All vendors</option>
                {{#each brand in getBrands productSearchResults }}
               <option value="{{brand}}">{{brand}}</option>
               {{/each}}
@@ -37,16 +37,12 @@
 </template>
 
 <template name="sortRelevance">
-	<div class="hiddend" id="sortRelevance">
-		<div class="col-md-4">
-			<div class="select">
+	<div class="sorts" id="sortRelevance">
 				<strong>Sort by:&nbsp;</strong>
 				<select id="sort-value">
               <option value="null"><strong>Relevance</strong></option>
               <option value="ASC"><strong>Lowest price</strong></option>
               <option value="DESC"><strong>Highest price</strong></option>
       </select>
-			</div>
-		</div>
 	</div>
 </template>
