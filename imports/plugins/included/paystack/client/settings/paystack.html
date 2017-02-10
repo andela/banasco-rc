@@ -1,0 +1,14 @@
+<template name="paystackSettings">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="panel-title">Panel Title</div>
+    </div>
+    <div class="panel-body">
+      {{#autoForm collection=Collections.Packages schema=PaystackPackageConfig doc=packageData type="update" id="example-update-form"}}
+      {{>afQuickField name='settings.publicKey'}} {{>afQuickField name='settings.secretKey'}}
+
+      <button type="submit" class="btn btn-primary pull-right">Update</button> {{/autoForm}}
+    </div>
+  </div>
+
+</template>
