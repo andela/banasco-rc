@@ -76,6 +76,10 @@ Template.loginDropdown.events({
       Reaction.Router.go(route);
     }
     template.$(".dropdown-toggle").dropdown("toggle");
+  },
+
+  "click [data-event-action=manage-pages]": function () {
+    Reaction.Router.go("/reaction/dashboard/static-pages");
   }
 });
 Template.walletButton.events({

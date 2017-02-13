@@ -36,6 +36,7 @@
     {{> userAccountsDropdown}}
     {{> tour}}
     {{> walletButton}}
+    {{> pages}}
     <!--administrative shortcut icons -->
     {{#each reactionApps provides="shortcut" enabled=true}}
       <li class="dropdown-apps-icon">
@@ -51,15 +52,26 @@
 </template>
 
 <template name="tour">
-   <li class="dropdown-apps-icon">
-     <a onclick="reactionIntro()">
-       <i class="fa fa-plane fa-spin"></i>
-       <span class="icon-text">
-         Take-Tour
-       </span>
-     </a>
-   </li>
- </template>
+  <li class="dropdown-apps-icon">
+   <a onclick="reactionIntro()">
+     <i class="fa fa-plane fa-spin"></i>
+     <span class="icon-text">
+       Take-Tour
+     </span>
+   </a>
+  </li>
+</template>
+
+<template name="pages">
+  <li class="dropdown-apps-icon">
+   <a data-event-action="manage-pages">
+     <i class="fa fa-copy"></i>
+     <span class="icon-text">
+       Manage Pages
+     </span>
+   </a>
+  </li>
+</template>
 
 <template name="userAccountsDropdown">
   <!--user account shortcut icons -->
