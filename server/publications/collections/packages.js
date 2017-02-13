@@ -1,3 +1,4 @@
+/* eslint quote-props: 0 */
 import { Packages } from "/lib/collections";
 import { Reaction } from "/server/api";
 
@@ -20,9 +21,9 @@ Meteor.publish("Packages", function (shopCursor) {
   if (shop) {
     // if admin user, return all shop properties
     if (Roles.userIsInRole(this.userId, ["dashboard", "owner", "admin"],
-        Reaction.getShopId() || Roles.userIsInRole(this.userId, [
-          "owner", "admin"
-        ], Roles.GLOBAL_GROUP))) {
+      Reaction.getShopId() || Roles.userIsInRole(this.userId, [
+        "owner", "admin"
+      ], Roles.GLOBAL_GROUP))) {
       return Packages.find({
         shopId: shop._id
       });
@@ -37,8 +38,9 @@ Meteor.publish("Packages", function (shopCursor) {
         "enabled": 1,
         "registry": 1,
         "layout": 1,
-        "settings.general.enabled": 1,
-        "settings.public": 1
+        "settings": 1
+        // "settings.general.enabled": 1,
+        // "settings.public": 1
       }
     });
   }
