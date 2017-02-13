@@ -35,7 +35,7 @@ Template.totalProductsSold.onRendered(() => {
   }
 });
 
-const getChart = (data) => {
+const getBarChart = (data) => {
   const graphDef = {
     categories: ["uvCharts"],
     dataset: {
@@ -44,6 +44,35 @@ const getChart = (data) => {
   };
 
   const chartObject = uv.chart("Bar", graphDef, {
+    graph: {
+      orientation: "Vertical",
+      custompalette: ["#A1A4A5", "#C80F98", "#5F0DCF"]
+    },
+    meta: {
+      position: "#sell",
+      caption: "Total product sales",
+      subcaption: "among Imaginea OS products",
+      hlabel: "Years",
+      vlabel: "Number of users",
+      vsublabel: "in thousands"
+    },
+    dimension: {
+      width: "800",
+      height: "500"
+    }
+  });
+};
+
+
+const getPieChart = (data) => {
+  const graphDef = {
+    categories: ["uvCharts"],
+    dataset: {
+      uvCharts: data
+    }
+  };
+
+  const chartObject = uv.chart("Pie", graphDef, {
     graph: {
       orientation: "Vertical",
       custompalette: ["#A1A4A5", "#C80F98", "#5F0DCF"]
@@ -63,23 +92,16 @@ const getChart = (data) => {
   });
 };
 
-Template.totalProductsSold.helpers({
-  getSelectedDates() {
-    console.log(Session.get("fromDate"));
-  },
-  runChart() {
-  }
-});
-
-
 Template.totalProductsSold.events({
   "click .btn": () => {
     fD = Session.get("fromDate");
     tD =  Session.get("toDate");
-    Meteor.call("analytics/getOrders");
     Meteor.call("analytics/getProductSales", fD, tD, (error, result) => {
-      console.log("Returned Result", result);
-      getChart(result);
+      getBarChart(result);
     });
   }
 });
+
+   /* Meteor.call("analytics/getUserType", (error, result) => {
+      getPieChart(result);
+    });*/
