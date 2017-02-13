@@ -1,15 +1,12 @@
 import { Template } from "meteor/templating";
 
-Template.detailedAnalytics.events({
+Template.actionableAnalytics.events({
   "click div.analytics-tab-menu>div.list-group>a": function (event) {
     event.preventDefault();
     $(event.currentTarget).siblings("a.active").removeClass("active");
     $(event.currentTarget).addClass("active");
     const index = $(event.currentTarget).index();
-    console.log("index accessed.");
     $("div.analytics-tab>div.analytics-tab-content").removeClass("active");
     $("div.analytics-tab>div.analytics-tab-content").eq(index).addClass("active");
   }
 });
-
-

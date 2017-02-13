@@ -491,6 +491,42 @@ Meteor.methods({
   },
 
   /**
+   * accounts/updateLoginDate
+   * @return {Null}
+   */
+  "accounts/updateLoginDate": function () {
+    const userId = Meteor.userId();
+    const todayDate = new Date().toLocaleDateString();
+    const currentDate = Collections.Accounts.find({
+      _id: userId
+    }).fetch();
+    if (todayDate !== currentDate.loginDate) {
+      Collections.Accounts.update(
+       { _id: userId },
+        { $set: {
+          loginDate: todayDate
+        }
+        }
+    );
+    }
+  },
+
+  /**
+   * accounts/updateLoginCount
+   * @return {Null}
+   */
+  "accounts/updateLoginCount": function () {
+    const userId = Meteor.userId();
+    Collections.Accounts.update(
+      { _id: userId },
+      { $inc: {
+        loginCount: 1
+      }
+      }
+    );
+  },
+
+  /**
    * accounts/updateShopDetails
    * @param {String} vendorDetails - vendor details
    * @return {Null}

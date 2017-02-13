@@ -63,6 +63,8 @@ Template.loginFormSignInView.events({
     }
 
     Meteor.loginWithPassword(username, password, (error) => {
+      Meteor.call("accounts/updateLoginCount");
+      Meteor.call("accounts/updateLoginDate");
       if (error) {
         // Show some error messages above the form fields
         templateInstance.formMessages.set({

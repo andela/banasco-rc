@@ -15,11 +15,10 @@ Template.totalProductsSold.onRendered(() => {
       return this.value;
     });
   toDate = $("#toDate").datepicker({
-    changeMonth: true,
-    changeYear: true
-  })
+      changeMonth: true,
+      changeYear: true
+    })
     .on("change", function () {
-     // fromDate.datepicker("option", "minDate", getDate(this));
       Session.set("toDate", this.value);
       return this.value;
     });
@@ -37,57 +36,59 @@ Template.totalProductsSold.onRendered(() => {
 
 const getBarChart = (data) => {
   const graphDef = {
-    categories: ["uvCharts"],
+    categories: ["sales"],
     dataset: {
-      uvCharts: data
+      sales: data
     }
   };
 
-  const chartObject = uv.chart("Bar", graphDef, {
+  uv.chart("Bar", graphDef, {
     graph: {
       orientation: "Vertical",
-      custompalette: ["#A1A4A5", "#C80F98", "#5F0DCF"]
+      custompalette: ["#C80F98"]
     },
     meta: {
-      position: "#sell",
+      position: "#salesChart",
       caption: "Total product sales",
-      subcaption: "among Imaginea OS products",
+      subcaption: "within the selected dates",
       hlabel: "Years",
-      vlabel: "Number of users",
-      vsublabel: "in thousands"
+      vlabel: "Number of products sold",
+      vsublabel: "within the selected dates"
     },
     dimension: {
-      width: "800",
+      width: "500",
       height: "500"
-    }
-  });
-};
-
-
-const getPieChart = (data) => {
-  const graphDef = {
-    categories: ["uvCharts"],
-    dataset: {
-      uvCharts: data
-    }
-  };
-
-  const chartObject = uv.chart("Pie", graphDef, {
-    graph: {
-      orientation: "Vertical",
-      custompalette: ["#A1A4A5", "#C80F98", "#5F0DCF"]
     },
-    meta: {
-      position: "#sell",
-      caption: "Usage over years",
-      subcaption: "among Imaginea OS products",
-      hlabel: "Years",
-      vlabel: "Number of users",
-      vsublabel: "in thousands"
+    caption: {
+      fontsize: "20"
     },
-    dimension: {
-      width: "800",
-      height: "500"
+    subcaption: {
+      fontsize: "50"
+    },
+    axis: {
+      subticks: 0,
+      ticks: 3
+    },
+    margin: {
+      top: 100
+    },
+    legend: {
+      position: "right",
+      legendstart: 0,
+      fontfamily: "Arial",
+      fontsize: "11",
+      fontweight: "normal",
+      legendtype: "dataset",
+      symbolsize: 10,
+      showlegends: true
+    },
+    effects: {
+      hovercolor: "#FF0000",
+      strokecolor: "none",
+      textcolor: "#000000",
+      duration: 800,
+      hover: 400,
+      showhovertext: true
     }
   });
 };
@@ -95,13 +96,16 @@ const getPieChart = (data) => {
 Template.totalProductsSold.events({
   "click .btn": () => {
     fD = Session.get("fromDate");
-    tD =  Session.get("toDate");
+    tD = Session.get("toDate");
+    $("#salesChart .uv-chart-div").remove();
     Meteor.call("analytics/getProductSales", fD, tD, (error, result) => {
-      getBarChart(result);
+      $("#valid").append("<h1> No data avaliable!! </h1>");
+      if (result.length === 0) {
+        $("#valid").show();
+      } else {
+        $("#valid").hide();
+        getBarChart(result);
+      }
     });
   }
 });
-
-   /* Meteor.call("analytics/getUserType", (error, result) => {
-      getPieChart(result);
-    });*/
