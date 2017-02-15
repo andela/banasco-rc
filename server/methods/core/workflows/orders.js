@@ -36,6 +36,8 @@ Meteor.methods({
 
     const order = options.order;
 
+    Meteor.call("orders/sendNotification", order);
+
     const result = _.every(order.items, (item) => {
       return _.includes(item.workflow.workflow, "coreOrderItemWorkflow/completed");
     });

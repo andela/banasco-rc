@@ -350,7 +350,7 @@ Meteor.methods({
         if (error) {
           Logger.warn("ERROR", error);
         } else {
-          Logger.info("SMS SENT", result);
+          Logger.info("SMS SENT");
         }
       });
 
@@ -373,7 +373,7 @@ Meteor.methods({
           }
         });
       });
-    } else if (order.workflow.status === "coreOrderItemWorkflow/shipped") {
+    } else if (order.workflow.status === "coreOrderWorkflow/processing") {
       smsContent.message = "Your orders has been shipped.";
       Meteor.call("send/smsAlert", smsContent, (error) => {
         if (error) {
@@ -383,7 +383,7 @@ Meteor.methods({
         }
       });
     } else if (order.workflow.status === "coreOrderWorkflow/completed") {
-      smsContent.message = "Your orders on Banasko-RC has been delivered, thanks";
+      smsContent.message = "Your orders on Banasko-RC has been shipped, thanks";
       Meteor.call("send/smsAlert", smsContent, (error) => {
         if (error) {
           Logger.warn("ERROR", error);
