@@ -3,12 +3,6 @@ import { Wallets, Accounts } from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
 import { check } from "meteor/check";
 
-
-// const getExchangeRate = () => {
-//   const shop = Shops.find(Reaction.getShopId()).fetch();
-//   return shop[0].currencies.NGN.rate;
-// };
-
 Meteor.methods({
 
   /**

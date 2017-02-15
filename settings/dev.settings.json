@@ -2,9 +2,9 @@
   "ROOT_URL": "",
   "MAIL_URL": "",
   "reaction": {
-    "REACTION_USER": "israel.tomilayo@andela.com",
-    "REACTION_AUTH": "tomilayo",
-    "REACTION_EMAIL": "israel.tomilayo@andela.com"
+    "REACTION_USER": "",
+    "REACTION_AUTH": "",
+    "REACTION_EMAIL": ""
   },
   "isDebug": "info",
   "public": {}
