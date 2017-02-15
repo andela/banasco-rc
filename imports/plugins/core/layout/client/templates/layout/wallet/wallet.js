@@ -3,6 +3,7 @@ import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 import { Reaction } from "/client/api";
 import { Accounts, Packages, Wallets, Shops } from "/lib/collections";
+import Alert from "sweetalert2";
 
 Template.wallet.onCreated(function bodyOnCreated() {
   this.state = new ReactiveDict();
@@ -50,7 +51,7 @@ function handlePayment(result) {
     headers: {
       Authorization: `Bearer ${paystackConfig.settings.secretKey}`
     }
-  }, function(error, response) {
+  }, function (error, response) {
     if (error) {
       Alerts.toast("Unable to verify payment", "error");
     } else if (response.data.data.status !== "success") {
@@ -146,23 +147,34 @@ Template.wallet.events({
     if (!mailRegex.test(recipientEmail)) {
       Alerts.toast("Invalid email address", "error");
     } else {
-      const transactions = { amount, to: recipientEmail, date: new Date(), transactionType: "Debit" };
-      Meteor.call("wallet/transaction", Meteor.userId(), transactions, (err, res) => {
-        if (res) {
-          if (res === 1) {
-            Alerts.toast(`Fund Transfer to ${recipientEmail} successful`);
+      Alert({
+        title: `Are you sure you want to transfer $${amount} to ${recipientEmail}?`,
+        text: "Funds will be deducted from your wallet",
+        type: "warning",
+        showConfirmButton: true,
+        cancelButtonText: "Dismiss",
+        showCancelButton: true
+      }).then(() => {
+        const transactions = { amount, to: recipientEmail, date: new Date(), transactionType: "Debit" };
+        Meteor.call("wallet/transaction", Meteor.userId(), transactions, (err, res) => {
+          if (res) {
+            if (res === 1) {
+              Alerts.toast(`Fund Transfer to ${recipientEmail} successful`);
+            }
+            if (res === 2) {
+              Alerts.toast(`Email ${recipientEmail} does not exist in the reaction database`, "error");
+              return false;
+            }
+            if (res === 3) {
+              Alerts.toast("You cannot transfer money to yourself", "error");
+              return false;
+            }
+          } else {
+            Alerts.toast("An error occured, please try again", "error");
           }
-          if (res === 2) {
-            Alerts.toast(`Email ${recipientEmail} does not exist in the reaction database`, "error");
-            return false;
-          }
-          if (res === 3) {
-            Alerts.toast("You cannot transfer money to yourself", "error");
-            return false;
-          }
-        } else {
-          Alerts.toast("An error occured, please try again", "error");
-        }
+        });
+      }, (dismiss) => {
+        return dismiss === "cancel" ? false : true;
       });
     }
   }

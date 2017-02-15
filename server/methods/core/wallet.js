@@ -30,8 +30,6 @@ Meteor.methods({
       if (transactions.to) {
         const recipient = Accounts.findOne({ "emails.0.address": transactions.to });
         const sender = Accounts.findOne(userId);
-        console.log(sender, " sender");
-        console.log("recipient", recipient);
         if (sender.emails[0].address === recipient) {
           return 3;
         }
