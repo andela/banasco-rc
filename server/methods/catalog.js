@@ -1288,5 +1288,33 @@ Meteor.methods({
 
     Logger.debug("invalid product visibility ", productId);
     throw new Meteor.Error(400, "Bad Request");
+  },
+  /**
+   * products/updateFileId
+   * @summary This updates the productFileId field in the document
+   *
+   * @param {String} fileId - fileId
+   * @summary This is the uploaded file id
+   *
+   * @param {String} productId - productId
+   * @summary The current productId
+   *
+   * @return {Array} result
+   */
+  "products/updateFileId": function (fileId, productId) {
+    check(fileId, String);
+    check(productId, String);
+
+    const result = Products.update(productId, {
+      $addToSet: {
+        productFileId: fileId
+      }
+    }, {
+      selector: {
+        type: "simple"
+      }
+    });
+
+    return result;
   }
 });
