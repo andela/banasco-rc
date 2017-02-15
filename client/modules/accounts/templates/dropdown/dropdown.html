@@ -34,7 +34,8 @@
 <template name="accountsDropdownApps">
   <ul class="user-accounts-dropdown-apps">
     {{> userAccountsDropdown}}
-    {{>tour}}
+    {{> tour}}
+    {{> walletButton}}
     <!--administrative shortcut icons -->
     {{#each reactionApps provides="shortcut" enabled=true}}
       <li class="dropdown-apps-icon">
@@ -78,3 +79,14 @@
   </li>
   {{/each}}
 </template>
+
+<template name="walletButton">
+  {{#if currentUser}}
+  <li class="dropdown-apps-icon" id="wallet">
+    <a>
+    <i class="fa fa-google-wallet" aria-hidden="true"></i>
+    <span class="icon-text">Wallet</span>
+    </a>
+  </li>
+  {{/if}}
+  </template>

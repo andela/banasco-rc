@@ -21,6 +21,8 @@ results
 allure-results
 selenium-server-standalone-3.0.1.jar
 chromedriver
+.vscode
+settings/settings.json
 
 client/plugins.js
 server/plugins.js
