@@ -1,9 +1,10 @@
 import { Packages, Shops, Wallets, Cart } from "/lib/collections";
 import { Template } from "meteor/templating";
+import Alert from "sweetalert2";
 
 const openClassName = "in";
 
-Template.corePaymentMethods.onCreated(function() {
+Template.corePaymentMethods.onCreated(function () {
   // Set the default paymentMethod
   // Note: we do this once, so if the admin decides to change the default payment method
   // while a user is trying to checkout, they wont get a jarring experience.
@@ -26,7 +27,7 @@ Template.corePaymentMethods.helpers({
       return openClassName;
     }
   },
-  appDetails: function() {
+  appDetails: function () {
     // Provides a fallback to the package icon / label if one is not found for this reaction app
     const self = this;
     if (!(this.icon && this.label)) {
@@ -52,47 +53,59 @@ Template.payWithWallet.onCreated(function bodyOnCreated() {
   });
 });
 Template.payWithWallet.events({
-  "click #wallet": (event) => {
+  "click #pay-with-wallet": (event) => {
     event.preventDefault();
-    const balance = Template.instance().state.get("details").balance;
-    const cartAmount = parseInt(Cart.findOne().cartTotal(), 10);
-    if (cartAmount > balance) {
-      Alerts.toast("Insufficient balance", "error");
-      return false;
-    }
-    const currency = Shops.findOne().currency;
-    console.log(Shops.findOne());
-    transactionId = Random.id();
-    Meteor.call("wallet/transaction", Meteor.userId(), {
-      amount: cartAmount,
-      date: new Date(),
-      orderId: transactionId,
-      transactionType: "Debit"
-    }, (err, res) => {
-      if (res) {
-        const paymentMethod = {
-          processor: "Wallet",
-          storedCard: "",
-          method: "Wallet",
-          transactionId,
-          currency: currency,
-          amount: cartAmount,
-          status: "passed",
-          mode: "authorize",
-          createdAt: new Date(),
-          transactions: []
-        };
-        const theTransaction = {
-          amount: cartAmount,
-          transactionId,
-          currency: currency
-        };
-        paymentMethod.transactions.push(theTransaction);
-        Meteor.call("cart/submitPayment", paymentMethod);
-        Alerts.toast("Payment Successful", "success");
-      } else {
-        Alerts.toast("An error occured, please try again", "error");
+    const balances = Template.instance().state.get("details").balance;
+    const cartAmounts = parseInt(Cart.findOne().cartTotal(), 10);
+    Alert({
+      title: "Are you sure you want to Purchase this product?",
+      text: "Funds will be deducted from your wallet",
+      type: "warning",
+      showConfirmButton: true,
+      cancelButtonText: "Dismiss",
+      showCancelButton: true
+    }).then(() => {
+      const cartAmount = cartAmounts;
+      const balance = balances;
+      if (cartAmount > balance) {
+        Alerts.toast("Insufficient balance", "error");
+        return false;
       }
+      const currency = Shops.findOne().currency;
+      transactionId = Random.id();
+      Meteor.call("wallet/transaction", Meteor.userId(), {
+        amount: cartAmount,
+        date: new Date(),
+        orderId: transactionId,
+        transactionType: "Debit"
+      }, (err, res) => {
+        if (res) {
+          const paymentMethod = {
+            processor: "Wallet",
+            storedCard: "",
+            method: "Wallet",
+            transactionId,
+            currency: currency,
+            amount: cartAmount,
+            status: "passed",
+            mode: "authorize",
+            createdAt: new Date(),
+            transactions: []
+          };
+          const theTransaction = {
+            amount: cartAmount,
+            transactionId,
+            currency: currency
+          };
+          paymentMethod.transactions.push(theTransaction);
+          Meteor.call("cart/submitPayment", paymentMethod);
+          Alerts.toast("Payment Successful", "success");
+        } else {
+          Alerts.toast("An error occured, please try again", "error");
+        }
+      });
+    }, (dismiss) => {
+      return dismiss === "cancel" ? false : true;
     });
   }
 });
