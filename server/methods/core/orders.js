@@ -6,9 +6,10 @@ import Future from "fibers/future";
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import { getSlug } from "/lib/api";
-import { Cart, Media, Orders, Products, Shops } from "/lib/collections";
+import { Cart, Media, Orders, Products, Shops, Accounts } from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
 import { Logger, Reaction } from "/server/api";
+import { HTTP } from "meteor/http";
 
 /**
  * Reaction Order Methods
@@ -80,10 +81,10 @@ Meteor.methods({
         "_id": order._id,
         "shipping._id": shipment._id
       }, {
-        $set: {
-          "shipping.$.packed": packed
-        }
-      });
+          $set: {
+            "shipping.$.packed": packed
+          }
+        });
 
       // Set the status of the items as shipped
       const itemIds = shipment.items.map((item) => {
@@ -96,10 +97,10 @@ Meteor.methods({
           "_id": order._id,
           "shipping._id": shipment._id
         }, {
-          $set: {
-            "shipping.$.packed": packed
-          }
-        });
+            $set: {
+              "shipping.$.packed": packed
+            }
+          });
       }
       return result;
     }
@@ -176,14 +177,13 @@ Meteor.methods({
       }
     });
   },
-
   /**
-   * orders/processPayment
-   *
-   * @summary trigger processPayment and workflow update
-   * @param {Object} order - order object
-   * @return {Object} return this.processPayment result
-   */
+    * orders/processPayment
+    *
+    * @summary trigger processPayment and workflow update
+    * @param {Object} order - order object
+    * @return {Object} return this.processPayment result
+    */
   "orders/processPayment": function (order) {
     check(order, Object);
 
@@ -324,6 +324,83 @@ Meteor.methods({
    */
   "orders/sendNotification": function (order) {
     check(order, Object);
+    const shoppersPhone = order.billing[0].address.phone;
+
+    //  Loop through orders to get vendor information and send notification to them
+    const orderedItems = order.items;
+    let orderedProducts = "";
+    let vendorPhones = [];
+    for (let i = 0; i < orderedItems.length; i += 1) {
+      orderedProducts += ` ${orderedItems[i].title},`;
+      const productVendor = Accounts.find({ _id: orderedItems[i].vendorId }).fetch();
+      Logger.info("Vendor Object", productVendor);
+      vendorPhones.push(productVendor[0].profile.vendorDetails.vendorPhone);
+    }
+    Logger.info("Vendor Phones: ", vendorPhones);
+
+
+    Logger.info("ORDER", order.items);
+    const smsContent = {
+      to: shoppersPhone,
+      message: `Receipt for ${orderedProducts} has been received. Thanks.`
+    };
+
+    if (order.workflow.status === "new") {
+      Meteor.call("send/smsAlert", smsContent, (error, result) => {
+        if (error) {
+          Logger.warn("ERROR", error);
+        } else {
+          Logger.info("SMS SENT", result);
+        }
+      });
+
+      vendorAlertMessage = "You have pending orders on your Banasko-RC store";
+
+      // Filter out the duplicate values
+      vendorPhones = vendorPhones.filter((item, index, inputArray) => {
+        return inputArray.indexOf(item) == index;
+      });
+
+      vendorPhones.forEach((number) => {
+        const vendorSmsContent = {};
+        vendorSmsContent.to = number;
+        vendorSmsContent.message = vendorAlertMessage;
+        Meteor.call("send/smsAlert", vendorSmsContent, (error) => {
+          if (error) {
+            Logger.warn("ERROR", error);
+          } else {
+            Logger.info("SMS SENT");
+          }
+        });
+      });
+    } else if (order.workflow.status === "coreOrderItemWorkflow/shipped") {
+      smsContent.message = "Your orders has been shipped.";
+      Meteor.call("send/smsAlert", smsContent, (error) => {
+        if (error) {
+          Logger.warn("ERROR", error);
+        } else {
+          Logger.info("SMS SENT");
+        }
+      });
+    } else if (order.workflow.status === "coreOrderWorkflow/completed") {
+      smsContent.message = "Your orders on Banasko-RC has been delivered, thanks";
+      Meteor.call("send/smsAlert", smsContent, (error) => {
+        if (error) {
+          Logger.warn("ERROR", error);
+        } else {
+          Logger.info("SMS SENT");
+        }
+      });
+    } else if (order.workflow.status === "coreOrderWorkflow/canceled") {
+      smsContent.message = "Your order was cancelled.";
+      Meteor.call("send/smsAlert", smsContent, (error) => {
+        if (error) {
+          Logger.warn("ERROR", error);
+        } else {
+          Logger.info("SMS SENT");
+        }
+      });
+    }
 
     if (!this.userId) {
       Logger.error("orders/sendNotification: Access denied");
@@ -436,10 +513,32 @@ Meteor.methods({
       from: `${shop.name} <${shop.emails[0].address}>`,
       subject: `Your order is confirmed`,
       // subject: `Order update from ${shop.name}`,
-      html: SSR.render(tpl,  dataForOrderEmail)
+      html: SSR.render(tpl, dataForOrderEmail)
     });
 
     return true;
+  },
+
+  "send/smsAlert": function (smsContent) {
+    check(smsContent, Object);
+    HTTP.call("GET", Meteor.settings.SMS.APIURL,
+      {
+        params:
+        {
+          cmd: "sendquickmsg",
+          owneremail: Meteor.settings.SMS.OWNEREMAIL,
+          subacct: Meteor.settings.SMS.SUBACCT,
+          subacctpwd: Meteor.settings.SMS.SUBACCTPASSWORD,
+          message: smsContent.message,
+          sender: Meteor.settings.SMS.SENDER,
+          sendto: smsContent.to,
+          msgtype: 0
+        }
+      }, (error) => {
+        error ? Logger.warn("ERROR IN SENDING THE SMS", error)
+          : Logger.info("Order sms alert sent to ", smsContent.to);
+      }
+    );
   },
 
   /**
@@ -490,10 +589,10 @@ Meteor.methods({
       "_id": orderId,
       "shipping._id": shippingId
     }, {
-      $addToSet: {
-        "shipping.shipments": data
-      }
-    });
+        $addToSet: {
+          "shipping.shipments": data
+        }
+      });
   },
 
   /**
@@ -518,10 +617,10 @@ Meteor.methods({
       "_id": order._id,
       "shipping._id": shipment._id
     }, {
-      $set: {
-        ["shipping.$.tracking"]: tracking
-      }
-    });
+        $set: {
+          ["shipping.$.tracking"]: tracking
+        }
+      });
   },
 
   /**
@@ -546,10 +645,10 @@ Meteor.methods({
       "_id": orderId,
       "shipping._id": shipmentId
     }, {
-      $push: {
-        "shipping.$.items": item
-      }
-    });
+        $push: {
+          "shipping.$.items": item
+        }
+      });
   },
 
   "orders/updateShipmentItem": function (orderId, shipmentId, item) {
@@ -565,10 +664,10 @@ Meteor.methods({
       "_id": orderId,
       "shipments._id": shipmentId
     }, {
-      $addToSet: {
-        "shipment.$.items": shipmentIndex
-      }
-    });
+        $addToSet: {
+          "shipment.$.items": shipmentIndex
+        }
+      });
   },
 
   /**
@@ -619,7 +718,7 @@ Meteor.methods({
       throw new Meteor.Error(403, "Access Denied. You are not connected.");
     }
 
-    return Orders.update({cartId: cartId}, {
+    return Orders.update({ cartId: cartId }, {
       $set: {
         email: email
       }
@@ -699,10 +798,10 @@ Meteor.methods({
       Products.update({
         _id: item.variants._id
       }, {
-        $inc: {
-          inventoryQuantity: -item.quantity
-        }
-      }, { selector: { type: "variant" } });
+          $inc: {
+            inventoryQuantity: -item.quantity
+          }
+        }, { selector: { type: "variant" } });
     });
   },
 
@@ -746,15 +845,15 @@ Meteor.methods({
               "_id": orderId,
               "billing.paymentMethod.transactionId": transactionId
             }, {
-              $set: {
-                "billing.$.paymentMethod.mode": "capture",
-                "billing.$.paymentMethod.status": "completed",
-                "billing.$.paymentMethod.metadata": metadata
-              },
-              $push: {
-                "billing.$.paymentMethod.transactions": result
-              }
-            });
+                $set: {
+                  "billing.$.paymentMethod.mode": "capture",
+                  "billing.$.paymentMethod.status": "completed",
+                  "billing.$.paymentMethod.metadata": metadata
+                },
+                $push: {
+                  "billing.$.paymentMethod.transactions": result
+                }
+              });
           } else {
             if (result && result.error) {
               Logger.fatal("Failed to capture transaction.", order, paymentMethod.transactionId, result.error);
@@ -766,16 +865,16 @@ Meteor.methods({
               "_id": orderId,
               "billing.paymentMethod.transactionId": transactionId
             }, {
-              $set: {
-                "billing.$.paymentMethod.mode": "capture",
-                "billing.$.paymentMethod.status": "error"
-              },
-              $push: {
-                "billing.$.paymentMethod.transactions": result
-              }
-            });
+                $set: {
+                  "billing.$.paymentMethod.mode": "capture",
+                  "billing.$.paymentMethod.status": "error"
+                },
+                $push: {
+                  "billing.$.paymentMethod.transactions": result
+                }
+              });
 
-            return {error: "orders/capturePayments: Failed to capture transaction"};
+            return { error: "orders/capturePayments: Failed to capture transaction" };
           }
         });
       }
@@ -839,10 +938,10 @@ Meteor.methods({
       "_id": orderId,
       "billing.paymentMethod.transactionId": transactionId
     }, {
-      $push: {
-        "billing.$.paymentMethod.transactions": result
-      }
-    });
+        $push: {
+          "billing.$.paymentMethod.transactions": result
+        }
+      });
 
     if (result.saved === false) {
       Logger.fatal("Attempt for refund transaction failed", order._id, paymentMethod.transactionId, result.error);
