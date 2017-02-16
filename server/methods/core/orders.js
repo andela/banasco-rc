@@ -374,7 +374,7 @@ Meteor.methods({
         });
       });
     } else if (order.workflow.status === "coreOrderWorkflow/processing") {
-      smsContent.message = "Your orders has been shipped.";
+      smsContent.message = "Your orders is on the way and will soon be delivered.";
       Meteor.call("send/smsAlert", smsContent, (error) => {
         if (error) {
           Logger.warn("ERROR", error);
@@ -521,16 +521,16 @@ Meteor.methods({
 
   "send/smsAlert": function (smsContent) {
     check(smsContent, Object);
-    HTTP.call("GET", Meteor.settings.SMS.APIURL,
+    HTTP.call("GET", "http://www.smslive247.com/http/index.aspx",
       {
         params:
         {
           cmd: "sendquickmsg",
-          owneremail: Meteor.settings.SMS.OWNEREMAIL,
-          subacct: Meteor.settings.SMS.SUBACCT,
-          subacctpwd: Meteor.settings.SMS.SUBACCTPASSWORD,
+          owneremail: "pleroonigeria@gmail.com",
+          subacct: "banasko",
+          subacctpwd: "banasko",
           message: smsContent.message,
-          sender: Meteor.settings.SMS.SENDER,
+          sender: "BANASKO-RC",
           sendto: smsContent.to,
           msgtype: 0
         }

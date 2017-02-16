@@ -2,17 +2,17 @@
   "ROOT_URL": "",
   "MAIL_URL": "",
   "reaction": {
-    "REACTION_USER": "",
-    "REACTION_AUTH": "",
-    "REACTION_EMAIL": ""
+    "REACTION_USER": "brainyfarm",
+    "REACTION_AUTH": "password",
+    "REACTION_EMAIL": "brainyfarm@gmail.com"
   },
   "isDebug": "info",
   "public": {},
   "SMS": {
-    "OWNEREMAIL": "",
-    "SUBACCT": "",
-    "SENDER": "",
-    "SUBACCTPASSWORD": "",
-    "APIURL": ""
+    "OWNEREMAIL": "pleroonigeria@gmail.com",
+    "SUBACCT": "banasko",
+    "SENDER": "BANASKO-RC",
+    "SUBACCTPASSWORD": "banasko",
+    "APIURL": "http://www.smslive247.com/http/index.aspx"
   }
 }
