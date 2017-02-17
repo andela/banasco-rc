@@ -59,6 +59,7 @@ Meteor.methods({
     check(pageId, String);
 
     this.unblock();
+
     return StaticPages.update(
       { _id: pageId },
       { $set: {
@@ -82,6 +83,8 @@ Meteor.methods({
     check(pageDetails.status, String);
     check(pageDetails.pageId, String);
 
+    this.unblock();
+
     return StaticPages.update(
       { _id: pageDetails.pageId },
       { $set: {
@@ -104,7 +107,7 @@ Meteor.methods({
     check(pageId, String);
 
     this.unblock();
-    return StaticPages.remove({ _id: pageId });
-      
+
+    return StaticPages.remove({ _id: pageId });  
   }
 });

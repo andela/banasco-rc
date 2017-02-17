@@ -126,8 +126,6 @@ Template.staticPageLayout.events({
       template.pageDetails.status = 'draft';
     }
 
-    
-
     if (!Object.keys(template.errors).length) {
       if (template.$('#submitBtn').text().toLowerCase() === 'save') {
         // append additional details to create new page
@@ -144,7 +142,7 @@ Template.staticPageLayout.events({
           }
         });  
       } else {
-        // append additional details to create new page
+        // append additional details to update page
         template.pageDetails.pageId = Session.get('pageId')
         
         Meteor.call("pages/update", template.pageDetails, (error, page) => {

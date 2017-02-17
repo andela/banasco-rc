@@ -22,7 +22,6 @@ Template.shopView.helpers({
         status: 'publish'
       }]
     }).fetch();
-    console.log(pages);
     return pages;
   }
 });
