@@ -82,6 +82,7 @@ Template.loginDropdown.events({
     Reaction.Router.go("/reaction/dashboard/static-pages");
   }
 });
+
 Template.walletButton.events({
   /**
  * wallet

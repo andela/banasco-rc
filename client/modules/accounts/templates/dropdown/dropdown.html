@@ -36,7 +36,9 @@
     {{> userAccountsDropdown}}
     {{> tour}}
     {{> walletButton}}
-    {{> pages}}
+    {{#if hasAdminAccess}}
+      {{> pages}}
+    {{/if}}
     <!--administrative shortcut icons -->
     {{#each reactionApps provides="shortcut" enabled=true}}
       <li class="dropdown-apps-icon">

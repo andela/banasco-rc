@@ -1,7 +1,7 @@
 import { Reaction } from "/server/api";
 
 Reaction.registerPackage({
-  label: "Pages",
+  label: "Static Pages",
   name: "Static Pages",
   icon: "fa fa-copy",
   autoEnable: true,
@@ -13,7 +13,7 @@ Reaction.registerPackage({
     provides: "dashboard",
     workflow: "corePagesWorkFlow",
     name: "Static Pages",
-    label: "Pages",
+    label: "Static Pages",
     description: "Create and Manage Static Pages",
     icon: "fa fa-copy",
     priority: 1,
