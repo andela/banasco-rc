@@ -137,8 +137,9 @@ Template.wallet.events({
       Alerts.toast("Insufficient balance", "error");
       return false;
     }
-    if (isNaN(amount)) {
+    if (isNaN(amount) || amount <= 0) {
       Alerts.toast("Amount being inputted should be valid", "error");
+      return false;
     }
     if (recipientEmail === Accounts.findOne(Meteor.userId()).emails[0].address) {
       Alerts.toast("You cannot transfer money to yourself", "error");
