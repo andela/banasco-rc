@@ -14,12 +14,13 @@ Meteor.methods({
   * @return {Object} page - new page object
   */
   "pages/createPage": function (pageDetails) {
-    if (!Object.keys(pageDetails).length) return Meteor.error("error", "Cannot create empty page");
-
+    if (!Object.keys(pageDetails).length) return Meteor.Error("error", "Cannot create empty page");
+    check(pageDetails, Object);
     check(pageDetails.shopId, String);
-    check(pageDetails.pageTitle, String);
+    check(pageDetails.title, String);
     check(pageDetails.content, String);
     check(pageDetails.slug, String);
+    check(pageDetails.status, String);
     check(pageDetails.createdby, String);
 
     if (!Reaction.hasAdminAccess()) {
@@ -28,45 +29,43 @@ Meteor.methods({
 
     this.unblock();
 
-    if (StaticPages.find({ slug: slug }).count()) {
-      throw new Meteor.error("error", "This page already exists");
+    const page = {
+      shopId : pageDetails.shopId,
+      pageTitle: pageDetails.title,
+      content: pageDetails.content,
+      slug: pageDetails.slug,
+      status: pageDetails.status,
+      createdby: pageDetails.createdby,
+      createdAt: new Date,
+      updatedAt: new Date
     }
 
-    check(pageDetails, Schemas.StaticPages);
-    return StaticPages.insert(pageDetails);
+    if (StaticPages.find({ slug: page.slug }).count()) {
+      Alerts.toast('This page already exists');
+    }
+
+    check(page, Schemas.StaticPages);
+    return StaticPages.insert(page);
   },
 
   /**
-   * pages/getAllPages
-   * @return {Object} pages - Array of page objects
+   * pages/togglePublish
+   * @param {Object} updateFields - fields to be updated
+   * @param {String} pageId - fields to be updated
+   * @return {Object} updatedPage
    */
-  "pages/getAllPages": function () {
-    const data = {};
-    const pages = StaticPages.findAll({ shopId: Reaction.getShopId() });
-
-    if (!pages.length) {
-      data.message = "No pages created yet!";
-      data.pages = null;
-    } else {
-      data.message = `${pages.length} pages active`;
-      data.pages = pages;
-    }
-
-    return data;
-  },
-
-  /**
-   * pages/getSinglePage
-   * @param {String} pageId
-   * @return {Object} page
-   */
-  "pages/getSinglePage": function (pageId) {
+  "pages/togglePublish": function (status, pageId) {
+    check(status, String);
     check(pageId, String);
-    this.unblock();
 
-    const page = StaticPages.findOne({ _id: pageId });
-    if (!page.count()) return Meteor.error(404, "Page not found");
-    return page;
+    this.unblock();
+    return StaticPages.update(
+      { _id: pageId },
+      { $set: {
+        status: status
+      }
+      }
+    );
   },
 
   /**
@@ -75,22 +74,25 @@ Meteor.methods({
    * @param {String} pageId - fields to be updated
    * @return {Object} updatedPage
    */
-  "pages/update": function (updateFields, pageId) {
-    check(updateFields, Schemas.StaticPages);
-    check(pageId, String);
+  "pages/update": function (pageDetails) {
+    check(pageDetails, Object);
+    check(pageDetails.title, String);
+    check(pageDetails.content, String);
+    check(pageDetails.slug, String);
+    check(pageDetails.status, String);
+    check(pageDetails.pageId, String);
 
-    this.unblock();
-    const updatedPage = StaticPages.update(
-      { _id: pageId },
+    return StaticPages.update(
+      { _id: pageDetails.pageId },
       { $set: {
-        pageTitle: updateFields.pageTitle,
-        content: updateFields.content,
+        pageTitle: pageDetails.title,
+        slug: pageDetails.slug,
+        content: pageDetails.content,
+        status: pageDetails.status,
         updatedAt: new Date
       }
       }
     );
-    if (!updatedPage) return Meteor.error(404, "Unable to update this document.");
-    return updatedPage;
   },
 
   /**
@@ -102,9 +104,7 @@ Meteor.methods({
     check(pageId, String);
 
     this.unblock();
-    if (StaticPages.deleteOne({ _id: pageId })) {
-      return Alerts.toast("Page successfully deleted");
-    }
-    return Alerts.toast("Unable to delete page", "error");
+    return StaticPages.remove({ _id: pageId });
+      
   }
 });
