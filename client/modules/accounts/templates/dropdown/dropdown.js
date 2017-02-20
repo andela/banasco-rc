@@ -10,6 +10,9 @@ Template.loginDropdown.helpers({
       six: "Access Quick Drop-down for Site Shortcuts and Profile"
     };
     return steps;
+  },
+  slug() {
+    return `/shop/${Reaction.getShopId()}`;
   }
 });
 
@@ -80,6 +83,11 @@ Template.loginDropdown.events({
 
   "click [data-event-action=manage-pages]": function () {
     Reaction.Router.go("/reaction/dashboard/static-pages");
+  },
+
+  "click [data-event-action=visit-pages]": function (event, template) {
+    event.preventDefault();
+    Reaction.Router.go(`/shop/${Reaction.getShopId()}`);
   }
 });
 

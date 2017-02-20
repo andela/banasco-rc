@@ -36,6 +36,9 @@
     {{> userAccountsDropdown}}
     {{> tour}}
     {{> walletButton}}
+    {{#if currentUser}}
+      {{> visitPages}}
+    {{/if}}
     {{#if hasAdminAccess}}
       {{> pages}}
     {{/if}}
@@ -70,6 +73,17 @@
      <i class="fa fa-copy"></i>
      <span class="icon-text">
        Manage Pages
+     </span>
+   </a>
+  </li>
+</template>
+
+<template name="visitPages">
+  <li class="dropdown-apps-icon">
+   <a data-event-action="visit-pages" href={{slug}} class="visit-pages">
+     <i class="fa fa-file-powerpoint-o"></i>
+     <span class="icon-text">
+       Visit Pages
      </span>
    </a>
   </li>
