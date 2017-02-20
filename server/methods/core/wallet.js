@@ -5,6 +5,19 @@ import { check } from "meteor/check";
 
 Meteor.methods({
 
+
+  "wallet/pin": (userId, pin) => {
+    // console.log(pin,"server side");
+    check(userId, String);
+    check(pin, Number);
+    try {
+      Wallets.update({userId}, {$set: { userPin: pin}});
+      return true;
+    } catch (error) {
+      return false;
+    }
+  },
+
   /**
    * wallet/deposit method to deposit money into user's account
    * @param {string} userId the id of the user
@@ -15,7 +28,6 @@ Meteor.methods({
     check(userId, String);
     check(transactions, Schemas.Transactions);
     let balanceOptions;
-    // let exchangeRate = getExchangeRate();
     const { amount, transactionType } = transactions;
     if (transactionType === "Credit") {
       balanceOptions = { balance: amount };

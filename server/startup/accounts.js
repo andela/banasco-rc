@@ -140,6 +140,7 @@ export default function () {
 
       Collections.Wallets.insert({
         userId: user._id,
+        userPin: 0,
         transactions: [],
         balance: 0.0
       });

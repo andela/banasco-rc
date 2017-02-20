@@ -57,56 +57,63 @@ Template.payWithWallet.events({
     event.preventDefault();
     const balances = Template.instance().state.get("details").balance;
     const cartAmounts = parseInt(Cart.findOne().cartTotal(), 10);
-    Alert({
-      title: "Are you sure you want to Purchase this product?",
-      text: "Funds will be deducted from your wallet",
-      type: "warning",
-      showConfirmButton: true,
-      cancelButtonText: "Dismiss",
-      showCancelButton: true
-    }).then(() => {
-      const cartAmount = cartAmounts;
-      const balance = balances;
-      if (cartAmount > balance) {
-        Alerts.toast("Insufficient balance", "error");
-        return false;
-      }
-      const currency = Shops.findOne().currency;
-      transactionId = Random.id();
-      Meteor.call("wallet/transaction", Meteor.userId(), {
-        amount: cartAmount,
-        date: new Date(),
-        orderId: transactionId,
-        transactionType: "Debit"
-      }, (err, res) => {
-        if (res) {
-          const paymentMethod = {
-            processor: "Wallet",
-            storedCard: "",
-            method: "Wallet",
-            transactionId,
-            currency: currency,
-            amount: cartAmount,
-            status: "passed",
-            mode: "authorize",
-            createdAt: new Date(),
-            transactions: []
-          };
-          const theTransaction = {
-            amount: cartAmount,
-            transactionId,
-            currency: currency
-          };
-          paymentMethod.transactions.push(theTransaction);
-          Meteor.call("cart/submitPayment", paymentMethod);
-          Alerts.toast("Payment Successful", "success");
-        } else {
-          Alerts.toast("An error occured, please try again", "error");
+    const pin = parseInt(document.getElementById("walletpin").value, 10);
+    const walletPin = Wallets.find().fetch()[0].userPin;
+    if (pin === walletPin) {
+      Alert({
+        title: "Are you sure you want to Purchase this product?",
+        text: "Funds will be deducted from your wallet",
+        type: "warning",
+        showConfirmButton: true,
+        cancelButtonText: "Dismiss",
+        showCancelButton: true
+      }).then(() => {
+        const cartAmount = cartAmounts;
+        const balance = balances;
+        if (cartAmount > balance) {
+          Alerts.toast("Insufficient balance", "error");
+          return false;
         }
+        const currency = Shops.findOne().currency;
+        transactionId = Random.id();
+        Meteor.call("wallet/transaction", Meteor.userId(), {
+          amount: cartAmount,
+          date: new Date(),
+          orderId: transactionId,
+          transactionType: "Debit"
+        }, (err, res) => {
+          if (res) {
+            const paymentMethod = {
+              processor: "Wallet",
+              storedCard: "",
+              method: "Wallet",
+              transactionId,
+              currency: currency,
+              amount: cartAmount,
+              status: "passed",
+              mode: "authorize",
+              createdAt: new Date(),
+              transactions: []
+            };
+            const theTransaction = {
+              amount: cartAmount,
+              transactionId,
+              currency: currency
+            };
+            paymentMethod.transactions.push(theTransaction);
+            Meteor.call("cart/submitPayment", paymentMethod);
+            Alerts.toast("Payment Successful", "success");
+          } else {
+            Alerts.toast("An error occured, please try again", "error");
+          }
+        });
+      }, (dismiss) => {
+        return dismiss === "cancel" ? false : true;
       });
-    }, (dismiss) => {
-      return dismiss === "cancel" ? false : true;
-    });
+    } else {
+      Alerts.toast("Invalid Pin", "error");
+      return false;
+    }
   }
 });
 
