@@ -15,7 +15,11 @@ Meteor.methods({
   "analytics/getOrders": function () {
     const result = Orders.find({
       "workflow.status": "coreOrderWorkflow/completed"
-    }, { sort: {createdAt: 1}}).fetch();
+    }, {
+      sort: {
+        createdAt: 1
+      }
+    }).fetch();
     return result;
   },
 
@@ -30,70 +34,91 @@ Meteor.methods({
     check(fromDate, String);
     check(toDate, String);
 
-    const graphData = [];
+    let graphData = [];
+    const years = [];
+    const months = [];
+    const monthRange = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Nov", "Dec"];
 
     if (!Reaction.hasPermission("createProduct")) {
       throw new Meteor.Error(403, "Access Denied");
     }
 
-    const fDate = fromDate.split("/");
-    const tDate = toDate.split("/");
+    const fDate = moment(fromDate, "MM-DD-YYYY");
+    const tDate = moment(toDate, "MM-DD-YYYY");
     let allOrders = Meteor.call("analytics/getOrders");
     let productData = {};
     let limitSearchRange;
     let limStartDateRange;
     let limEndDateRange;
 
-    if (tDate[2] - fDate[2] === 0) {
-      allOrders = allOrders.filter((order) =>
-        order.createdAt.toISOString().slice(0, 4) === fDate[2]
-      );
+    // Filter data being processed for the months.
+    if ((tDate.year() - fDate.year()) === 0) {
+      // Chart Range for Month
+      for (let month = 0; month < monthRange.length; month++) {
+        productData = {
+          name: monthRange[month],
+          value: 0
+        };
+        months.push(productData);
+      }
+      allOrders = allOrders.filter((order) => {
+        const orderYear = order.createdAt.toISOString().slice(0, 4);
+        const currentYear = fDate.year();
+        return currentYear === Number(orderYear);
+      });
+      graphData = graphData.concat(months);
+    } else {
+      // Chart Range for Year
+      for (let year = fDate.year(); year <= tDate.year(); year++) {
+        productData = {
+          name: year,
+          value: 0
+        };
+        years.push(productData);
+      }
+      graphData = graphData.concat(years);
     }
+
+    const monthDiff = (tDate.month() + 1) - (fDate.month() + 1);
+    const monthDiff2 = (tDate.year()) - (fDate.year());
 
     allOrders.forEach((order) => {
       // If the search is beyond a year, use the years for representing the data.
-      if (tDate[2] - fDate[2] !== 0) {
-        limStartDateRange = fDate[2];
-        limEndDateRange = tDate[2];
+      if (tDate.year() - fDate.year() !== 0) {
+        limStartDateRange = fDate.year();
+        limEndDateRange = tDate.year();
         limitSearchRange = order.createdAt.toISOString().slice(0, 4);
-      } else if (((tDate[0] - fDate[0]) !== 0) && (tDate[2] - fDate[2] === 0)) {
+        limitSearchRange = Number(limitSearchRange);
+      } else if (monthDiff !== 0 && monthDiff2 === 0) {
         // Check if search is beyond the same month
-        const firstMonth = fDate[0];
-        const lastMonth = tDate[0];
+        const firstMonth = fDate.month();
+        const lastMonth = tDate.month();
         const formatFirstMonth = moment().month(firstMonth).format("M");
         const formatLasttMonth = moment().month(lastMonth).format("M");
 
-        limStartDateRange = formatLasttMonth;
-        limEndDateRange = formatFirstMonth;
+        limStartDateRange = formatFirstMonth;
+        limEndDateRange = formatLasttMonth;
         const date = Number(order.createdAt.toISOString().slice(6, 7));
         limitSearchRange = date;
-      } else {
-        limStartDateRange = fromDate;
-        limEndDateRange = toDate;
-        limitSearchRange = order.createdAt.toISOString();
       }
 
       if ((limitSearchRange >= limStartDateRange) && (limitSearchRange <= limEndDateRange)) {
         if (limitSearchRange <= 12) {
-          limitSearchRange = moment.months(limitSearchRange);
+          limitSearchRange = (moment.months(limitSearchRange)).slice(0, 3);
         }
+
         order.items.forEach((item) => {
-          if (productData.name === limitSearchRange) {
-            productData.value += item.quantity;
-          } else {
-            productData = {
-              name: limitSearchRange,
-              value: item.quantity
-            };
+          let elementPos = graphData.map(function (x) {
+            return x.name;
+          }).indexOf(limitSearchRange);
+          if (graphData[elementPos].name === limitSearchRange) {
+            graphData[elementPos].value += item.quantity;
           }
         });
       }
-      if ((!_.includes(graphData, productData)) && !_.isEmpty(productData)) {
-        graphData.push(productData);
-      }
     });
-    const filteredData = _.uniqBy(graphData, "name");
-    return filteredData;
+
+    return graphData;
   },
 
   /**
@@ -107,15 +132,15 @@ Meteor.methods({
     let total = 0;
 
     count.push({
-      name: "admin",
+      name: "admin: ",
       value: 0
     });
     count.push({
-      name: "buyer",
+      name: "buyer: ",
       value: 0
     });
     count.push({
-      name: "vendor",
+      name: "vendor: ",
       value: 0
     });
 
@@ -133,6 +158,7 @@ Meteor.methods({
     });
 
     count.forEach((userRole) => {
+      userRole.name += userRole.value;
       const currValue = userRole.value;
       userRole.value = ((currValue / total) * 100);
     });
@@ -184,6 +210,9 @@ Meteor.methods({
       }
     });
 
+    _.remove(totalData, {
+      name: "Admin"
+    });
     const filteredData = _.uniqBy(totalData, "name");
     return filteredData;
   },
@@ -201,6 +230,7 @@ Meteor.methods({
     users.forEach((user) => {
       const userId = user._id;
       const loginCount = user.loginCount;
+      const purchases = user.currentOrders;
       const userDetails = Meteor.users.find({
         _id: userId
       }).fetch();
@@ -211,7 +241,8 @@ Meteor.methods({
       } else {
         userData = {
           name: userName,
-          value: loginCount
+          loginCount: loginCount,
+          purchases: purchases
         };
       }
 

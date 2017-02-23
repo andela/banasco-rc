@@ -6,6 +6,23 @@
       </center>
     </div>
     <br/>
-    <div id="vendors" width="50" height="50"></div>
+    <div id="vendors">
+       <table class="table table-inverse">
+        <thead>
+          <tr>
+            <th> Top Vendors </th>
+            <th> Product Sales </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+          <tr>
+            <td> {{name}}  </td>
+            <td> {{value}} </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>

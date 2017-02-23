@@ -21,22 +21,24 @@ function quantityProcessing(product, variant, itemQty = 1) {
   const MAX = variant.inventoryQuantity || Infinity;
 
   if (MIN > MAX) {
-    Logger.info(`productId: ${product._id}, variantId ${variant._id
+    Logger.info(
+      `productId: ${product._id}, variantId ${variant._id
       }: inventoryQuantity lower then minimum order`);
-    throw new Meteor.Error(`productId: ${product._id}, variantId ${variant._id
+    throw new Meteor.Error(
+      `productId: ${product._id}, variantId ${variant._id
       }: inventoryQuantity lower then minimum order`);
   }
 
   // TODO: think about #152 implementation here
   switch (product.type) {
-    case "not-in-stock":
-      break;
-    default: // type: `simple` // todo: maybe it should be "variant"
-      if (quantity < MIN) {
-        quantity = MIN;
-      } else if (quantity > MAX) {
-        quantity = MAX;
-      }
+  case "not-in-stock":
+    break;
+  default: // type: `simple` // todo: maybe it should be "variant"
+    if (quantity < MIN) {
+      quantity = MIN;
+    } else if (quantity > MAX) {
+      quantity = MAX;
+    }
   }
 
   return quantity;
@@ -85,7 +87,6 @@ function getSessionCarts(userId, sessionId, shopId) {
 /**
  * Reaction Cart Methods
  */
-
 
 Meteor.methods({
   /**
@@ -157,7 +158,7 @@ Meteor.methods({
         // up completely, just to `coreCheckoutShipping` stage. Also, we will
         // need to recalculate shipping rates
         if (typeof currentCart.workflow === "object" &&
-        typeof currentCart.workflow.workflow === "object") {
+          typeof currentCart.workflow.workflow === "object") {
           if (currentCart.workflow.workflow.length > 2) {
             Meteor.call("workflow/revertCartWorkflow", "coreCheckoutShipping");
             // refresh shipping quotes
@@ -250,13 +251,13 @@ Meteor.methods({
       sessionId: sessionId,
       userId: userId
     });
-    Logger.debug("create cart: into new user cart. created: " +  currentCartId +
+    Logger.debug("create cart: into new user cart. created: " + currentCartId +
       " for user " + userId);
 
     // merge session carts into the current cart
     if (sessionCartCount > 0 && !anonymousUser) {
-      Logger.debug("create cart: found existing cart. merge into " + currentCartId
-        + " for user " + userId);
+      Logger.debug("create cart: found existing cart. merge into " + currentCartId +
+        " for user " + userId);
       Meteor.call("cart/mergeCart", currentCartId, sessionId);
     }
 
@@ -294,8 +295,14 @@ Meteor.methods({
     check(variantId, String);
     check(itemQty, Match.Optional(Number));
 
-    const productFind = Collections.Products.findOne({ _id: { $in: [productId]}});
-    const cart = Collections.Cart.findOne({ userId: this.userId });
+    const productFind = Collections.Products.findOne({
+      _id: {
+        $in: [productId]
+      }
+    });
+    const cart = Collections.Cart.findOne({
+      userId: this.userId
+    });
 
     if (!cart) {
       Logger.error(`Cart not found for user: ${ this.userId }`);
@@ -308,10 +315,14 @@ Meteor.methods({
     // `quantityProcessing`?
     let product;
     let variant;
-    Collections.Products.find({ _id: { $in: [
-      productId,
-      variantId
-    ]}}).forEach(doc => {
+    Collections.Products.find({
+      _id: {
+        $in: [
+          productId,
+          variantId
+        ]
+      }
+    }).forEach(doc => {
       if (doc.type === "simple") {
         product = doc;
       } else {
@@ -489,6 +500,24 @@ Meteor.methods({
   },
 
   /**
+   * @summary updates record of orders placed within a period
+   * cart/updateProductsBought
+   * @param {String} ordersPlaced - orders made
+   * @return {void}
+   */
+  "cart/updateProductsBought": function (ordersPlaced) {
+    check(ordersPlaced, Number);
+    const userId = Meteor.userId();
+    Collections.Accounts.update({
+      _id: userId
+    }, {
+      $inc: {
+        currentOrders: ordersPlaced
+      }
+    });
+  },
+
+  /**
    * cart/copyCartToOrder
    * @summary transform cart to order when a payment is processed we want to
    * copy the cart over to an order object, and give the user a new empty
@@ -513,7 +542,6 @@ Meteor.methods({
     Logger.info("cart/copyCartToOrder", cartId);
 
     order.cartId = cart._id;
-
 
     // a helper for guest login, we let guest add email afterwords
     // for ease, we'll also add automatically for logged in users
@@ -585,7 +613,7 @@ Meteor.methods({
           order.shipping[0].items.push({
             _id: itemClone._id,
             productId: itemClone.productId,
-         //   vendorId: vendorId,
+            //   vendorId: vendorId,
             shopId: itemClone.shopId,
             variantId: itemClone.variants._id
           });
@@ -595,6 +623,9 @@ Meteor.methods({
 
     // Replace the items with the expanded array of items
     order.items = expandedItems;
+
+    // Update current orders placed
+    Meteor.call("cart/updateProductsBought", order.items.length);
 
     if (!order.items || order.items.length === 0) {
       const msg = "An error occurred saving the order. Missing cart items.";
@@ -619,7 +650,9 @@ Meteor.methods({
       // create a new cart for the user
       // even though this should be caught by
       // subscription handler, it's not always working
-      const newCartExists = Collections.Cart.find({ userId: order.userId });
+      const newCartExists = Collections.Cart.find({
+        userId: order.userId
+      });
       if (newCartExists.count() === 0) {
         Meteor.call("cart/createCart", this.userId, sessionId);
         // after recreate new cart we need to make it looks like previous by
@@ -731,8 +764,12 @@ Meteor.methods({
         `Cart: ${cartId} not found for user: ${this.userId}`);
     }
 
-    return Collections.Cart.update({ _id: cartId }, {
-      $unset: { "shipping.0.shipmentMethod": "" }
+    return Collections.Cart.update({
+      _id: cartId
+    }, {
+      $unset: {
+        "shipping.0.shipmentMethod": ""
+      }
     });
   },
 
@@ -899,7 +936,9 @@ Meteor.methods({
     const selector = {
       _id: cart._id
     };
-    const update = { $unset: {}};
+    const update = {
+      $unset: {}
+    };
     // user could turn off the checkbox in address to not to be default, then we
     // receive `type` arg
     if (typeof type === "string") {

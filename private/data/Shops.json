@@ -2110,7 +2110,117 @@
           "continent": "AF",
           "capital": "Abuja",
           "currency": "USD",
-          "languages": "en"
+          "languages": "en",
+          "states": {
+            "AB": {
+              "name": "Abia"
+            },
+            "AD": {
+              "name": "Adamawa"
+            },
+            "AK": {
+              "name": "Akwa Ibom"
+            },
+            "AN": {
+              "name": "Anambra"
+            },
+            "BY": {
+              "name": "Bayelsa"
+            },
+            "BUE": {
+              "name": "Benue"
+            },
+            "BO": {
+              "name": "Borno"
+            },
+            "CR": {
+              "name": "Cross River"
+            },
+            "DT": {
+              "name": "Delta"
+            },
+            "EB": {
+              "name": "Ebonyi"
+            },
+            "ED": {
+              "name": "Edo"
+            },
+            "EK": {
+              "name": "Ekiti"
+            },
+            "EN": {
+              "name": "Enugu"
+            },
+            "FCT": {
+              "name": "FCT"
+            },
+            "GM": {
+              "name": "Gombe"
+            },
+            "IM": {
+              "name": "Imo"
+            },
+            "JG": {
+              "name": "Jigawa"
+            },
+            "KD": {
+              "name": "Kaduna"
+            },
+            "KN": {
+              "name": "Kano"
+            },
+            "KT": {
+              "name": "Katsina"
+            },
+            "KB": {
+              "name": "Kebbi"
+            },
+            "KG": {
+              "name": "Kogi"
+            },
+            "KW": {
+              "name": "Kwara"
+            },
+            "LA": {
+              "name": "Lagos"
+            },
+            "NS": {
+              "name": "Nasarawa"
+            },
+            "NG": {
+              "name": "Niger"
+            },
+            "OG": {
+              "name": "Ogun"
+            },
+            "OD": {
+              "name": "Ondo"
+            },
+            "OS": {
+              "name": "Osun"
+            },
+            "OY": {
+              "name": "Oyo"
+            },
+            "PL": {
+              "name": "Plateau"
+            },
+            "RV": {
+              "name": "Rivers"
+            },
+            "SO": {
+              "name": "Sokoto"
+            },
+            "TR": {
+              "name": "Taraba"
+            },
+            "YB": {
+              "name": "Yobe"
+            },
+            "ZM": {
+              "name": "Zamfara"
+            }
+          }
         },
         "NI": {
           "name": "Nicaragua",
@@ -5238,7 +5348,117 @@
           "continent": "AF",
           "capital": "Abuja",
           "currency": "NGN",
-          "languages": "en"
+          "languages": "en",
+          "states": {
+            "AB": {
+              "name": "Abia"
+            },
+            "AD": {
+              "name": "Adamawa"
+            },
+            "AK": {
+              "name": "Akwa Ibom"
+            },
+            "AN": {
+              "name": "Anambra"
+            },
+            "BY": {
+              "name": "Bayelsa"
+            },
+            "BUE": {
+              "name": "Benue"
+            },
+            "BO": {
+              "name": "Borno"
+            },
+            "CR": {
+              "name": "Cross River"
+            },
+            "DT": {
+              "name": "Delta"
+            },
+            "EB": {
+              "name": "Ebonyi"
+            },
+            "ED": {
+              "name": "Edo"
+            },
+            "EK": {
+              "name": "Ekiti"
+            },
+            "EN": {
+              "name": "Enugu"
+            },
+            "FCT": {
+              "name": "FCT"
+            },
+            "GM": {
+              "name": "Gombe"
+            },
+            "IM": {
+              "name": "Imo"
+            },
+            "JG": {
+              "name": "Jigawa"
+            },
+            "KD": {
+              "name": "Kaduna"
+            },
+            "KN": {
+              "name": "Kano"
+            },
+            "KT": {
+              "name": "Katsina"
+            },
+            "KB": {
+              "name": "Kebbi"
+            },
+            "KG": {
+              "name": "Kogi"
+            },
+            "KW": {
+              "name": "Kwara"
+            },
+            "LA": {
+              "name": "Lagos"
+            },
+            "NS": {
+              "name": "Nasarawa"
+            },
+            "NG": {
+              "name": "Niger"
+            },
+            "OG": {
+              "name": "Ogun"
+            },
+            "OD": {
+              "name": "Ondo"
+            },
+            "OS": {
+              "name": "Osun"
+            },
+            "OY": {
+              "name": "Oyo"
+            },
+            "PL": {
+              "name": "Plateau"
+            },
+            "RV": {
+              "name": "Rivers"
+            },
+            "SO": {
+              "name": "Sokoto"
+            },
+            "TR": {
+              "name": "Taraba"
+            },
+            "YB": {
+              "name": "Yobe"
+            },
+            "ZM": {
+              "name": "Zamfara"
+            }
+          }
         },
         "NI": {
           "name": "Nicaragua",
