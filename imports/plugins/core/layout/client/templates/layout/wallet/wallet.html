@@ -10,8 +10,8 @@
         <div class="panel-content">
           <form id="wallet-pin">
             <div class="row form-group col-md-6 col-md-offset-3">
-              <input id="old-pin" class="form-control" type="number" placeholder="Input Old pin, default pin is zero">
-              <input id="new-pin" class="form-control" type="number" placeholder="Input new Pin" maxlength="4">
+              <input id="old-pin" class="form-control" type="password" placeholder="Default pin is zero" maxlength="4">
+              <input id="new-pin" class="form-control" type="password" placeholder="Input new Pin" maxlength="4">
             </div>
             <button type="submit" class="row col-md-2 col-md-offset-5 btn btn-success">Change Pin</button>
           </form>
@@ -60,7 +60,7 @@
               <input id="transferAmount" class="form-control" type="number" name="amount" placeholder="Amount">
             </div>
             <div class="col-xs-6">
-              <input id="wallets-transfer" class="form-control" type="number" name="pin" placeholder="Wallet Pin" maxlength="4">
+              <input id="wallets-transfer" class="form-control" type="password" name="pin" placeholder="Wallet Pin" maxlength="4">
             </div>
             <div class="col-xs-12">
               <input id="recipient" class="form-control" type="text" name="email" placeholder="Beneficiary Email">
