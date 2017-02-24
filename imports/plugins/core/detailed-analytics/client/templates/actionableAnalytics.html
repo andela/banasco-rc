@@ -1,0 +1,44 @@
+<template name="actionableAnalytics">
+  <div class="container">
+    <h1 class="text-center"> Actionable Analytics </h1>
+    <hr />
+    <div class="row">
+      <div class="analytics-tab-container">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 analytics-tab-menu">
+          <div class="list-group">
+            <a href="#" class="list-group-item active text-center">
+              <h4 class="fa fa-bar-chart-o"></h4>
+              <br/> Total Products Sold
+            </a>
+            <a href="#" class="list-group-item text-center">
+              <h4 class="fa fa-pie-chart"></h4>
+              <br/> Distribution of User Roles
+            </a>
+            <a href="#" class="list-group-item text-center">
+              <h4 class="fa fa-line-chart"></h4>
+              <br/>Returning Users and New Users
+            </a>
+            <a href="#" class="list-group-item text-center">
+              <h4 class="fa fa-area-chart"></h4>
+              <br/>Most Patronised Vendor
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 analytics-tab">
+          <div class="analytics-tab-content active">
+            {{> totalProductsSold}}
+          </div>
+          <div class="analytics-tab-content">
+            {{> userRoleAnalysis}}
+          </div>
+          <div class="analytics-tab-content">
+            {{> userRetention}}
+          </div>
+          <div class="analytics-tab-content">
+            {{> topVendors}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
