@@ -31,14 +31,14 @@ function quantityProcessing(product, variant, itemQty = 1) {
 
   // TODO: think about #152 implementation here
   switch (product.type) {
-  case "not-in-stock":
-    break;
-  default: // type: `simple` // todo: maybe it should be "variant"
-    if (quantity < MIN) {
-      quantity = MIN;
-    } else if (quantity > MAX) {
-      quantity = MAX;
-    }
+    case "not-in-stock":
+      break;
+    default: // type: `simple` // todo: maybe it should be "variant"
+      if (quantity < MIN) {
+        quantity = MIN;
+      } else if (quantity > MAX) {
+        quantity = MAX;
+      }
   }
 
   return quantity;
