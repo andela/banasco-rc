@@ -4,6 +4,7 @@ import { Template } from "meteor/templating";
 import { Reaction } from "/client/api";
 import { Accounts, Packages, Wallets, Shops } from "/lib/collections";
 import Alert from "sweetalert2";
+import bcrypt from "bcrypt-nodejs";
 
 Template.wallet.onCreated(function bodyOnCreated() {
   this.state = new ReactiveDict();
@@ -145,6 +146,7 @@ Template.wallet.events({
     } catch (err) {
       Alerts.toast("Invalid Deposit Amount, You can only deposit ₦100,000 per transaction", "error");
     }
+    return true;
   },
 
   "submit #transfer": (event) => {
@@ -152,9 +154,12 @@ Template.wallet.events({
     const amount = parseInt(document.getElementById("transferAmount").value, 10) / getExchangeRate();
     const pin = parseInt(document.getElementById("wallets-transfer").value, 10);
     const walletPin = Wallets.find().fetch()[0].userPin;
+    const convertedPin = pin.toString();
     const recipientEmail = document.getElementById("recipient").value;
     const mailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,63}$/i;
-    // console.log(walletPin);
+
+    const comparePin = bcrypt.compareSync(convertedPin, walletPin);
+
     if (amount > Template.instance().state.get("details").balance) {
       Alerts.toast("Insufficient balance", "error");
       return false;
@@ -170,7 +175,7 @@ Template.wallet.events({
     if (!mailRegex.test(recipientEmail)) {
       Alerts.toast("Invalid email address", "error");
     } else {
-      if (pin === walletPin) {
+      if (comparePin) {
         Alert({
           title: `Are you sure you want to transfer $${amount.toFixed(2)} to ${recipientEmail}?`,
           text: "Funds will be deducted from your wallet",
@@ -204,5 +209,6 @@ Template.wallet.events({
         Alerts.toast("Invalid Pin", "error");
       }
     }
+    return true;
   }
 });

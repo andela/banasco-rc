@@ -1,6 +1,8 @@
 import { Packages, Shops, Wallets, Cart } from "/lib/collections";
+import { Meteor } from "meteor/meteor";
 import { Template } from "meteor/templating";
 import Alert from "sweetalert2";
+import bcrypt from "bcrypt-nodejs";
 
 const openClassName = "in";
 
@@ -56,10 +58,13 @@ Template.payWithWallet.events({
   "click #pay-with-wallet": (event) => {
     event.preventDefault();
     const balances = Template.instance().state.get("details").balance;
-    const cartAmounts = parseInt(Cart.findOne().cartTotal(), 10);
+    const cartAmounts = parseFloat(Cart.findOne({userId: Meteor.userId()}).cartTotal(), 10);
     const pin = parseInt(document.getElementById("walletpin").value, 10);
+    const convertedPin = pin.toString();
     const walletPin = Wallets.find().fetch()[0].userPin;
-    if (pin === walletPin) {
+    const comparePin = bcrypt.compareSync(convertedPin, walletPin);
+
+    if (comparePin) {
       Alert({
         title: "Are you sure you want to Purchase this product?",
         text: "Funds will be deducted from your wallet",
@@ -105,8 +110,11 @@ Template.payWithWallet.events({
             Alerts.toast("Payment Successful", "success");
           } else {
             Alerts.toast("An error occured, please try again", "error");
+            return false;
           }
+          return true;
         });
+        return true;
       }, (dismiss) => {
         return dismiss === "cancel" ? false : true;
       });
@@ -114,6 +122,7 @@ Template.payWithWallet.events({
       Alerts.toast("Invalid Pin", "error");
       return false;
     }
+    return true;
   }
 });
 

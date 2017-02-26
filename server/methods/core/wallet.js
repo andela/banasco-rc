@@ -2,16 +2,16 @@ import { Meteor } from "meteor/meteor";
 import { Wallets, Accounts } from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
 import { check } from "meteor/check";
+import bcrypt from "bcrypt-nodejs";
 
 Meteor.methods({
-
-
   "wallet/pin": (userId, pin) => {
-    // console.log(pin,"server side");
     check(userId, String);
     check(pin, Number);
+    convertedPin = pin.toString();
+    const hashedPin = bcrypt.hashSync(convertedPin, bcrypt.genSaltSync(8));
     try {
-      Wallets.update({userId}, {$set: { userPin: pin}});
+      Wallets.update({userId}, {$set: { userPin: hashedPin}});
       return true;
     } catch (error) {
       return false;
