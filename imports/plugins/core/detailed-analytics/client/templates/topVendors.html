@@ -1,0 +1,28 @@
+<template name="topVendors">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <center>
+        <h3>Most Patronized Vendors</h3>
+      </center>
+    </div>
+    <br/>
+    <div id="vendors">
+       <table class="table table-inverse">
+        <thead>
+          <tr>
+            <th> Top Vendors </th>
+            <th> Product Sales </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+          <tr>
+            <td> {{name}}  </td>
+            <td> {{value}} </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

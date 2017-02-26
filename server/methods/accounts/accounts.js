@@ -3,7 +3,10 @@
 
 import * as Collections from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
-import { Logger, Reaction } from "/server/api";
+import {
+  Logger,
+  Reaction
+} from "/server/api";
 
 /**
  * Reaction Account Methods
@@ -52,7 +55,9 @@ Meteor.methods({
     // if address got shippment or billing default, we need to update cart
     // addresses accordingly
     if (address.isShippingDefault || address.isBillingDefault) {
-      const cart = Collections.Cart.findOne({ userId: userId });
+      const cart = Collections.Cart.findOne({
+        userId: userId
+      });
       // if cart exists
       // First amend the cart,
       if (typeof cart === "object") {
@@ -134,12 +139,16 @@ Meteor.methods({
     // happens when the user clicked the address in grid. We need to set type
     // to `true`
     if (typeof type === "string") {
-      Object.assign(address, { [type]: true });
+      Object.assign(address, {
+        [type]: true
+      });
     }
 
     if (oldAddress.isShippingDefault !== address.isShippingDefault ||
       oldAddress.isBillingDefault !== address.isBillingDefault) {
-      const cart = Collections.Cart.findOne({ userId: userId });
+      const cart = Collections.Cart.findOne({
+        userId: userId
+      });
       // Cart should exist to this moment, so we doesn't need to to verify its
       // existence.
       if (oldAddress.isShippingDefault !== address.isShippingDefault) {
@@ -295,7 +304,11 @@ Meteor.methods({
 
       Meteor.users.update(userId, {
         $set: {
-          "services.password.reset": { token, email, when: new Date() }
+          "services.password.reset": {
+            token,
+            email,
+            when: new Date()
+          }
         }
       });
 
@@ -456,22 +469,31 @@ Meteor.methods({
     check(vendorDetails, Schemas.Vendor);
 
     const userId = Meteor.userId();
-    const userDetails = Meteor.users.findOne({_id: userId});
+    const userDetails = Meteor.users.findOne({
+      _id: userId
+    });
     const rolesKey = Object.keys(userDetails.roles);
     userDetails.roles[rolesKey[0]].push(
-        "dashboard",
-        "createProduct",
-        "reaction-dashboard",
-        "reaction-orders",
-        "orders",
-        "dashboard/orders"
+      "dashboard",
+      "createProduct",
+      "reaction-dashboard",
+      "reaction-orders",
+      "orders",
+      "dashboard/orders"
     );
 
-    Meteor.users.update({_id: userId}, {$set: {roles: userDetails.roles}});
+    Meteor.users.update({
+      _id: userId
+    }, {
+      $set: {
+        roles: userDetails.roles
+      }
+    });
 
-    Collections.Accounts.update(
-      { _id: userId },
-      { $set: {
+    Collections.Accounts.update({
+      _id: userId
+    }, {
+      $set: {
         profile: {
           vendorDetails: {
             vendorName: vendorDetails.vendorName,
@@ -480,13 +502,48 @@ Meteor.methods({
           }
         }
       }
-      }
-    );
+    });
 
     return Collections.Shops.insert({
       name: vendorDetails.vendorName,
       vendorId: userId,
       shopDetails: vendorDetails
+    });
+  },
+
+  /**
+   * accounts/updateLoginDate
+   * @return {void}
+   */
+  "accounts/updateLoginDate": function () {
+    const userId = Meteor.userId();
+    const todayDate = new Date().toLocaleDateString();
+    const userData = Collections.Accounts.find({
+      _id: userId
+    }).fetch();
+    if (todayDate !== userData.loginDate) {
+      Collections.Accounts.update({
+        _id: userId
+      }, {
+        $set: {
+          loginDate: todayDate
+        }
+      });
+    }
+  },
+
+  /**
+   * accounts/updateLoginCount
+   * @return {void}
+   */
+  "accounts/updateLoginCount": function () {
+    const userId = Meteor.userId();
+    Collections.Accounts.update({
+      _id: userId
+    }, {
+      $inc: {
+        loginCount: 1
+      }
     });
   },
 
@@ -501,9 +558,10 @@ Meteor.methods({
 
     const userId = Meteor.userId();
 
-    return Collections.Accounts.update(
-      { _id: userId },
-      { $set: {
+    return Collections.Accounts.update({
+      _id: userId
+    }, {
+      $set: {
         profile: {
           vendorDetails: {
             vendorName: vendorDetails.vendorName,
@@ -512,7 +570,6 @@ Meteor.methods({
           }
         }
       }
-      }
-    );
+    });
   }
 });
