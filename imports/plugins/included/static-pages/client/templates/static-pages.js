@@ -46,7 +46,7 @@ function validate(field, value) {
 function reset() {
   $("#title").val("");
   $("#slug").val("");
-  CKEDITOR.instances.contentEditor.setData("<h2>Page header</h2><hr><p>Page content</p>");
+  CKEDITOR.instances.$("contentEditor").attr("name").setData("<h2>Page header</h2><hr><p>Page content</p>");
 }
 
 Template.staticPageLayout.onCreated(function () {
@@ -110,8 +110,7 @@ Template.staticPageLayout.events({
 
     const title = template.$("#title").val().trim();
     const slug = template.$("#slug").val().trim();
-    const contentEditor = template.$("#contentEditor").attr("name");
-    const content = CKEDITOR.instances.contentEditor.getData();
+    const content = CKEDITOR.instances.$("#contentEditor").attr("name").getData();
     const shopId = Reaction.getShopId();
     const createdby = Meteor.userId();
 
