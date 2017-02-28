@@ -30,7 +30,7 @@ Meteor.methods({
     this.unblock();
 
     const page = {
-      shopId : pageDetails.shopId,
+      shopId: pageDetails.shopId,
       pageTitle: pageDetails.title,
       content: pageDetails.content,
       slug: pageDetails.slug,
@@ -38,10 +38,10 @@ Meteor.methods({
       createdby: pageDetails.createdby,
       createdAt: new Date,
       updatedAt: new Date
-    }
+    };
 
     if (StaticPages.find({ slug: page.slug }).count()) {
-      Alerts.toast('This page already exists');
+      Alerts.toast("This page already exists");
     }
 
     check(page, Schemas.StaticPages);
@@ -50,9 +50,9 @@ Meteor.methods({
 
   /**
    * pages/togglePublish
-   * @param {Object} updateFields - fields to be updated
-   * @param {String} pageId - fields to be updated
-   * @return {Object} updatedPage
+   * @param {String} status - page status
+   * @param {String} pageId - page id
+   * @return {Null} no return value
    */
   "pages/togglePublish": function (status, pageId) {
     check(status, String);
@@ -71,8 +71,7 @@ Meteor.methods({
 
   /**
    * pages/update
-   * @param {Object} updateFields - fields to be updated
-   * @param {String} pageId - fields to be updated
+   * @param {Object} pageDetails - fields to be updated
    * @return {Object} updatedPage
    */
   "pages/update": function (pageDetails) {
@@ -108,6 +107,6 @@ Meteor.methods({
 
     this.unblock();
 
-    return StaticPages.remove({ _id: pageId });  
+    return StaticPages.remove({ _id: pageId });
   }
 });
