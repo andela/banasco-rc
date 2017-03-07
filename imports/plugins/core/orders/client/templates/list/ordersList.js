@@ -1,6 +1,7 @@
 import moment from "moment";
 import { Template } from "meteor/templating";
-import { Orders, Shops } from "/lib/collections";
+import { Orders, Shops, Audio, Video, Software, Book, Products }
+from "/lib/collections";
 
 /**
  * dashboardOrdersList helpers
@@ -9,6 +10,45 @@ import { Orders, Shops } from "/lib/collections";
 Template.dashboardOrdersList.helpers({
   orderStatus() {
     return (this.workflow.status === "coreOrderCompleted");
+  },
+  showDigitalFileDownload() {
+    const productId = this.items[0].productId;
+    const sub = Meteor.subscribe("Product", productId);
+    if (sub.ready()) {
+      const product = Products.findOne(productId);
+
+      if (product.digitalInfo.category === "audio") {
+        Meteor.subscribe(product.digitalInfo.category, productId).ready();
+        const result = Audio.findOne({
+          "metadata.productId": productId
+        });
+        return result;
+      }
+      if (product.digitalInfo.category === "video") {
+        Meteor.subscribe(product.digitalInfo.category, productId).ready();
+        const result = Video.findOne({
+          "metadata.productId": productId
+        });
+        return result;
+      }
+      if (product.digitalInfo.category === "book") {
+        Meteor.subscribe(product.digitalInfo.category, productId).ready();
+        const result = Book.findOne({
+          "metadata.productId": productId
+        });
+        return result;
+      }
+      if (product.digitalInfo.category === "software") {
+        Meteor.subscribe(product.digitalInfo.category, productId).ready();
+        const result = Software.findOne({
+          "metadata.productId": productId
+        });
+        return result;
+      }
+
+      return product.isDigital;
+    }
+    return null;
   },
   orders(data) {
     if (data.hash.data) {

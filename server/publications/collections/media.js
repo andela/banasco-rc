@@ -1,4 +1,4 @@
-import { Media } from "/lib/collections";
+import { Media, Audio, Software, Video, Book } from "/lib/collections";
 import { Reaction } from "/server/api";
 
 /**
@@ -29,4 +29,72 @@ Meteor.publish("Media", function (shops) {
       "metadata.priority": 1
     }
   });
+});
+
+Meteor.publish("audio", function (productId) {
+  check(productId, String);
+  let selector;
+  const shopId = Reaction.getShopId();
+  if (!shopId) {
+    return this.ready();
+  }
+  if (shopId) {
+    selector = {
+      "metadata.shopId": shopId,
+      "metadata.productId": productId
+    };
+  }
+
+  return Audio.find(selector);
+});
+
+Meteor.publish("video", function (productId) {
+  check(productId, String);
+  let selector;
+  const shopId = Reaction.getShopId();
+  if (!shopId) {
+    return this.ready();
+  }
+  if (shopId) {
+    selector = {
+      "metadata.shopId": shopId,
+      "metadata.productId": productId
+    };
+  }
+
+  return Video.find(selector);
+});
+
+Meteor.publish("book", function (productId) {
+  check(productId, String);
+  let selector;
+  const shopId = Reaction.getShopId();
+  if (!shopId) {
+    return this.ready();
+  }
+  if (shopId) {
+    selector = {
+      "metadata.shopId": shopId,
+      "metadata.productId": productId
+    };
+  }
+
+  return Book.find(selector);
+});
+
+Meteor.publish("software", function (productId) {
+  check(productId, String);
+  let selector;
+  const shopId = Reaction.getShopId();
+  if (!shopId) {
+    return this.ready();
+  }
+  if (shopId) {
+    selector = {
+      "metadata.shopId": shopId,
+      "metadata.productId": productId
+    };
+  }
+
+  return Software.find(selector);
 });
