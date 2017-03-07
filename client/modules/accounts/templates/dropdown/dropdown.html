@@ -36,6 +36,12 @@
     {{> userAccountsDropdown}}
     {{> tour}}
     {{> walletButton}}
+    {{#if currentUser}}
+      {{> visitPages}}
+    {{/if}}
+    {{#if hasAdminAccess}}
+      {{> pages}}
+    {{/if}}
     <!--administrative shortcut icons -->
     {{#each reactionApps provides="shortcut" enabled=true}}
       <li class="dropdown-apps-icon">
@@ -51,15 +57,37 @@
 </template>
 
 <template name="tour">
-   <li class="dropdown-apps-icon">
-     <a onclick="reactionIntro()">
-       <i class="fa fa-plane fa-spin"></i>
-       <span class="icon-text">
-         Take-Tour
-       </span>
-     </a>
-   </li>
- </template>
+  <li class="dropdown-apps-icon">
+   <a onclick="reactionIntro()">
+     <i class="fa fa-plane fa-spin"></i>
+     <span class="icon-text">
+       Take-Tour
+     </span>
+   </a>
+  </li>
+</template>
+
+<template name="pages">
+  <li class="dropdown-apps-icon">
+   <a data-event-action="manage-pages">
+     <i class="fa fa-copy"></i>
+     <span class="icon-text">
+       Manage Pages
+     </span>
+   </a>
+  </li>
+</template>
+
+<template name="visitPages">
+  <li class="dropdown-apps-icon">
+   <a data-event-action="visit-pages" href={{slug}} class="visit-pages">
+     <i class="fa fa-file-powerpoint-o"></i>
+     <span class="icon-text">
+       Visit Pages
+     </span>
+   </a>
+  </li>
+</template>
 
 <template name="userAccountsDropdown">
   <!--user account shortcut icons -->

@@ -143,6 +143,7 @@ class ProductDetail extends Component {
 
             <div className="vendor">
                { this.renderVendorEdit() }
+               &nbsp;<a href={"/shop/" + this.product.shopId}><strong>Visit Shop</strong></a>
             </div>
 
             <div className="pdp product-info">
