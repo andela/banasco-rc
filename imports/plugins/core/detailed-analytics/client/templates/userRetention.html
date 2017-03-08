@@ -1,0 +1,29 @@
+<template name="userRetention">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <center>
+        <h3>User Retention</h3>
+      </center>
+    </div>
+    <div>
+      <table class="table table-inverse">
+        <thead>
+          <tr>
+            <th> Username </th>
+            <th> Login Count </th>
+            <th> Products Bought </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each result}}
+          <tr>
+            <td> {{name}}  </td>
+            <td> {{loginCount}} </td>
+            <td> {{purchases}} </td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>

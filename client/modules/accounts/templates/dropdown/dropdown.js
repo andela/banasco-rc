@@ -10,6 +10,9 @@ Template.loginDropdown.helpers({
       six: "Access Quick Drop-down for Site Shortcuts and Profile"
     };
     return steps;
+  },
+  slug() {
+    return `/shop/${Reaction.getShopId()}`;
   }
 });
 
@@ -76,5 +79,27 @@ Template.loginDropdown.events({
       Reaction.Router.go(route);
     }
     template.$(".dropdown-toggle").dropdown("toggle");
+  },
+
+  "click [data-event-action=manage-pages]": function () {
+    Reaction.Router.go("/reaction/dashboard/static-pages");
+  },
+
+  "click [data-event-action=visit-pages]": function (event, template) {
+    event.preventDefault();
+    Reaction.Router.go(`/shop/${Reaction.getShopId()}`);
+  }
+});
+
+Template.walletButton.events({
+  /**
+ * wallet
+ * @param {Event} event - jQuery Event
+ * @param {Template} template - Blaze Template
+ * @return {void}
+ */
+  "click #wallet": (event) => {
+    event.preventDefault();
+    FlowRouter.go("/wallet");
   }
 });

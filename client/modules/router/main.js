@@ -182,6 +182,22 @@ Router.initPackageRoutes = () => {
       }
     });
 
+    shop.route("/shop/:shopId", {
+      action(params) {
+        ReactionLayout({
+          template: "shopView",
+          data: params.shopId
+        });
+      }
+    });
+
+    shop.route("/wallet", {
+      name: "wallet",
+      action() {
+        ReactionLayout({template: "wallet"});
+      }
+    });
+
     // get package registry route configurations
     for (const pkg of pkgs) {
       const newRoutes = [];
