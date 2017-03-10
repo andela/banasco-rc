@@ -1,3 +1,4 @@
+/* eslint no-undef: 0*/
 import moment from "moment";
 import { Template } from "meteor/templating";
 import { Orders, Shops, Audio, Video, Software, Book, Products }

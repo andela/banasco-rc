@@ -1,3 +1,4 @@
+/* eslint no-undef: 0*/
 import { Media, Audio, Software, Video, Book } from "/lib/collections";
 import { Reaction } from "/server/api";
 

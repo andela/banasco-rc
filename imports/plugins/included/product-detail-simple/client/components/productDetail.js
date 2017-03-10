@@ -1,3 +1,4 @@
+/* eslint no-undef: 0*/
 import React, { Component, PropTypes } from "react";
 import {
   Button,
@@ -98,6 +99,7 @@ class ProductDetail extends Component {
         </Toolbar>
       );
     }
+    return null;
   }
 
   switchDigital(e) {
@@ -143,7 +145,7 @@ class ProductDetail extends Component {
       shopId: Reaction.getShopId()
     };
 
-    const insertDigitalFile = (db) => {
+    const insertDigitalFile = (db, Alerts) => {
       db.insert(files, (err, file) => {
         if (err) {
           return Alerts.toast("Something went wrong", "warning");
@@ -164,13 +166,13 @@ class ProductDetail extends Component {
     };
 
     if (this.state.categoryValue === "audio") {
-      return insertDigitalFile(Audio);
+      return insertDigitalFile(Audio, Alerts);
     } else if (this.state.categoryValue === "video") {
-      return insertDigitalFile(Video);
+      return insertDigitalFile(Video, Alerts);
     } else if (this.state.categoryValue === "book") {
-      return insertDigitalFile(Book);
+      return insertDigitalFile(Book, Alerts);
     } else if (this.state.categoryValue === "software") {
-      return insertDigitalFile(Software);
+      return insertDigitalFile(Software, Alerts);
     }
     return "Invalid Category Specified";
   }
@@ -332,7 +334,6 @@ ProductDetail.propTypes = {
   onAddToCart: PropTypes.func,
   onCartQuantityChange: PropTypes.func,
   onDeleteProduct: PropTypes.func,
-  vendorName: PropTypes.string,
   onProductFieldChange: PropTypes.func,
   onViewContextChange: PropTypes.func,
   priceRange: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
@@ -340,6 +341,7 @@ ProductDetail.propTypes = {
   socialComponent: PropTypes.node,
   tags: PropTypes.arrayOf(PropTypes.object),
   topVariantComponent: PropTypes.node,
+  vendorName: PropTypes.string,
   viewAs: PropTypes.string
 };
 
