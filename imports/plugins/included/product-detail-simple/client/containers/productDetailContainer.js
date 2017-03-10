@@ -18,12 +18,18 @@ class ProductDetailContainer extends Component {
 
     this.state = {
       cartQuantity: 1,
-      vendorName: ""
+      vendorName: "",
+      isDigital: ""
     };
+    this.listenToIsDigital = this.listenToIsDigital.bind(this);
   }
 
   componentWillMount() {
     this.renderVendorDetails();
+  }
+
+  get isDigital() {
+    return ReactionProduct.isDigitalProduct(this.props.product._id);
   }
 
   handleCartQuantityChange = (event, quantity) => {
@@ -75,9 +81,9 @@ class ProductDetailContainer extends Component {
         });
       } else {
         productId = currentProduct._id;
-
+        const isDigital = currentProduct.isDigital;
         if (productId) {
-          Meteor.call("cart/addToCart", productId, currentVariant._id, quantity, (error) => {
+          Meteor.call("cart/addToCart", productId, currentVariant._id, quantity, isDigital, (error) => {
             if (error) {
               Logger.error("Failed to add to cart.", error);
               return error;
@@ -169,6 +175,9 @@ class ProductDetailContainer extends Component {
       this.setState({vendorName: "Reaction"});
     }
   }
+  listenToIsDigital(isDigital) {
+    this.setState({isDigital: isDigital});
+  }
 
   render() {
     return (
@@ -182,7 +191,8 @@ class ProductDetailContainer extends Component {
             onCartQuantityChange={this.handleCartQuantityChange}
             onViewContextChange={this.handleViewContextChange}
             socialComponent={<SocialContainer />}
-            topVariantComponent={<VariantListContainer product={this.props.product} />}
+            isDigital={this.isDigital}
+            topVariantComponent={<VariantListContainer product={this.props.product} isDigital={this.isDigital} />}
             onDeleteProduct={this.handleDeleteProduct}
             onProductFieldChange={this.handleProductFieldChange}
             {...this.props}
