@@ -14,38 +14,26 @@ Template.dashboardOrdersList.helpers({
   showDigitalFileDownload() {
     const productId = this.items[0].productId;
     const sub = Meteor.subscribe("Product", productId);
+
+    const getDigitalProductType = (db, product) => {
+      Meteor.subscribe(product.digitalInfo.category, productId).ready();
+      const result = db.findOne({
+        "metadata.productId": productId
+      });
+      return result;
+    };
     if (sub.ready()) {
       const product = Products.findOne(productId);
 
       if (product.digitalInfo.category === "audio") {
-        Meteor.subscribe(product.digitalInfo.category, productId).ready();
-        const result = Audio.findOne({
-          "metadata.productId": productId
-        });
-        return result;
+        return getDigitalProductType(Audio, product);
+      } else if (product.digitalInfo.category === "video") {
+        return getDigitalProductType(Video, product);
+      } else if (product.digitalInfo.category === "book") {
+        return getDigitalProductType(Book, product);
+      } else if (product.digitalInfo.category === "software") {
+        return getDigitalProductType(Software, product);
       }
-      if (product.digitalInfo.category === "video") {
-        Meteor.subscribe(product.digitalInfo.category, productId).ready();
-        const result = Video.findOne({
-          "metadata.productId": productId
-        });
-        return result;
-      }
-      if (product.digitalInfo.category === "book") {
-        Meteor.subscribe(product.digitalInfo.category, productId).ready();
-        const result = Book.findOne({
-          "metadata.productId": productId
-        });
-        return result;
-      }
-      if (product.digitalInfo.category === "software") {
-        Meteor.subscribe(product.digitalInfo.category, productId).ready();
-        const result = Software.findOne({
-          "metadata.productId": productId
-        });
-        return result;
-      }
-
       return product.isDigital;
     }
     return null;

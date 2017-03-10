@@ -28,7 +28,7 @@ class ProductDetail extends Component {
     super(props);
     this.state = {
       digital: this.props.isDigital,
-      cartQuantity: "number",
+      cartQuantityType: "number",
       categoryValue: "",
       downloadUrl: "",
       fileId: this.props.product.productFileId
@@ -98,8 +98,6 @@ class ProductDetail extends Component {
         </Toolbar>
       );
     }
-
-    return null;
   }
 
   switchDigital(e) {
@@ -109,9 +107,9 @@ class ProductDetail extends Component {
     this.props.onProductFieldChange(productId, "isDigital", checked);
     this.props.changeParentIsDigitalState(e.target.checked);
     if (!this.state.digital) {
-      this.setState({cartQuantity: "hidden"});
+      this.setState({cartQuantityType: "hidden"});
     } else {
-      this.setState({cartQuantity: "number"});
+      this.setState({cartQuantityType: "number"});
     }
   }
 
@@ -145,89 +143,36 @@ class ProductDetail extends Component {
       shopId: Reaction.getShopId()
     };
 
+    const insertDigitalFile = (db) => {
+      db.insert(files, (err, file) => {
+        if (err) {
+          return Alerts.toast("Something went wrong", "warning");
+        }
+        if (file) {
+          this.setState({fileId: file._id});
+          const digitalInfo = {
+            fileId: file._id,
+            category: this.state.categoryValue
+          };
+
+          this.props.onProductFieldChange(this.props.product._id, "productFileId", file._id);
+          this.props.onProductFieldChange(this.props.product._id, "digitalInfo", digitalInfo);
+          return Alerts.toast("File successfully uploaded", "success");
+        }
+        return "File Insert Failed";
+      });
+    };
+
     if (this.state.categoryValue === "audio") {
-      Audio.insert(files, (err, file) => {
-        if (err) {
-          return Alerts.toast("Something went wrong", "warning");
-        }
-        if (file) {
-          this.setState({fileId: file._id});
-          const digitalInfo = {
-            fileId: file._id,
-            category: this.state.categoryValue
-          };
-
-          this.props.onProductFieldChange(this.props.product._id, "productFileId", file._id);
-          this.props.onProductFieldChange(this.props.product._id, "digitalInfo", digitalInfo);
-          return Alerts.toast("File successfully uploaded", "success");
-        }
-        return null;
-      });
-      return true;
+      return insertDigitalFile(Audio);
+    } else if (this.state.categoryValue === "video") {
+      return insertDigitalFile(Video);
+    } else if (this.state.categoryValue === "book") {
+      return insertDigitalFile(Book);
+    } else if (this.state.categoryValue === "software") {
+      return insertDigitalFile(Software);
     }
-
-    if (this.state.categoryValue === "video") {
-      Video.insert(files, (err, file) => {
-        if (err) {
-          return Alerts.toast("Something went wrong", "warning");
-        }
-        if (file) {
-          this.setState({fileId: file._id});
-          const digitalInfo = {
-            fileId: file._id,
-            category: this.state.categoryValue
-          };
-
-          this.props.onProductFieldChange(this.props.product._id, "productFileId", file._id);
-          this.props.onProductFieldChange(this.props.product._id, "digitalInfo", digitalInfo);
-          return Alerts.toast("File successfully uploaded", "success");
-        }
-        return null;
-      });
-      return true;
-    }
-    if (this.state.categoryValue === "book") {
-      Book.insert(files, (err, file) => {
-        if (err) {
-          return Alerts.toast("Something went wrong", "warning");
-        }
-        if (file) {
-          this.setState({fileId: file._id});
-          const digitalInfo = {
-            fileId: file._id,
-            category: this.state.categoryValue
-          };
-
-          this.props.onProductFieldChange(this.props.product._id, "productFileId", file._id);
-          this.props.onProductFieldChange(this.props.product._id, "digitalInfo", digitalInfo);
-          return Alerts.toast("File successfully uploaded", "success");
-        }
-        return null;
-      });
-      return true;
-    }
-    if (this.state.categoryValue === "software") {
-      Software.insert(files, (err, file) => {
-        if (err) {
-          return Alerts.toast("Something went wrong", "warning");
-        }
-        if (file) {
-          this.setState({fileId: file._id});
-          const digitalInfo = {
-            fileId: file._id,
-            category: this.state.categoryValue
-          };
-
-          this.props.onProductFieldChange(this.props.product._id, "productFileId", file._id);
-          this.props.onProductFieldChange(this.props.product._id, "digitalInfo", digitalInfo);
-          return Alerts.toast("File successfully uploaded", "success");
-        }
-        return null;
-      });
-      return true;
-    }
-
-    return true;
+    return "Invalid Category Specified";
   }
 
   get download() {
@@ -363,7 +308,7 @@ class ProductDetail extends Component {
                   !this.props.editable ?
                   <AddToCartButton
                     cartQuantity={this.props.cartQuantity}
-                    inputType={this.state.cartQuantity}
+                    inputType={this.state.cartQuantityType}
                     onCartQuantityChange={this.props.onCartQuantityChange}
                     onClick={this.props.onAddToCart}
                   /> : null

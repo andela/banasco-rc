@@ -12,7 +12,7 @@
 .switch input {display:none;}
 
 .no-round {
-  border-radius:0px;
+  border-radius: 0px;
 }
 
 /* The slider */
@@ -49,8 +49,8 @@ input:focus + .slider {
 }
 
 .switch-middle {
-  text-align:center;
-  padding-bottom:15px;
+  text-align: center;
+  padding-bottom: 15px;
 }
 
 .switch-text {
