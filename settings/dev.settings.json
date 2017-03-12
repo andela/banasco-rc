@@ -2,16 +2,16 @@
   "ROOT_URL": "",
   "MAIL_URL": "",
   "reaction": {
-    "REACTION_USER": "brainyfarm",
-    "REACTION_AUTH": "password",
-    "REACTION_EMAIL": "brainyfarm@gmail.com"
+    "REACTION_USER": "",
+    "REACTION_AUTH": "",
+    "REACTION_EMAIL": ""
   },
   "isDebug": "info",
   "public": {},
   "SMS": {
+    "SENDER":"",
     "OWNEREMAIL": "",
     "SUBACCT": "",
-    "SENDER": "",
     "SUBACCTPASSWORD": "",
     "APIURL": ""
   }
