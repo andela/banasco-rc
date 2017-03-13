@@ -7,5 +7,12 @@
     "REACTION_EMAIL": ""
   },
   "isDebug": "info",
-  "public": {}
+  "public": {},
+  "SMS": {
+    "SENDER":"",
+    "OWNEREMAIL": "",
+    "SUBACCT": "",
+    "SUBACCTPASSWORD": "",
+    "APIURL": ""
+  }
 }

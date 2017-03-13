@@ -6,9 +6,10 @@ import Future from "fibers/future";
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
 import { getSlug } from "/lib/api";
-import { Cart, Media, Orders, Products, Shops } from "/lib/collections";
+import { Cart, Media, Orders, Products, Shops, Accounts } from "/lib/collections";
 import * as Schemas from "/lib/collections/schemas";
 import { Logger, Reaction } from "/server/api";
+import { HTTP } from "meteor/http";
 
 /**
  * Reaction Order Methods
@@ -176,14 +177,13 @@ Meteor.methods({
       }
     });
   },
-
   /**
-   * orders/processPayment
-   *
-   * @summary trigger processPayment and workflow update
-   * @param {Object} order - order object
-   * @return {Object} return this.processPayment result
-   */
+    * orders/processPayment
+    *
+    * @summary trigger processPayment and workflow update
+    * @param {Object} order - order object
+    * @return {Object} return this.processPayment result
+    */
   "orders/processPayment": function (order) {
     check(order, Object);
 
@@ -324,6 +324,47 @@ Meteor.methods({
    */
   "orders/sendNotification": function (order) {
     check(order, Object);
+    const shoppersPhone = order.billing[0].address.phone;
+
+    //  Loop through orders to get vendor information and send notification to them
+    const orderedItems = order.items;
+    const orderSingularOrPlural = orderedItems.length > 1 ? "orders" : "order";
+    let orderedProducts = "";
+    let vendorPhones = [];
+    for (let i = 0; i < orderedItems.length; i += 1) {
+      orderedProducts += ` ${orderedItems[i].title},`;
+      const productVendor = Accounts.find({ _id: orderedItems[i].vendorId }).fetch();
+      vendorPhones.push(productVendor[0].profile.vendorDetails.vendorPhone);
+    }
+    const smsContent = {
+      to: shoppersPhone,
+      message: `Receipt for ${orderedProducts} has been received. Thanks for your patronage`
+    };
+
+    if (order.workflow.status === "new") {
+      Meteor.call("send/smsAlert", smsContent);
+      vendorAlertMessage = "You have pending orders on your Banasko-RC";
+
+      // Filter out the duplicate values
+      vendorPhones = vendorPhones.filter((item, index, inputArray) => {
+        return inputArray.indexOf(item) === index;
+      });
+      vendorPhones.forEach((number) => {
+        const vendorSmsContent = {};
+        vendorSmsContent.to = number;
+        vendorSmsContent.message = vendorAlertMessage;
+        Meteor.call("send/smsAlert", vendorSmsContent);
+      });
+    } else if (order.workflow.status === "coreOrderWorkflow/processing") {
+      smsContent.message = `Your ${orderSingularOrPlural} will be shipped soon`;
+      Meteor.call("send/smsAlert", smsContent);
+    } else if (order.workflow.status === "coreOrderWorkflow/completed") {
+      smsContent.message = `Your ${ orderedItems.length > 1 ? "orders have" : "order has" } been shipped. Thanks for shopping with us`;
+      Meteor.call("send/smsAlert", smsContent);
+    } else if (order.workflow.status === "coreOrderWorkflow/canceled") {
+      smsContent.message = "You cancelled an order";
+      Meteor.call("send/smsAlert", smsContent);
+    }
 
     if (!this.userId) {
       Logger.error("orders/sendNotification: Access denied");
@@ -434,12 +475,30 @@ Meteor.methods({
     Reaction.Email.send({
       to: order.email,
       from: `${shop.name} <${shop.emails[0].address}>`,
-      subject: `Your order is confirmed`,
+      subject: "Your order is confirmed",
       // subject: `Order update from ${shop.name}`,
-      html: SSR.render(tpl,  dataForOrderEmail)
+      html: SSR.render(tpl, dataForOrderEmail)
     });
 
     return true;
+  },
+
+  "send/smsAlert": function (smsContent) {
+    check(smsContent, Object);
+    HTTP.call("GET", Meteor.settings.SMS.APIURL,
+      {
+        params:
+        {
+          cmd: "sendquickmsg",
+          owneremail: Meteor.settings.SMS.OWNEREMAIL,
+          subacct: Meteor.settings.SMS.SUBACCT,
+          subacctpwd: Meteor.settings.SMS.SUBACCTPWD,
+          message: smsContent.message,
+          sender: Meteor.settings.SMS.sender,
+          sendto: smsContent.to,
+          msgtype: 0
+        }
+      });
   },
 
   /**
@@ -619,7 +678,7 @@ Meteor.methods({
       throw new Meteor.Error(403, "Access Denied. You are not connected.");
     }
 
-    return Orders.update({cartId: cartId}, {
+    return Orders.update({ cartId: cartId }, {
       $set: {
         email: email
       }
@@ -775,7 +834,7 @@ Meteor.methods({
               }
             });
 
-            return {error: "orders/capturePayments: Failed to capture transaction"};
+            return { error: "orders/capturePayments: Failed to capture transaction" };
           }
         });
       }
