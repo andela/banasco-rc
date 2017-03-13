@@ -328,7 +328,7 @@ Meteor.methods({
 
     //  Loop through orders to get vendor information and send notification to them
     const orderedItems = order.items;
-    const orderSingularOrPlural = orderedItems.length > 1 ? "orders" : "orders";
+    const orderSingularOrPlural = orderedItems.length > 1 ? "orders" : "order";
     let orderedProducts = "";
     let vendorPhones = [];
     for (let i = 0; i < orderedItems.length; i += 1) {
@@ -359,7 +359,7 @@ Meteor.methods({
       smsContent.message = `Your ${orderSingularOrPlural} will be shipped soon`;
       Meteor.call("send/smsAlert", smsContent);
     } else if (order.workflow.status === "coreOrderWorkflow/completed") {
-      smsContent.message = `Your ${orderSingularOrPlural} has been shipped. Thanks for shopping with us`;
+      smsContent.message = `Your ${ orderedItems.length > 1 ? "orders have" : "order has" } been shipped. Thanks for shopping with us`;
       Meteor.call("send/smsAlert", smsContent);
     } else if (order.workflow.status === "coreOrderWorkflow/canceled") {
       smsContent.message = "You cancelled an order";
